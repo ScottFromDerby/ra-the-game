@@ -1,0 +1,326 @@
+#include "wasm4.h"
+#include "gfx.h"
+#include "music.h"
+#include "tools.h"
+
+//  Assets
+
+// Chainsaw
+#define SPRITE_ChainsawWidth 128
+#define SPRITE_ChainsawHeight 16
+#define SPRITE_ChainsawFlags BLIT_2BPP
+const uint8_t SPRITE_Chainsaw[512] = {0x14, 0x00, 0x00, 0x00, 0x00, 0x05, 0x50, 0x00, 0x00, 0x00, 0x00, 0x54, 0x00, 0x00, 0x00, 0x00, 0x2a, 0x80, 0x00, 0x00, 0x00, 0xaa, 0xaa, 0x00, 0x00, 0x00, 0x0a, 0xa8, 0x00, 0x00, 0x00, 0x00, 0x55, 0x00, 0x00, 0x00, 0x00, 0x05, 0x50, 0x00, 0x00, 0x00, 0x55, 0x55, 0x00, 0x00, 0x10, 0x00, 0xaa, 0xa0, 0x00, 0x00, 0x00, 0x0a, 0xaa, 0x00, 0x00, 0x00, 0xa2, 0xaa, 0x00, 0x00, 0x00, 0x00, 0x55, 0x40, 0x00, 0x00, 0x00, 0x15, 0x50, 0x00, 0x00, 0x40, 0x05, 0x55, 0x00, 0x01, 0x00, 0x00, 0xaa, 0xa0, 0x00, 0x00, 0x00, 0x82, 0xa8, 0x00, 0x00, 0x00, 0x82, 0xaa, 0x00, 0x00, 0x00, 0x00, 0x55, 0x50, 0x00, 0x00, 0x00, 0x55, 0x50, 0x00, 0x00, 0x05, 0x15, 0x54, 0x00, 0x01, 0x04, 0x00, 0xaa, 0xa8, 0x00, 0x40, 0x00, 0x8a, 0xa8, 0x00, 0x00, 0x00, 0xaa, 0xaa, 0x00, 0x00, 0x00, 0x00, 0x15, 0x54, 0x00, 0x00, 0x00, 0x05, 0x50, 0x00, 0x01, 0x00, 0x55, 0x50, 0xa0, 0x00, 0x05, 0x10, 0xaa, 0xaa, 0x00, 0x00, 0x00, 0x2a, 0xa0, 0x00, 0x00, 0x02, 0xaa, 0xaa, 0x00, 0x00, 0x00, 0xa2, 0x05, 0x55, 0x00, 0x00, 0x01, 0x15, 0x50, 0x00, 0x00, 0x41, 0x55, 0x40, 0xaa, 0x24, 0x10, 0x04, 0x82, 0xa9, 0x00, 0x10, 0x00, 0x26, 0x98, 0x00, 0x00, 0x02, 0x6a, 0xa8, 0x00, 0x00, 0x2a, 0x02, 0x05, 0x55, 0x40, 0x00, 0x11, 0x55, 0x50, 0x00, 0x00, 0x05, 0x55, 0x00, 0xaa, 0x95, 0x55, 0x55, 0x22, 0xa9, 0x40, 0x50, 0x00, 0x29, 0x54, 0x00, 0x00, 0x01, 0x6a, 0x80, 0x55, 0x55, 0x66, 0x8a, 0x14, 0x55, 0x5a, 0x00, 0x00, 0x05, 0x50, 0x00, 0x00, 0x15, 0x54, 0x00, 0xaa, 0xa5, 0x55, 0x55, 0x2a, 0x95, 0x50, 0x40, 0x00, 0x05, 0x50, 0x00, 0x00, 0x05, 0x56, 0x00, 0x55, 0x55, 0x5a, 0xaa, 0x00, 0x55, 0x56, 0xa8, 0x40, 0x05, 0x50, 0x00, 0x00, 0x95, 0x50, 0x00, 0xaa, 0xa5, 0x55, 0x55, 0x00, 0xa5, 0x55, 0x01, 0x00, 0x05, 0x50, 0x00, 0x00, 0x15, 0x50, 0x00, 0x55, 0x55, 0x5a, 0xaa, 0x01, 0x45, 0x6a, 0x88, 0x00, 0x15, 0x68, 0x00, 0x02, 0xa9, 0x40, 0x00, 0xa2, 0x99, 0x55, 0x55, 0x00, 0x01, 0x55, 0x05, 0x00, 0x05, 0x55, 0x40, 0x00, 0x55, 0x44, 0x00, 0x55, 0x55, 0x56, 0xaa, 0x01, 0x01, 0x6a, 0x82, 0x00, 0x26, 0x98, 0x00, 0x2a, 0xa9, 0x80, 0x00, 0x80, 0xa8, 0x00, 0x00, 0x00, 0x00, 0x55, 0x50, 0x00, 0x05, 0x54, 0x40, 0x01, 0x55, 0x01, 0x00, 0x10, 0x04, 0x18, 0xaa, 0x04, 0x00, 0xaa, 0xaa, 0x00, 0x0a, 0xa8, 0x00, 0xaa, 0xaa, 0x80, 0x00, 0x8a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x15, 0x50, 0x00, 0x05, 0x50, 0x00, 0x05, 0x54, 0x10, 0x00, 0x04, 0x50, 0x00, 0x0a, 0x00, 0x00, 0x2a, 0xaa, 0x00, 0x2a, 0xa2, 0x00, 0xaa, 0xaa, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x05, 0x55, 0x00, 0x05, 0x55, 0x00, 0x15, 0x54, 0x05, 0x10, 0x00, 0x10, 0x40, 0x00, 0x01, 0x00, 0x0a, 0xaa, 0x00, 0x2a, 0x82, 0x00, 0xaa, 0x82, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x55, 0x00, 0x05, 0x54, 0x00, 0x55, 0x45, 0x41, 0x00, 0x00, 0x00, 0x40, 0x00, 0x00, 0x00, 0x0a, 0xaa, 0x00, 0xaa, 0xa0, 0x00, 0xaa, 0x8a, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x55, 0x00, 0x05, 0x50, 0x00, 0x15, 0x00, 0x40, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x02, 0xa8, 0x00, 0xaa, 0xaa, 0x00, 0x2a, 0xa0, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x00, 0x05, 0x50, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+
+// Player
+#define SPRITE_PlayerWidth 64
+#define SPRITE_PlayerHeight 16
+#define SPRITE_PlayerFlags BLIT_1BPP
+const uint8_t SPRITE_Player[128] = {0x07, 0xe0, 0x07, 0xe0, 0x07, 0xe0, 0x07, 0xe0, 0x1f, 0xf8, 0x1f, 0xf8, 0x1f, 0xf8, 0x1f, 0xf8, 0x3f, 0xfc, 0x3f, 0xfc, 0x3f, 0xfc, 0x3f, 0xfc, 0x7f, 0xfe, 0x7f, 0xfe, 0x7b, 0xbe, 0x6d, 0x6e, 0x7b, 0xbe, 0x7b, 0xbe, 0x7b, 0xbe, 0x73, 0x9e, 0xfb, 0xbf, 0xfb, 0xbf, 0xfb, 0xbf, 0xf3, 0x9f, 0xff, 0xff, 0xfb, 0xbf, 0xfb, 0xbf, 0xed, 0x6f, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xfc, 0x7f, 0xfc, 0x7f, 0xfc, 0x7f, 0xfc, 0x7f, 0xff, 0xfe, 0xfb, 0xbe, 0xfb, 0xbe, 0xfb, 0xbe, 0x7f, 0xfe, 0x7f, 0xfe, 0x7b, 0xbe, 0x7b, 0xbe, 0x7f, 0xfe, 0x7f, 0xfe, 0x78, 0x3e, 0x7f, 0xfe, 0x3f, 0xfc, 0x3f, 0xfc, 0x3f, 0xfc, 0x3f, 0xfc, 0x1f, 0xf8, 0x1f, 0xf8, 0x1f, 0xf8, 0x1f, 0xf8, 0x07, 0xe0, 0x07, 0xe0, 0x07, 0xe0, 0x07, 0xe0};
+
+//  Globals
+
+enum GameState
+{
+    INGAME,
+    GAMEOVER
+} g_gameState = GAMEOVER;
+
+u32 g_uTicks = 0;
+u32 g_uTicksInGame = UINT32_MAX;
+u32 g_uHighScore = 0;
+
+enum
+{
+    NUM_ENEMIES = 32,
+    NUM_BLOODSPLATTER_PIXELS = 32
+};
+
+struct Enemy
+{
+    int xPos;
+    int yPos;
+    int xVel;
+    int yVel;
+    int ticks;
+};
+struct Enemy g_enemies[NUM_ENEMIES];
+
+struct Pixel
+{
+    int xPos;
+    int yPos;
+};
+struct Pixel g_bloodSplatterPixels[NUM_BLOODSPLATTER_PIXELS];
+
+
+void reset()
+{
+    for (int i = 0; i < NUM_ENEMIES; ++i)
+    {
+        g_enemies[i].xPos = 999;
+        g_enemies[i].yPos = 999;
+        g_enemies[i].xVel = 0;
+        g_enemies[i].yVel = 0;
+        g_enemies[i].ticks = 0;
+    }
+    for (int i = 0; i < NUM_BLOODSPLATTER_PIXELS; ++i)
+    {
+        g_bloodSplatterPixels[i].xPos = -1;
+        g_bloodSplatterPixels[i].yPos = -1;
+    }
+}
+
+void start()
+{
+    PALETTE[0] = 0x000000;  //  Black
+    PALETTE[1] = 0xcccccc;  //  Grey
+    PALETTE[2] = 0xff0000;  //  Red
+    PALETTE[3] = 0xffff00;  //  Yellow
+
+    reset();
+}
+
+void update()
+{
+    g_uTicks++;
+
+    if (g_gameState == INGAME)
+    {
+        g_uTicksInGame++;
+    }
+
+    //  Draw score/highscore
+    if (g_uTicksInGame != UINT32_MAX)
+    {
+        char buffer[16];
+        tostr(buffer, g_uTicksInGame / 10);
+        gfx_drawstr(buffer, 1, 1, 0x21);
+
+        if ((g_uTicksInGame / 10) > g_uHighScore)
+        {
+            g_uHighScore = g_uTicksInGame / 10;
+        }
+
+        if (g_uHighScore != 0)
+        {
+            //	qad right-align high score
+            int xOffs = SCREEN_SIZE - 4;
+            if (g_uHighScore >= 1000)
+            {
+                xOffs = SCREEN_SIZE - 16;
+            }
+            else if (g_uHighScore >= 100)
+            {
+                xOffs = SCREEN_SIZE - 12;
+            }
+            else if (g_uHighScore >= 10)
+            {
+                xOffs = SCREEN_SIZE - 8;
+            }
+            gfx_drawval(g_uHighScore, xOffs, 1, 0x31);
+        }
+    }
+
+    //  Process player movement
+    u8 gamepad = *GAMEPAD1;
+
+    static int playerX = (SCREEN_SIZE / 2) - (SPRITE_PlayerHeight / 2);
+    static int playerY = (SCREEN_SIZE / 2) - (SPRITE_PlayerHeight / 2);
+
+    if (g_gameState == INGAME)
+    {
+        if (gamepad & BUTTON_RIGHT)
+        {
+            playerX++;
+        }
+        else if (gamepad & BUTTON_LEFT)
+        {
+            playerX--;
+        }
+        if (gamepad & BUTTON_DOWN)
+        {
+            playerY++;
+        }
+        else if (gamepad & BUTTON_UP)
+        {
+            playerY--;
+        }
+
+        const u32 HALF_PLY = SPRITE_PlayerHeight / 2;
+        playerX = clamp(playerX, HALF_PLY, SCREEN_SIZE - (SPRITE_PlayerHeight + HALF_PLY));
+        playerY = clamp(playerY, HALF_PLY, SCREEN_SIZE - (SPRITE_PlayerHeight + HALF_PLY));
+    }
+
+    music_tick(g_gameState == INGAME);
+
+    //  Draw player. Change based on nearest chainsaw distance:
+    u32 playerSpriteXOffs = 48;
+    if (g_gameState == INGAME)
+    {
+        //  Dodgy square-dist
+        playerSpriteXOffs = 0;
+        int closestDistToChainsawXY = 9999;
+
+        for (int i = 0; i < NUM_ENEMIES; ++i)
+        {
+            if (g_enemies[i].xPos < 0)
+                continue;
+            if (g_enemies[i].yPos < 0)
+                continue;
+
+            int distX = abs(g_enemies[i].xPos - playerX);
+            int distY = abs(g_enemies[i].yPos - playerY);
+
+            if (distX + distY < closestDistToChainsawXY)
+            {
+                closestDistToChainsawXY = distX + distY;
+            }
+        }
+
+        //	or 16 if they're nearby
+        //	or 32 if they're v close
+
+        if (closestDistToChainsawXY < 40)
+        {
+            playerSpriteXOffs = 32;
+        }
+        else if (closestDistToChainsawXY < 60)
+        {
+            playerSpriteXOffs = 16;
+        }
+    }
+
+    *DRAW_COLORS = 0x0421;
+    blitSub(SPRITE_Player, playerX, playerY, 16, SPRITE_PlayerHeight, playerSpriteXOffs, 0, SPRITE_PlayerWidth, SPRITE_PlayerFlags);
+
+    //	update enemies
+    int numEnemiesToUpdate = min(4 + (g_uTicksInGame / 400) * 2, 31);
+
+    for (int i = 0; i < numEnemiesToUpdate; ++i)
+    {
+        if (g_enemies[i].xPos < -16 || g_enemies[i].xPos > SCREEN_SIZE || g_enemies[i].yPos < -16 || g_enemies[i].yPos > SCREEN_SIZE)
+        {
+            //	Make new chainsaw
+            // if( rand() % 2 == 0) //  changed to always come in from i%4 side
+            if (i % 4 == 0)
+            {
+                //	from right
+                g_enemies[i].xPos = SCREEN_SIZE;
+                g_enemies[i].yPos = rand() % SCREEN_SIZE;
+                g_enemies[i].xVel = -1;
+                g_enemies[i].yVel = 1 - (rand() % 3); //-1, 0, 1
+                g_enemies[i].ticks = rand();
+            }
+            else if (i % 4 == 1)
+            {
+                //	from bottom
+                g_enemies[i].xPos = rand() % SCREEN_SIZE;
+                g_enemies[i].yPos = SCREEN_SIZE;
+                g_enemies[i].xVel = 1 - (rand() % 3); //-1, 0, 1
+                g_enemies[i].yVel = -1;
+                g_enemies[i].ticks = rand();
+            }
+            else if (i % 4 == 2)
+            {
+                //	from left
+                g_enemies[i].xPos = -16;
+                g_enemies[i].yPos = rand() % SCREEN_SIZE;
+                g_enemies[i].xVel = 1;
+                g_enemies[i].yVel = 1 - (rand() % 3); //-1, 0, 1
+                g_enemies[i].ticks = rand();
+            }
+            else if (i % 4 == 3)
+            {
+                //	from top
+                g_enemies[i].xPos = rand() % SCREEN_SIZE;
+                g_enemies[i].yPos = -16;
+                g_enemies[i].xVel = 1 - (rand() % 3); //-1, 0, 1
+                g_enemies[i].yVel = 1;
+                g_enemies[i].ticks = rand();
+            }
+        }
+
+        g_enemies[i].xPos += g_enemies[i].xVel;
+        g_enemies[i].yPos += g_enemies[i].yVel;
+        g_enemies[i].ticks++;
+    }
+
+    //	draw enemies
+    for (int i = 0; i < NUM_ENEMIES; ++i)
+    {
+        *DRAW_COLORS = 0x0420;
+        u32 SourceXFrames[] = {0, 1, 2, 3, 4, 5, 6, 7};
+        u32 SourceX = SourceXFrames[(g_enemies[i].ticks / 10) % 8];
+        blitSub(SPRITE_Chainsaw, g_enemies[i].xPos, g_enemies[i].yPos, 16, SPRITE_ChainsawHeight, SourceX * 16, 0, SPRITE_ChainsawWidth, SPRITE_ChainsawFlags);
+    }
+
+    //  draw bloodsplatter
+    for (u32 i = 0; i < NUM_BLOODSPLATTER_PIXELS; ++i)
+    {
+        gfx_setpixel(g_bloodSplatterPixels[i].xPos, g_bloodSplatterPixels[i].yPos, (int)i);
+    }
+
+    //	update game
+    if (g_gameState == GAMEOVER)
+    {
+        if (g_uTicksInGame == UINT32_MAX)
+        {
+            gfx_drawstr("Scott Breen Sumo Game Jam 2022", 21, SCREEN_SIZE - 15, g_uTicks / 50 % 2 == 0 ? 0x21 : 0x30);
+            gfx_drawstr("Texas Chainsaw Dodge. Press X to begin.", 11, SCREEN_SIZE - 8, 0x21);
+        }
+        else
+        {
+            gfx_drawstr("Not much left of you. Press X to try again.", 8, SCREEN_SIZE - 8, 0x21);
+        }
+
+        if (gamepad & BUTTON_1)
+        {
+            g_gameState = INGAME;
+            playerX = SCREEN_SIZE / 2 - 8;
+            playerY = SCREEN_SIZE / 2 - 8;
+            g_uTicksInGame = 0;
+
+            reset();
+        }
+    }
+    else if (g_gameState == INGAME)
+    {
+        //	Give the player an extra 2px margin for collisions
+        int playerErrorMargin = 2;
+
+        int playerLeft = playerX + playerErrorMargin;
+        int playerTop = playerY + playerErrorMargin;
+        int playerRight = playerLeft + 16 - (playerErrorMargin * 2);
+        int playerBottom = playerTop + 16 - (playerErrorMargin * 2);
+        for (int i = 0; i < NUM_ENEMIES; ++i)
+        {
+            int enemyLeft = g_enemies[i].xPos;
+            int enemyTop = g_enemies[i].yPos;
+            int enemyRight = enemyLeft + 16;
+            int enemyBottom = enemyTop + 16;
+
+            if (!((enemyLeft > playerRight) ||
+                  (enemyRight < playerLeft) ||
+                  (enemyTop > playerBottom) ||
+                  (enemyBottom < playerTop)))
+            {
+                //	midpt
+                int enemyMidX = g_enemies[i].xPos + 16 / 2;
+                int enemyMidY = g_enemies[i].yPos + 16 / 2;
+                int playerMidX = playerX + 16 / 2;
+                int playerMidY = playerY + 16 / 2;
+
+                int midPtX = (playerMidX + enemyMidX) / 2;
+                int midPtY = (playerMidY + enemyMidY) / 2;
+
+                for (int i = 0; i < NUM_BLOODSPLATTER_PIXELS; ++i)
+                {
+                    g_bloodSplatterPixels[i].xPos = midPtX - 12 + rand() % 24;
+                    g_bloodSplatterPixels[i].yPos = midPtY - 12 + rand() % 24;
+                }
+
+                g_gameState = GAMEOVER;
+            }
+        }
+    }
+}
