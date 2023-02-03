@@ -1,5 +1,6 @@
 {
     "files.associations": {
-        "gfx_font.h": "c"
+        "gfx_font.h": "c",
+        "gfx_npcs.h": "c"
     }
 }
