@@ -153,4 +153,6 @@ WASM_IMPORT("tracef") void tracef (const char* fmt, ...);
 #define true 1
 #define false 0
 
+#define NULL (0)
+
 extern uint32_t g_uTicks;

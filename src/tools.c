@@ -2,11 +2,19 @@
 #include "tools.h"
 #include "gfx.h"
 
-void tostr(char *buffer, u32 value)
+void tostr(char* buffer, int value)
 {
+	bool bIsNegative = false;
 	u8 numDigits = 0;
 
-	u32 test = value;
+	if (value < 0)
+	{
+		buffer[0] = '-';
+		buffer++;
+		value *= -1;
+	}
+	
+	int test = value;
 	while (test > 0)
 	{
 		test /= 10;
@@ -27,7 +35,7 @@ void tostr(char *buffer, u32 value)
 	buffer[numDigits] = '\0';
 }
 
-char* tostrdirty(u32 value)
+char* tostrdirty(int value)
 {
 	static char buffer[32];
 	tostr(buffer, value);
