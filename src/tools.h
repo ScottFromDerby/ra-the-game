@@ -1,10 +1,15 @@
 #pragma once
-#include <stdint.h>
 
 void tostr(char* buffer, int value);
 char* tostrdirty(int value);
 
 static int clamp(int val, int lower, int upper)
+{
+    return (val < lower) ? lower : (val > upper) ? upper
+                                                 : val;
+}
+
+static u8 clampu8(u8 val, u8 lower, u8 upper)
 {
     return (val < lower) ? lower : (val > upper) ? upper
                                                  : val;

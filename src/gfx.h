@@ -1,5 +1,4 @@
 #pragma once
-#include <stdio.h>
 
 //  Calculate length of input char/str. Used in order to right-align
 void gfx_charlenpx(char which, u32* offset, u32* offsetSize);

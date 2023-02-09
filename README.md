@@ -13,12 +13,12 @@ w4 watch
 "#pragma once `n{0}`n{1}`n{2}`n{3}`n{4}`n{5}" -f (w4 png2src --cpp .\SPRITE_PlayerDebug.png) | Out-File -Encoding "UTF8" src/gfx_playerdebug.h
 "#pragma once `n{0}`n{1}`n{2}`n{3}`n{4}`n{5}" -f (w4 png2src --cpp .\SPRITE_Player.png) | Out-File -Encoding "UTF8" src/gfx_player.h
 "#pragma once `n{0}`n{1}`n{2}`n{3}`n{4}`n{5}" -f (w4 png2src --cpp .\SPRITE_Overworld.png) | Out-File -Encoding "UTF8" src/gfx_overworld.h
-"#pragma once `n{0}`n{1}`n{2}`n{3}`n{4}`n{5}" -f (w4 png2src --cpp .\SPRITE_Overworld2.png) | Out-File -Encoding "UTF8" src/gfx_overworld2.h
 "#pragma once `n{0}`n{1}`n{2}`n{3}`n{4}`n{5}" -f (w4 png2src --cpp .\SPRITE_NPCs.png) | Out-File -Encoding "UTF8" src/gfx_npcs.h
 
 # package
-w4 bundle --html testout.html build/cart.wasm
-
+make DEBUG=0
+wasm-opt -O -o .\build\cartopt.wasm .\build\cart.wasm
+w4 bundle --html testout.html build/cartopt.wasm
 
 ## Links
 
