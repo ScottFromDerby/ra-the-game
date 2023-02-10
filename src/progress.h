@@ -1,5 +1,5 @@
 #pragma once
-#include <stdbool.h>
+#include "wasm4.h"
 
 //  Player progress
 
