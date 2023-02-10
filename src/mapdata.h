@@ -1,21 +1,6 @@
 #pragma once
 
-//#include <stdint.h>
 #include "wasm4.h"
-
-#if 0
-struct Screen
-{
-    enum
-    {
-        SCREEN_HEIGHT = 18,
-        SCREEN_WIDTH = 20
-    };
-    uint8_t screen_tiles[SCREEN_HEIGHT * SCREEN_WIDTH];
-};
-
-extern struct Screen TestScreen;
-#endif
 
 enum MetaTileLookup
 {

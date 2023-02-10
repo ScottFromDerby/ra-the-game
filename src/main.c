@@ -4,6 +4,9 @@
 #include "music.h"
 #include "tools.h"
 #include "progress.h"
+#include "interactables.h"
+#include "animtiles.h"
+#include "dialog.h"
 
 #include "mapdata.h"
 
@@ -24,7 +27,6 @@ enum
     NUM_TILES_HEIGHT = 9,
     SCREEN_WIDTH = TILESIZE * NUM_TILES_WIDTH,
     SCREEN_HEIGHT = TILESIZE * NUM_TILES_HEIGHT,
-    NUM_ANIM_TILES = 16,
 };
 
 enum GameState
@@ -60,70 +62,7 @@ u8 g_currentWorldY = 2;
 int g_transitionFramesLeft = 0;
 enum Direction g_transitionDirection = Left;
 
-int g_npc1X = TILESIZE * 7;
-int g_npc1Y = TILESIZE * 2;
-
-u32 g_ignoreButtonInputsDelay = 0;
-
-bool g_bShowingDialogBG = false;
-char g_dialogContentLine1[64];
-char g_dialogContentLine2[64];
-char g_dialogContentLine3[64];
-
-const char* DIALOG_TEST_NPC1 = "You win the game! Please leave 5strs";
-const char* DIALOG_TEST_NPC2 = "like, subscribe and tell your frens";
-const char* DIALOG_TEST_NPC3 = "also buy the Cheevo DLC only 1000G";
-
-enum AnimatedTileType
-{
-    ATT_None,
-    ATT_Flower,
-};
-
-struct AnimatedTile
-{
-    enum AnimatedTileType type;
-    u8 xPos;
-    u8 yPos;
-    u8 ticks;
-    u8 phase;
-    u32 flags;
-};
-struct AnimatedTile g_AnimTiles[NUM_ANIM_TILES];
-
-void tick_animated_tile(struct AnimatedTile *tile)
-{
-    tile->ticks++;
-    switch (tile->type)
-    {
-    case ATT_None:
-        break;
-    case ATT_Flower:
-        if (tile->ticks == 21)
-        {
-            tile->ticks = 0;
-            tile->phase = (tile->phase + 1) % 4;
-        }
-        break;
-    }
-}
-
-void add_anim_tile(enum AnimatedTileType tile, u8 x, u8 y, u8 startPhase)
-{
-    for (int i = 0; i < NUM_ANIM_TILES; ++i)
-    {
-        if (g_AnimTiles[i].type == ATT_None)
-        {
-            g_AnimTiles[i].type = tile;
-            g_AnimTiles[i].phase = startPhase;
-            g_AnimTiles[i].ticks = 0;
-            g_AnimTiles[i].xPos = x;
-            g_AnimTiles[i].yPos = y;
-            return;
-        }
-    }
-    trace("Couldn't add animated tile?!");
-}
+bool g_bButton1Released = false;
 
 void get_tile_from_point(u8 x, u8 y, u8 *xTile, u8 *yTile)
 {
@@ -154,6 +93,38 @@ MetaTile get_metatile_at_point(u8 x, u8 y)
     return get_meta_tile(x / TILESIZE, y / TILESIZE);
 }
 
+void get_tile_infront_of_player(u8* xTileOut, u8* yTileOut)
+{
+    get_tile_from_point(g_playerX, g_playerY, xTileOut, yTileOut);
+    switch (g_currentFacing)
+    {
+        case Up:
+            if ((*yTileOut) > 0)
+            {
+                (*yTileOut)--;
+            }
+            return;
+        case Down:
+            if ((*yTileOut) < NUM_TILES_HEIGHT)
+            {
+                (*yTileOut)++;
+            }
+            return;
+        case Left:
+            if ((*xTileOut) > 0)
+            {
+                (*xTileOut)--;
+            }
+            return;
+        case Right:
+            if ((*xTileOut) < NUM_TILES_WIDTH)
+            {
+                (*xTileOut)++;
+            }
+            return;
+    }
+}
+
 void draw_animtile(int x, int y, u32 tile, u32 flags, int xOffs, int yOffs)
 {
     blitSub(SPRITE_AnimTiles, HALFTILE * x + xOffs, HALFTILE * y + yOffs, HALFTILE, HALFTILE, (tile % 0x04) * HALFTILE, (tile / 0x04) * HALFTILE, SPRITE_AnimTilesWidth, SPRITE_AnimTilesFlags | flags);
@@ -181,6 +152,13 @@ void on_start_screen()
 {
     switch (g_currentWorldX | (g_currentWorldY << 4))   //  NB. this = 0x[X][Y] for world pos
     {
+        case 0x20:
+        trace("left2");
+        break;
+        case 0x21:
+        trace("left");
+        add_interactable(IT_AnotherNPC, 4, 4, true);
+        break;
         case 0x22:
         trace("start");
         add_anim_tile(ATT_Flower, 16, 12, 0);
@@ -189,12 +167,7 @@ void on_start_screen()
         add_anim_tile(ATT_Flower, 5, 11, 2);
         add_anim_tile(ATT_Flower, 12, 4, 0);
         add_anim_tile(ATT_Flower, 13, 5, 2);
-        break;
-        case 0x21:
-        trace("left");
-        break;
-        case 0x20:
-        trace("left2");
+        add_interactable(IT_StartTestNPC, 7, 2, true);
         break;
     }
 }
@@ -207,11 +180,12 @@ void clear_screen()
         g_AnimTiles[i].ticks = 0;
     }
     //  Clear NPC
+    clear_interactables();
 }
 
 void set_screen(u8 x, u8 y, bool bForce)
 {
-    tracef("doing set_screen %d %d %d %d", x, y, g_currentWorldX, g_currentWorldY);
+    //tracef("doing set_screen %d %d %d %d", x, y, g_currentWorldX, g_currentWorldY);
 
     clear_screen();
 
@@ -273,13 +247,7 @@ void update_map()
             on_start_screen();
         }
     }
-    for (int i = 0; i < NUM_ANIM_TILES; ++i)
-    {
-        if (g_AnimTiles[i].type != ATT_None)
-        {
-            tick_animated_tile(&g_AnimTiles[i]);
-        }
-    }
+    tick_animated_tiles();
 }
 
 void draw_map()
@@ -439,12 +407,29 @@ void draw_player()
     blitSub(SPRITE_Player, g_playerX - HALFTILE + playerExtraOffsetX, g_playerY - HALFTILE + playerExtraOffsetY, TILESIZE, TILESIZE, spriteSheetOffsetX, spriteSheetOffsetY, SPRITE_PlayerWidth, SPRITE_PlayerFlags | spriteSheetRenderFlags);
 }
 
-void draw_npcs()
+void draw_interactables()
 {
-    if (g_currentWorldX == 2 && g_currentWorldY == 2 && g_transitionFramesLeft == 0)
+    for (int i = 0; i < NUM_INTERACTABLES; ++i)
     {
-        *DRAW_COLORS = 0x0421;
-        blitSub(SPRITE_NPCs, g_npc1X, g_npc1Y, TILESIZE, TILESIZE, 0, TILESIZE * 4, SPRITE_NPCsWidth, SPRITE_NPCsFlags | ((g_uTicks % 40 > 20) ? 0 : BLIT_FLIP_X));
+        switch (g_Interactables[i].type)
+        {
+        case IT_None:
+            break;
+        case IT_StartTestNPC:
+        {
+            *DRAW_COLORS = 0x0421;
+            u32 f = SPRITE_NPCsFlags | ((g_Interactables[i].gfxPhase == 0) ? 0 : BLIT_FLIP_X);
+            blitSub(SPRITE_NPCs, g_Interactables[i].xPos * TILESIZE, g_Interactables[i].yPos * TILESIZE, TILESIZE, TILESIZE, 0, TILESIZE * 4, SPRITE_NPCsWidth, f);
+            break;
+        }
+        case IT_AnotherNPC:
+        {
+            *DRAW_COLORS = 0x0421;
+            u32 f = SPRITE_NPCsFlags | ((g_Interactables[i].gfxPhase == 0) ? 0 : BLIT_FLIP_X);
+            blitSub(SPRITE_NPCs, g_Interactables[i].xPos * TILESIZE, g_Interactables[i].yPos * TILESIZE, TILESIZE, TILESIZE, 0, TILESIZE * 14, SPRITE_NPCsWidth, f);
+            break;
+        }
+        }
     }
 }
 
@@ -454,6 +439,8 @@ void draw_dialog()
     {
         return;
     }
+
+    //  TBD: Scrolling text!
 
     *DRAW_COLORS = 0x1121;
 
@@ -719,6 +706,8 @@ void start()
     PALETTE[2] = 0x666666; //
     PALETTE[3] = 0x000000; //
 
+    clear_screen();
+
     //  Saveload progress? TBD
     init_progress();
 }
@@ -731,44 +720,46 @@ void update()
         g_uTicksInGame++;
     }
 
-#if 0
-    //  Draw grid TEST
-    for (int i = 0; i < 10; ++i)
-    {
-        for (int j = 0; j < 10; ++j)
-        {
-            for (int drawX = 0; drawX < 16; drawX += 4)
-            {
-                // gfx_setpixel(i * 16 + drawX, j * 16, 0x0001);
-            }
-            for (int drawY = 1; drawY < 16; drawY += 4)
-            {
-                // gfx_setpixel(i * 16, j * 16 + drawY, 0x0002);
-            }
-        }
-    }
-#endif
-
     process_player_movement();
 
-    if (g_ignoreButtonInputsDelay > 0)
+    //  process_interaction
+    u8 gamepad = *GAMEPAD1;
+    if ((gamepad & BUTTON_1) && g_bButton1Released)
     {
-        g_ignoreButtonInputsDelay--;
-    }
-    else
-    {
-        if (g_playerX > g_npc1X - TILESIZE && g_playerX < g_npc1X + TILESIZE && g_playerY > g_npc1Y - TILESIZE && g_playerY < g_npc1Y + TILESIZE)
+        if (g_bShowingDialogBG)
         {
-            u8 gamepad = *GAMEPAD1;
-            if (gamepad & BUTTON_1)
+            on_dialog_confirm();
+        }
+        else
+        {
+            //  Test for interactable
+            for( int i = 0; i < NUM_INTERACTABLES; ++i )
             {
-                strcpy(g_dialogContentLine1, DIALOG_TEST_NPC1);
-                strcpy(g_dialogContentLine2, DIALOG_TEST_NPC2);
-                strcpy(g_dialogContentLine3, DIALOG_TEST_NPC3);
-
-                g_bShowingDialogBG = !g_bShowingDialogBG;
-                g_ignoreButtonInputsDelay = 10;
+                if (g_Interactables[i].type != IT_None)
+                {
+                    u8 targetXTile;
+                    u8 targetYTile;
+                    get_tile_infront_of_player(&targetXTile, &targetYTile);
+                    //tracef("tileinfront= %d %d", targetXTile, targetYTile);
+                    if( g_Interactables[i].xPos == targetXTile && g_Interactables[i].yPos == targetYTile )
+                    {
+                        //  Trying to interact
+                        on_interact(&g_Interactables[i]);
+                        break;
+                    }
+                }
             }
+        }
+        
+        //tracef("btn pressed");
+        g_bButton1Released = false;
+    }
+    else if( (gamepad & BUTTON_1) == 0)
+    {
+        if( g_bButton1Released == false)
+        {
+            //tracef("btn released");
+            g_bButton1Released = true;
         }
     }
 
@@ -778,7 +769,9 @@ void update()
 
     draw_map();
 
-    draw_npcs();
+    tick_interactables();
+
+    draw_interactables();
 
     draw_player();
 

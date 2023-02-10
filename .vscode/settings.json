@@ -4,6 +4,9 @@
         "gfx_npcs.h": "c",
         "gfx_overworld.h": "c",
         "stdint.h": "c",
-        "vcruntime.h": "c"
+        "vcruntime.h": "c",
+        "progress.h": "c",
+        "animtiles.h": "c",
+        "dialog.h": "c"
     }
 }

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "wasm4.h"
+
 void tostr(char* buffer, int value);
 char* tostrdirty(int value);
 
