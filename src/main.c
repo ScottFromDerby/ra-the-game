@@ -29,8 +29,8 @@ u8 g_rightHeldFrames = 0;
 enum Direction g_currentFacing = Down;
 enum GameState g_gameState = INGAME;
 
-u8 g_playerX = (SCREEN_SIZE / 2) - (TILESIZE / 2);
-u8 g_playerY = (SCREEN_SIZE / 2) - (TILESIZE / 2);
+u8 g_playerX = 100;
+u8 g_playerY = 100;
 
 struct ScreenMeta* g_currentScreen = 0;
 struct ScreenMeta* g_transitionFromScreen = 0;
@@ -39,16 +39,37 @@ u8 g_currentWorldY = 2;
 int g_transitionFramesLeft = 0;
 enum Direction g_transitionDirection = Left;
 
+bool is_tile_blocked_by_npc(u8 x, u8 y)
+{
+    for( int i = 0; i < NUM_INTERACTABLES; ++i )
+    {
+        if( ((g_Interactables[i].interactableFlags & INTERACTABLE_BLOCK_PLAYER) != 0) &&
+            (g_Interactables[i].xPos == x) && 
+            (g_Interactables[i].yPos == y))
+        {
+            trace("Blocked by NPC");
+            return true;
+        }
+    }
+    return false;
+}
+
 void on_start_screen()
 {
     switch (g_currentWorldX | (g_currentWorldY << 4))   //  NB. this = 0x[X][Y] for world pos
     {
+        case 0x12:
+        add_interactable(IT_RA_NPC01, 2, 1, INTERACTABLE_ACTIVE | INTERACTABLE_BLOCK_PLAYER);
+        add_interactable(IT_RA_NPC02, 1, 5, INTERACTABLE_ACTIVE | INTERACTABLE_BLOCK_PLAYER);
+        add_interactable(IT_RA_NPC03, 8, 2, INTERACTABLE_ACTIVE | INTERACTABLE_BLOCK_PLAYER);
+        add_interactable(IT_RA_NPC04, 7, 6, INTERACTABLE_ACTIVE | INTERACTABLE_BLOCK_PLAYER);
+        break;
         case 0x20:
         //trace("left2");
         break;
         case 0x21:
         //trace("left");
-        add_interactable(IT_AnotherNPC, 4, 4, true);
+        add_interactable(IT_AnotherNPC, 4, 4, INTERACTABLE_ACTIVE | INTERACTABLE_BLOCK_PLAYER);
         break;
         case 0x22:
         //trace("start");
@@ -58,9 +79,9 @@ void on_start_screen()
         add_anim_tile(ATT_Flower, 5, 11, 2);
         add_anim_tile(ATT_Flower, 12, 4, 0);
         add_anim_tile(ATT_Flower, 13, 5, 2);
-        add_interactable(IT_StartTestNPC, 7, 2, INTERACTABLE_ACTIVE);
+        add_interactable(IT_StartTestNPC, 7, 3, INTERACTABLE_ACTIVE | INTERACTABLE_BLOCK_PLAYER);
 
-        add_interactable(IT_MusicBox, 4, 4, INTERACTABLE_ACTIVE);
+        add_interactable(IT_MusicBox, 4, 4, INTERACTABLE_ACTIVE | INTERACTABLE_BLOCK_PLAYER);
         //add_anim_tile(ATT_MusicBox, 8, 2, 0);
         break;
     }
@@ -272,7 +293,35 @@ void draw_interactables()
         {
             *DRAW_COLORS = 0x0421;
             u32 f = SPRITE_NPCsFlags | ((g_Interactables[i].gfxPhase == 0) ? 0 : BLIT_FLIP_X);
-            blitSub(SPRITE_NPCs, g_Interactables[i].xPos * TILESIZE, g_Interactables[i].yPos * TILESIZE, TILESIZE, TILESIZE, TILESIZE * 3, TILESIZE * 1, SPRITE_NPCsWidth, f);
+            blitSub(SPRITE_NPCs, g_Interactables[i].xPos * TILESIZE, g_Interactables[i].yPos * TILESIZE, TILESIZE, TILESIZE, TILESIZE * 0, TILESIZE * 7, SPRITE_NPCsWidth, f);
+            break;
+        }
+        case IT_RA_NPC01:
+        {
+            *DRAW_COLORS = 0x0421;
+            u32 f = SPRITE_NPCsFlags | ((g_Interactables[i].gfxPhase == 0) ? 0 : BLIT_FLIP_X);
+            blitSub(SPRITE_NPCs, g_Interactables[i].xPos * TILESIZE, g_Interactables[i].yPos * TILESIZE, TILESIZE, TILESIZE, TILESIZE * 1, TILESIZE * 0, SPRITE_NPCsWidth, f);
+            break;
+        }
+        case IT_RA_NPC02:
+        {
+            *DRAW_COLORS = 0x0421;
+            u32 f = SPRITE_NPCsFlags | ((g_Interactables[i].gfxPhase == 0) ? 0 : BLIT_FLIP_X);
+            blitSub(SPRITE_NPCs, g_Interactables[i].xPos * TILESIZE, g_Interactables[i].yPos * TILESIZE, TILESIZE, TILESIZE, TILESIZE * 2, TILESIZE * 0, SPRITE_NPCsWidth, f);
+            break;
+        }
+        case IT_RA_NPC03:
+        {
+            *DRAW_COLORS = 0x0421;
+            u32 f = SPRITE_NPCsFlags | ((g_Interactables[i].gfxPhase == 0) ? 0 : BLIT_FLIP_X);
+            blitSub(SPRITE_NPCs, g_Interactables[i].xPos * TILESIZE, g_Interactables[i].yPos * TILESIZE, TILESIZE, TILESIZE, TILESIZE * 3, TILESIZE * 0, SPRITE_NPCsWidth, f);
+            break;
+        }
+        case IT_RA_NPC04:
+        {
+            *DRAW_COLORS = 0x0421;
+            u32 f = SPRITE_NPCsFlags | ((g_Interactables[i].gfxPhase == 0) ? 0 : BLIT_FLIP_X);
+            blitSub(SPRITE_NPCs, g_Interactables[i].xPos * TILESIZE, g_Interactables[i].yPos * TILESIZE, TILESIZE, TILESIZE, TILESIZE * 0, TILESIZE * 1, SPRITE_NPCsWidth, f);
             break;
         }
         }
@@ -460,10 +509,16 @@ void process_player_movement()
     //  oooooooooooooooo
     if (bWantsMoveLeft)
     {
+        u8 newX1, newY1, newX2, newY2;
+        get_tile_from_point(g_playerX - 4 - 1, g_playerY - 0, &newX1, &newY1);
+        get_tile_from_point(g_playerX - 4 - 1, g_playerY + 6, &newX2, &newY2);
+
         //  If my left side is allowed near my top and bottom to move onto the
         //   tile to the left of me, do so
-        if (can_move_onto_tile(get_metatile_at_point(g_playerX - 4 - 1, g_playerY - 0)) &&
-            can_move_onto_tile(get_metatile_at_point(g_playerX - 4 - 1, g_playerY + 6)))
+        if (can_move_onto_tile(get_meta_tile(newX1, newY1)) &&
+            can_move_onto_tile(get_meta_tile(newX2, newY2)) &&
+            !is_tile_blocked_by_npc(newX1, newY1) &&
+            !is_tile_blocked_by_npc(newX2, newY2))
         {
             g_playerX--;
         }
@@ -474,10 +529,15 @@ void process_player_movement()
     }
     else if (bWantsMoveRight)
     {
+        u8 newX1, newY1, newX2, newY2;
+        get_tile_from_point(g_playerX + 4 + 1, g_playerY - 0, &newX1, &newY1);
+        get_tile_from_point(g_playerX + 4 + 1, g_playerY + 6, &newX2, &newY2);
         //  If my right side is allowed near the top and bottom to move onto the
         //   tile to the left of me, do so
-        if (can_move_onto_tile(get_metatile_at_point(g_playerX + 4 + 1, g_playerY - 0)) &&
-            can_move_onto_tile(get_metatile_at_point(g_playerX + 4 + 1, g_playerY + 6)))
+        if (can_move_onto_tile(get_meta_tile(newX1, newY1)) &&
+            can_move_onto_tile(get_meta_tile(newX2, newY2)) &&
+            !is_tile_blocked_by_npc(newX1, newY1) &&
+            !is_tile_blocked_by_npc(newX2, newY2))
         {
             g_playerX++;
         }
@@ -489,10 +549,15 @@ void process_player_movement()
 
     if (bWantsMoveUp)
     {
+        u8 newX1, newY1, newX2, newY2;
+        get_tile_from_point(g_playerX - 4, g_playerY - 0 - 1, &newX1, &newY1);
+        get_tile_from_point(g_playerX + 4, g_playerY - 0 - 1, &newX2, &newY2);
         //  If my top side is allowed near my top left and right to move onto the
         //   tile above me, do so
-        if (can_move_onto_tile(get_metatile_at_point(g_playerX - 4, g_playerY - 0 - 1)) &&
-            can_move_onto_tile(get_metatile_at_point(g_playerX + 4, g_playerY - 0 - 1)))
+        if (can_move_onto_tile(get_meta_tile(newX1, newY1)) &&
+            can_move_onto_tile(get_meta_tile(newX2, newY2)) &&
+            !is_tile_blocked_by_npc(newX1, newY1) &&
+            !is_tile_blocked_by_npc(newX2, newY2))
         {
             g_playerY--;
         }
@@ -503,10 +568,16 @@ void process_player_movement()
     }
     else if (bWantsMoveDown)
     {
+        u8 newX1, newY1, newX2, newY2;
+        get_tile_from_point(g_playerX - 4, g_playerY + 6 + 1, &newX1, &newY1);
+        get_tile_from_point(g_playerX + 4, g_playerY + 6 + 1, &newX2, &newY2);
+
         //  If my bottom side is allowed near the bottom left and right to move onto the
         //   tile below me, do so
-        if (can_move_onto_tile(get_metatile_at_point(g_playerX - 4, g_playerY + 6 + 1)) &&
-            can_move_onto_tile(get_metatile_at_point(g_playerX + 4, g_playerY + 6 + 1)))
+        if (can_move_onto_tile(get_meta_tile(newX1, newY1)) &&
+            can_move_onto_tile(get_meta_tile(newX2, newY2)) &&
+            !is_tile_blocked_by_npc(newX1, newY1) &&
+            !is_tile_blocked_by_npc(newX2, newY2))
         {
             g_playerY++;
         }
@@ -537,10 +608,6 @@ void process_player_movement()
         set_screen(g_currentWorldX, g_currentWorldY + 1, false);
         g_playerY = 2;
     }
-
-    // const int HALF_PLY = SPRITE_PlayerDebugHeight / 2;
-    // g_playerX = clampu8(g_playerX, 1, SCREEN_SIZE - TILESIZE - 1);
-    // g_playerY = clampu8(g_playerY, 1, SCREEN_SIZE - TILESIZE - 1);
 }
 
 void start()
@@ -614,6 +681,18 @@ void update()
                     }
                 }
             }
+        }
+    }
+
+    static int resetCount = 0;
+    if( button_held(BUTTON_1) && button_held(BUTTON_2) && button_held(BUTTON_UP) && button_held(BUTTON_LEFT))
+    {
+        trace("Resetting save...");
+        resetCount++;
+        if( resetCount == 60)
+        {
+            reset_game();
+            start();
         }
     }
 

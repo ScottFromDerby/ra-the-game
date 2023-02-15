@@ -38,5 +38,6 @@ struct SaveData
 
 extern struct PlayerProgress g_Progress;
 
+void reset_game();
 void load_game();
 void save_game();

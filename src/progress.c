@@ -8,6 +8,18 @@ void init_progress()
     g_Progress.bHasVisitedOtherScreens = false;
 }
 
+void reset_game()
+{
+    struct SaveData savefile;
+    savefile.saveIsActive = 1;
+    savefile.playerX = 100;
+    savefile.playerY = 100;
+    savefile.worldX = 2;
+    savefile.worldY = 2;
+    diskw(&savefile, sizeof(savefile));
+    start();
+}
+
 void load_game()
 {
     struct SaveData savefile;

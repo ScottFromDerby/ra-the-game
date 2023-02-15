@@ -19,7 +19,7 @@ void clear_interactables()
 
 void add_interactable(enum InteractableType type, u8 xPos, u8 yPos, u8 interactableFlags)
 {
-    //tracef("add_interactable: %d %d %d %d", type, xPos, yPos, interactableFlags);
+    tracef("add_interactable: %d %d %d %d", type, xPos, yPos, interactableFlags);
     for (int i = 0; i < NUM_INTERACTABLES; ++i)
     {
         if (g_Interactables[i].type == IT_None)
@@ -50,6 +50,10 @@ void tick_interactable(struct Interactable* pInteractable)
             }
         break;
         case IT_AnotherNPC:
+        case IT_RA_NPC01:
+        case IT_RA_NPC02:
+        case IT_RA_NPC03:
+        case IT_RA_NPC04:
             if( pInteractable->ticks == 30)
             {
                 pInteractable->ticks = 0;
@@ -172,6 +176,11 @@ void on_interact(struct Interactable* pInteractedWith)
             }
         }
         break;
+    case IT_RA_NPC01:
+    case IT_RA_NPC02:
+    case IT_RA_NPC03:
+    case IT_RA_NPC04:
+        toggle_dialog("I'm a placeholder NPC!", "I wobble a bit. I need gfx!", "Will this one day be you?");
     case IT_None:
         break;
     }
