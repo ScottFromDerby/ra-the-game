@@ -3,6 +3,9 @@
 
 void show_dialog(const char* line1, const char* line2, const char* line3);
 
+//  Either shows a new dialog or allows itself to be simply closed.
+void toggle_dialog(const char* line1, const char* line2, const char* line3);
+
 void close_dialog();
 
 extern bool g_bShowingDialogBG;

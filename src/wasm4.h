@@ -140,6 +140,16 @@ WASM_IMPORT("tracef") void tracef (const char* fmt, ...);
 
 //	Scott stuff
 
+//  Globals
+enum
+{
+    HALFTILE = 8,
+    TILESIZE = 16,
+    NUM_TILES_WIDTH = 10,
+    NUM_TILES_HEIGHT = 9,
+    SCREEN_WIDTH = TILESIZE * NUM_TILES_WIDTH,
+    SCREEN_HEIGHT = TILESIZE * NUM_TILES_HEIGHT,
+};
 
 
 #define u32 uint32_t

@@ -86,23 +86,10 @@ const u32 A6 = 1760;
 const u32 Bb6 = 1865;
 const u32 B6 = 1976;
 
-const u32 bass_music[] = {C2, G2, F2, G2, Eb2, G2, F2, G2,
-                          C2, G2, F2, G2, Eb2, G2, F2, G2,
-                          C2, Ab2, G2, Ab2, F2, Ab2, G2, Ab2,
-                          C2, Ab2, G2, Ab2, F2, Ab2, G2, Ab2,
-                          C2, Ab2, G2, Ab2, F2, Ab2, G2, Ab2,
-                          C2, Ab2, G2, Ab2, F2, Ab2, G2, Ab2,
-                          C2, Eb2, D2, Eb2, G2, Eb2, D2, Eb2,
-                          C2, Eb2, D2, Eb2, G2, Eb2, D2, Eb2,
-
-                          C2, C3, Bb2, C3, Ab2, C3, Bb2, C3,
-                          C2, C3, Bb2, C3, Ab2, C3, Bb2, C3,
-                          C2, A2, G2, A2, Gb2, A2, G2, A2,
-                          C2, A2, G2, A2, Gb2, A2, G2, A2,
-                          Bb1, Bb2, A2, Bb2, G2, Bb2, A2, Bb2,
-                          Bb1, Bb2, A2, Bb2, G2, Bb2, A2, Bb2,
-                          Bb1, G2, F2, G2, E2, G2, F2, G2,
-                          Bb1, G2, F2, G2, E2, G2, F2, G2
+const u32 bass_music[] = {  G2, B2, D3, G3, G3, G3, G3, G3, G2, B2, D3, G3, G2, B2, D3, G3,
+                            Gb2, A2, D3, A2, D3, Gb2, A2, D3, Gb3, A3, D4, Db4, A3, Gb3, D3, Gb2,
+                            E2, G2, B2, G2, E2, G2, B2, G2, E2, G2, B2, G2, E2, G2, B2, G2,
+                            Gb2, A2, D3, A2, D3, Gb2, A2, D3, Gb3, A3, D4, Db4, A3, Gb3, D3, Gb2,
                         };
 const u32 bass_musicLen = sizeof(bass_music) / sizeof(bass_music[0]);
 const u32 bass_duration[] = {2, 2, 2, 2, 2, 2, 2, 2,
@@ -133,42 +120,12 @@ const u32 bass_duration[] = {2, 2, 2, 2, 2, 2, 2, 2,
 // 									8, 8, 8, 4,
 // 									4, 4, 4, 4, 4, 4, 4, 4 };
 
-const u32 lead_music[] = {C6, Eb5, D5, Eb5, C5, Eb5, D5, Eb5,
-                          C6, Eb5, D5, Eb5, C5, Eb5, D5, Eb5,
-                          Ab5, F5, E5, F5, C5, F5, E5, F5,
-                          Ab5, F5, E5, F5, C5, F5, E5, F5,
-                          B5, F5, Eb5, F5, D5, F5, Eb5, F5,
-                          B5, F5, Eb5, F5, D5, F5, Eb5, F5,
-                          C6, G5, F5, G5, Eb5, G5, F5, G5,
-                          C6, G5, F5, G5, Eb5, G5, F5, G5,
-
-                          Eb6, Ab5, G5, Ab5, Eb5, Ab5, G5, Ab5, 
-                          Eb6, Ab5, G5, Ab5, Eb5, Ab5, G5, Ab5, 
-                          D6, Gb5, E5, Gb5, D5, Gb5, E5, Gb5, 
-                          D6, Gb5, E5, Gb5, D5, Gb5, E5, Gb5, 
-                          D6, G5, Gb5, G5, D5, G5, Gb5, G5, 
-                          D6, G5, Gb5, G5, D5, G5, Gb5, G5, 
-                          C6, E5, D5, E5, C5, E5, D5, E5, 
-                          C6, E5, D5, E5, C5, E5, D5, E5, 
-                          };
+const u32 lead_music[] = {  0, Gb5, B4, B4, Db5, D5, E5, 0, E5, A4, A5, 0,
+                            0, D5, G4, G4, A4, B4, Db5, 0, Db5, Gb4, Gb5, 0 
+                                                      };
 const u32 lead_musicLen = sizeof(lead_music) / sizeof(lead_music[0]);
-const u32 lead_duration[] = {2, 2, 2, 2, 2, 2, 2, 2,
-                             2, 2, 2, 2, 2, 2, 2, 2,
-                             2, 2, 2, 2, 2, 2, 2, 2,
-                             2, 2, 2, 2, 2, 2, 2, 2,
-                             2, 2, 2, 2, 2, 2, 2, 2,
-                             2, 2, 2, 2, 2, 2, 2, 2,
-                             2, 2, 2, 2, 2, 2, 2, 2,
-                             2, 2, 2, 2, 2, 2, 2, 2,
-
-                             2, 2, 2, 2, 2, 2, 2, 2,
-                             2, 2, 2, 2, 2, 2, 2, 2,
-                             2, 2, 2, 2, 2, 2, 2, 2,
-                             2, 2, 2, 2, 2, 2, 2, 2,
-                             2, 2, 2, 2, 2, 2, 2, 2,
-                             2, 2, 2, 2, 2, 2, 2, 2,
-                             2, 2, 2, 2, 2, 2, 2, 2,
-                             2, 2, 2, 2, 2, 2, 2, 2};
+const u32 lead_duration[] = {8, 8, 8, 2, 2, 2, 2, 4, 4, 4, 4, 16, 
+                             8, 8, 8, 2, 2, 2, 2, 4, 4, 4, 4, 16, };
 
 u32 lead_nextFreq = lead_musicLen - 1;
 u32 lead_delayLeft = 1;
@@ -179,7 +136,9 @@ u32 bass_delayLeft = 1;
 
 u32 perc_delayLeft = (SMALL_NOTE_DURATION * 4);
 
-void music_tick(bool bIncludeLead)
+
+
+void music_tick(bool bIncludeLead, bool bIncludeBass)
 {
     // static u32 nextFreq = g_uTicks / SMALL_NOTE_DURATION % musicLen;
 
@@ -194,7 +153,7 @@ void music_tick(bool bIncludeLead)
     {
         lead_nextFreq = (lead_nextFreq + 1) % lead_musicLen;
         lead_delayLeft = lead_duration[lead_nextFreq] * SMALL_NOTE_DURATION;
-        const u32 a = 2;
+        const u32 a = 5;
         const u32 d = 3;
         const u32 s = 2;
         const u32 r = 1;
@@ -213,13 +172,16 @@ void music_tick(bool bIncludeLead)
     {
         bass_nextFreq = (bass_nextFreq + 1) % bass_musicLen;
         bass_delayLeft = bass_duration[bass_nextFreq] * SMALL_NOTE_DURATION;
-        const u32 a = 6;
-        const u32 d = 6;
-        const u32 s = 10;
+        const u32 a = 3;
+        const u32 d = 3;
+        const u32 s = 3;
         const u32 r = 5;
         if (bass_music[bass_nextFreq] != 0)
         {
-            tone(bass_music[bass_nextFreq], a | d << 8 | s << 16 | r << 24, 30, TONE_TRIANGLE);
+            if (bIncludeBass)
+            {
+                tone(bass_music[bass_nextFreq], a | d << 8 | s << 16 | r << 24, 30, TONE_TRIANGLE);
+            }
         }
     }
     // accp_delayLeft--;

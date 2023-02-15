@@ -14,6 +14,7 @@ w4 watch
 "#pragma once `n{0}`n{1}`n{2}`n{3}`n{4}`n{5}" -f (w4 png2src --cpp .\SPRITE_Player.png) | Out-File -Encoding "UTF8" src/gfx_player.h
 "#pragma once `n{0}`n{1}`n{2}`n{3}`n{4}`n{5}" -f (w4 png2src --cpp .\SPRITE_Overworld.png) | Out-File -Encoding "UTF8" src/gfx_overworld.h
 "#pragma once `n{0}`n{1}`n{2}`n{3}`n{4}`n{5}" -f (w4 png2src --cpp .\SPRITE_NPCs.png) | Out-File -Encoding "UTF8" src/gfx_npcs.h
+"#pragma once `n{0}`n{1}`n{2}`n{3}`n{4}`n{5}" -f (w4 png2src --cpp .\SPRITE_Interiors.png) | Out-File -Encoding "UTF8" src/gfx_interiors.h
 
 # package
 make

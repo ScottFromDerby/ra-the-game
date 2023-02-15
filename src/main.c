@@ -1,59 +1,36 @@
 #include "wasm4.h"
+#include "main.h"
 
-#include "gfx.h"
-#include "music.h"
-#include "tools.h"
-#include "progress.h"
-#include "interactables.h"
 #include "animtiles.h"
 #include "dialog.h"
-
+#include "gfx.h"
+#include "input.h"
+#include "interactables.h"
 #include "mapdata.h"
+#include "music.h"
+#include "player.h"
+#include "progress.h"
+#include "rendering.h"
+#include "tools.h"
 
 //  Assets
-#include "gfx_animtiles.h"
-#include "gfx_player.h"
-#include "gfx_playerdebug.h"
 #include "gfx_hud.h"
 #include "gfx_npcs.h"
-#include "gfx_overworld.h"
-
-//  Globals
-enum
-{
-    HALFTILE = 8,
-    TILESIZE = 16,
-    NUM_TILES_WIDTH = 10,
-    NUM_TILES_HEIGHT = 9,
-    SCREEN_WIDTH = TILESIZE * NUM_TILES_WIDTH,
-    SCREEN_HEIGHT = TILESIZE * NUM_TILES_HEIGHT,
-};
-
-enum GameState
-{
-    INGAME,
-    GAMEOVER
-} g_gameState = INGAME;
-
-enum Direction
-{
-    Left,
-    Right,
-    Up,
-    Down,
-} g_currentFacing = Down;
 
 u32 g_uTicks = 0;
 u32 g_uTicksInGame = UINT32_MAX;
 u32 g_uHighScore = 0;
 
-u32 g_upHeldFrames = 0;
-u32 g_downHeldFrames = 0;
-u32 g_leftHeldFrames = 0;
-u32 g_rightHeldFrames = 0;
+u8 g_upHeldFrames = 0;
+u8 g_downHeldFrames = 0;
+u8 g_leftHeldFrames = 0;
+u8 g_rightHeldFrames = 0;
 
-u8 g_playerX = (SCREEN_SIZE / 2) - (SPRITE_PlayerDebugHeight / 2);
-u8 g_playerY = (SCREEN_SIZE / 2) - (SPRITE_PlayerDebugHeight / 2);
+enum Direction g_currentFacing = Down;
+enum GameState g_gameState = INGAME;
+
+u8 g_playerX = (SCREEN_SIZE / 2) - (TILESIZE / 2);
+u8 g_playerY = (SCREEN_SIZE / 2) - (TILESIZE / 2);
 
 struct ScreenMeta* g_currentScreen = 0;
 struct ScreenMeta* g_transitionFromScreen = 0;
@@ -62,114 +39,33 @@ u8 g_currentWorldY = 2;
 int g_transitionFramesLeft = 0;
 enum Direction g_transitionDirection = Left;
 
-bool g_bButton1Released = false;
-
-void get_tile_from_point(u8 x, u8 y, u8 *xTile, u8 *yTile)
-{
-    *xTile = x / TILESIZE;
-    *yTile = y / TILESIZE;
-}
-
-MetaTile get_meta_tile(uint8_t x, uint8_t y)
-{
-    if (x >= NUM_TILES_WIDTH || y >= NUM_TILES_HEIGHT)
-    {
-        return Empt;
-    }
-    return g_currentScreen->screen_metatiles[x + y * NUM_TILES_WIDTH];
-}
-
-MetaTile get_meta_tile_transition(uint8_t x, uint8_t y)
-{
-    return g_transitionFromScreen->screen_metatiles[x + y * 10];
-}
-
-MetaTile get_metatile_at_point(u8 x, u8 y)
-{
-    if (x >= SCREEN_WIDTH || y >= SCREEN_HEIGHT)
-    {
-        return Empt;
-    }
-    return get_meta_tile(x / TILESIZE, y / TILESIZE);
-}
-
-void get_tile_infront_of_player(u8* xTileOut, u8* yTileOut)
-{
-    get_tile_from_point(g_playerX, g_playerY, xTileOut, yTileOut);
-    switch (g_currentFacing)
-    {
-        case Up:
-            if ((*yTileOut) > 0)
-            {
-                (*yTileOut)--;
-            }
-            return;
-        case Down:
-            if ((*yTileOut) < NUM_TILES_HEIGHT)
-            {
-                (*yTileOut)++;
-            }
-            return;
-        case Left:
-            if ((*xTileOut) > 0)
-            {
-                (*xTileOut)--;
-            }
-            return;
-        case Right:
-            if ((*xTileOut) < NUM_TILES_WIDTH)
-            {
-                (*xTileOut)++;
-            }
-            return;
-    }
-}
-
-void draw_animtile(int x, int y, u32 tile, u32 flags, int xOffs, int yOffs)
-{
-    blitSub(SPRITE_AnimTiles, HALFTILE * x + xOffs, HALFTILE * y + yOffs, HALFTILE, HALFTILE, (tile % 0x04) * HALFTILE, (tile / 0x04) * HALFTILE, SPRITE_AnimTilesWidth, SPRITE_AnimTilesFlags | flags);
-}
-
-void draw_halftile(int x, int y, u32 tile, u32 flags, int xOffs, int yOffs)
-{
-    blitSub(SPRITE_Overworld, HALFTILE * x + xOffs, HALFTILE * y + yOffs, HALFTILE, HALFTILE, (tile % 0x10) * HALFTILE, (tile / 0x10) * HALFTILE, SPRITE_OverworldWidth, SPRITE_OverworldFlags | flags);
-}
-
-void draw_metatile(int x, int y, MetaTile tile, u32 flags, int xOffs, int yOffs)
-{
-    uint8_t TL = 0;
-    uint8_t TR = 0;
-    uint8_t BL = 0;
-    uint8_t BR = 0;
-    u32 tile_flags = get_meta_tile_info(tile, &TL, &TR, &BL, &BR);
-    draw_halftile(x * 2, y * 2, (u32)TL, tile_flags | flags, xOffs, yOffs);
-    draw_halftile(x * 2 + 1, y * 2, (u32)TR, tile_flags | flags, xOffs, yOffs);
-    draw_halftile(x * 2, y * 2 + 1, (u32)BL, tile_flags | flags, xOffs, yOffs);
-    draw_halftile(x * 2 + 1, y * 2 + 1, (u32)BR, tile_flags | flags, xOffs, yOffs);
-}
-
 void on_start_screen()
 {
     switch (g_currentWorldX | (g_currentWorldY << 4))   //  NB. this = 0x[X][Y] for world pos
     {
         case 0x20:
-        trace("left2");
+        //trace("left2");
         break;
         case 0x21:
-        trace("left");
+        //trace("left");
         add_interactable(IT_AnotherNPC, 4, 4, true);
         break;
         case 0x22:
-        trace("start");
+        //trace("start");
         add_anim_tile(ATT_Flower, 16, 12, 0);
         add_anim_tile(ATT_Flower, 17, 13, 2);
         add_anim_tile(ATT_Flower, 4, 10, 0);
         add_anim_tile(ATT_Flower, 5, 11, 2);
         add_anim_tile(ATT_Flower, 12, 4, 0);
         add_anim_tile(ATT_Flower, 13, 5, 2);
-        add_interactable(IT_StartTestNPC, 7, 2, true);
+        add_interactable(IT_StartTestNPC, 7, 2, INTERACTABLE_ACTIVE);
+
+        add_interactable(IT_MusicBox, 4, 4, INTERACTABLE_ACTIVE);
+        //add_anim_tile(ATT_MusicBox, 8, 2, 0);
         break;
     }
+
+    save_game();
 }
 
 void clear_screen()
@@ -235,7 +131,7 @@ void update_map()
 {
     if (g_currentScreen == 0)
     {
-        // trace("Setting initial screen");
+        trace("Setting initial screen");
         set_screen(START_WORLD_X, START_WORLD_Y, true);
     }
     //  Update transitions
@@ -277,7 +173,7 @@ void draw_map()
                     draw_metatile(i, j, get_meta_tile_transition(i, j), 0, xOffset, 0);
                 }
             }
-                }
+        }
         else if (g_transitionDirection == Up || g_transitionDirection == Down)
         {
             int yOffset = (g_transitionDirection == Up) ? -g_transitionFramesLeft : g_transitionFramesLeft;
@@ -312,7 +208,7 @@ void draw_map()
                 }
             }
         }
-        }
+    }
     else
     {
         uint8_t TL = 0;
@@ -349,68 +245,11 @@ void draw_map()
     }
 }
 
-void draw_player()
-{
-    u32 spriteSheetOffsetX = 0;
-    u32 spriteSheetOffsetY = 0;
-    u32 spriteSheetRenderFlags = 0;
-    switch (g_currentFacing)
-    {
-    case Up:
-        spriteSheetOffsetX = 16;
-        spriteSheetOffsetY = 0;
-        spriteSheetRenderFlags = (g_upHeldFrames % 16 > 8) ? BLIT_FLIP_X : 0;
-        break;
-    case Down:
-        spriteSheetOffsetX = 0;
-        spriteSheetOffsetY = 0;
-        spriteSheetRenderFlags = (g_downHeldFrames % 16 > 8) ? BLIT_FLIP_X : 0;
-        break;
-    case Right:
-        spriteSheetOffsetX = (g_rightHeldFrames % 16 > 8) ? 32 : 48;
-        spriteSheetOffsetY = 0;
-        spriteSheetRenderFlags = BLIT_FLIP_X;
-        break;
-    case Left:
-        spriteSheetOffsetX = (g_leftHeldFrames % 16 > 8) ? 32 : 48;
-        spriteSheetOffsetY = 0;
-        spriteSheetRenderFlags = 0;
-        break;
-    default:
-        break;
-    }
-
-    int playerExtraOffsetX = 0;
-    int playerExtraOffsetY = 0;
-    if (g_transitionFramesLeft > 0)
-    {
-        if (g_transitionDirection == Left)
-        {
-            playerExtraOffsetX = -g_transitionFramesLeft;
-        }
-        else if (g_transitionDirection == Right)
-        {
-            playerExtraOffsetX = g_transitionFramesLeft;
-        }
-
-        if (g_transitionDirection == Up)
-        {
-            playerExtraOffsetY = -g_transitionFramesLeft;
-        }
-        else if (g_transitionDirection == Down)
-        {
-            playerExtraOffsetY = g_transitionFramesLeft;
-        }
-    }
-
-    *DRAW_COLORS = 0x0421;
-    blitSub(SPRITE_Player, g_playerX - HALFTILE + playerExtraOffsetX, g_playerY - HALFTILE + playerExtraOffsetY, TILESIZE, TILESIZE, spriteSheetOffsetX, spriteSheetOffsetY, SPRITE_PlayerWidth, SPRITE_PlayerFlags | spriteSheetRenderFlags);
-}
-
 void draw_interactables()
 {
     for (int i = 0; i < NUM_INTERACTABLES; ++i)
     {
+        //tracef("draw_interactables %d (%d)", i, g_Interactables[i].type);
         switch (g_Interactables[i].type)
         {
         case IT_None:
@@ -429,8 +268,21 @@ void draw_interactables()
             blitSub(SPRITE_NPCs, g_Interactables[i].xPos * TILESIZE, g_Interactables[i].yPos * TILESIZE, TILESIZE, TILESIZE, 0, TILESIZE * 14, SPRITE_NPCsWidth, f);
             break;
         }
+        case IT_MusicBox:
+        {
+            *DRAW_COLORS = 0x0421;
+            u32 f = SPRITE_NPCsFlags | ((g_Interactables[i].gfxPhase == 0) ? 0 : BLIT_FLIP_X);
+            blitSub(SPRITE_NPCs, g_Interactables[i].xPos * TILESIZE, g_Interactables[i].yPos * TILESIZE, TILESIZE, TILESIZE, TILESIZE * 3, TILESIZE * 1, SPRITE_NPCsWidth, f);
+            break;
+        }
         }
     }
+}
+
+void draw_player()
+{
+    draw_player_sprite();
+    draw_weapon();
 }
 
 void draw_dialog()
@@ -710,10 +562,14 @@ void start()
 
     //  Saveload progress? TBD
     init_progress();
+
+    load_game();
 }
 
 void update()
 {
+    input_update_early();
+
     g_uTicks++;
     if (g_gameState == INGAME)
     {
@@ -721,27 +577,36 @@ void update()
     }
 
     process_player_movement();
+    //  Debug go faster
+    if (button_held(BUTTON_2))
+    {
+        process_player_movement();
+        process_player_movement();
+        process_player_movement();
+        process_player_movement();
+    }
 
     //  process_interaction
-    u8 gamepad = *GAMEPAD1;
-    if ((gamepad & BUTTON_1) && g_bButton1Released)
+    if (button_newly_pressed(BUTTON_1))
     {
+        trace("button newly pressed!");
         if (g_bShowingDialogBG)
         {
             on_dialog_confirm();
         }
         else
         {
+            trace("testing for interactables!");
             //  Test for interactable
-            for( int i = 0; i < NUM_INTERACTABLES; ++i )
+            for (int i = 0; i < NUM_INTERACTABLES; ++i)
             {
                 if (g_Interactables[i].type != IT_None)
                 {
                     u8 targetXTile;
                     u8 targetYTile;
                     get_tile_infront_of_player(&targetXTile, &targetYTile);
-                    //tracef("tileinfront= %d %d", targetXTile, targetYTile);
-                    if( g_Interactables[i].xPos == targetXTile && g_Interactables[i].yPos == targetYTile )
+                    // tracef("tileinfront= %d %d", targetXTile, targetYTile);
+                    if (g_Interactables[i].xPos == targetXTile && g_Interactables[i].yPos == targetYTile)
                     {
                         //  Trying to interact
                         on_interact(&g_Interactables[i]);
@@ -750,20 +615,9 @@ void update()
                 }
             }
         }
-        
-        //tracef("btn pressed");
-        g_bButton1Released = false;
-    }
-    else if( (gamepad & BUTTON_1) == 0)
-    {
-        if( g_bButton1Released == false)
-        {
-            //tracef("btn released");
-            g_bButton1Released = true;
-        }
     }
 
-    // music_tick(g_gameState == INGAME);
+    music_tick(g_Progress.musicBoxState == 1, g_Progress.musicBoxState == 1);
 
     update_map();
 
@@ -773,9 +627,11 @@ void update()
 
     draw_interactables();
 
-    draw_player();
+    draw_player_sprite();
 
     draw_statusbar();
 
     draw_dialog();
+
+    input_update_late();
 }

@@ -7,6 +7,14 @@
         "vcruntime.h": "c",
         "progress.h": "c",
         "animtiles.h": "c",
-        "dialog.h": "c"
+        "dialog.h": "c",
+        "wasm4.h": "c",
+        "rendering.h": "c",
+        "gfx_hud.h": "c",
+        "tools.h": "c",
+        "gfx.h": "c",
+        "gfx_player.h": "c",
+        "interactables.h": "c",
+        "main.h": "c"
     }
 }

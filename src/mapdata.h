@@ -24,6 +24,7 @@ enum MetaTileLookup
     Tre4,   //  Tree BR
     Kenl,   //  Kennel
     Fenc,   //  Double Fence
+    Barl,   //  Barrel thing
 };
 
 typedef uint8_t MetaTile;
@@ -35,16 +36,16 @@ struct ScreenMeta
 
 extern struct ScreenMeta TestScreenMeta;
 
+enum
+{
+    WORLD_MAX_X = 8,
+    WORLD_MAX_Y = 8,
+    START_WORLD_X = 2,
+    START_WORLD_Y = 2,
+};
+
 struct WorldMap
 {
-    enum
-    {
-        WORLD_MAX_X = 4,
-        WORLD_MAX_Y = 4,
-        START_WORLD_X = 2,
-        START_WORLD_Y = 2,
-    };
-
     struct ScreenMeta* World[WORLD_MAX_X*WORLD_MAX_Y];
 };
 

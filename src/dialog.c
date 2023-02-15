@@ -20,3 +20,16 @@ void close_dialog()
 {
     g_bShowingDialogBG = false;
 }
+
+//  Either shows a new dialog or allows itself to be simply closed.
+void toggle_dialog(const char* line1, const char* line2, const char* line3)
+{
+    if (!g_bShowingDialogBG)
+    {
+        show_dialog(line1, line2, line3);
+    }
+    else
+    {
+        g_bShowingDialogBG = false;
+    }
+}

@@ -12,6 +12,12 @@ enum InteractableType
     IT_None,
     IT_StartTestNPC,
     IT_AnotherNPC,
+    IT_MusicBox,
+};
+
+enum    //  Bitwise
+{
+    INTERACTABLE_ACTIVE = 0x1,
 };
 
 struct Interactable
