@@ -7,17 +7,18 @@ A game written in C for the [WASM-4](https://wasm4.org) fantasy console.
 w4 watch
 
 # generate asset code
-"#pragma once `n{0}`n{1}`n{2}`n{3}`n{4}`n{5}" -f (w4 png2src --cpp .\FONT_6px.png) | Out-File -Encoding "UTF8" src/gfx_font6.h
-"#pragma once `n{0}`n{1}`n{2}`n{3}`n{4}`n{5}" -f (w4 png2src --cpp .\FONT_8px.png) | Out-File -Encoding "UTF8" src/gfx_font8.h
-"#pragma once `n{0}`n{1}`n{2}`n{3}`n{4}`n{5}" -f (w4 png2src --cpp .\SPRITE_Hud.png) | Out-File -Encoding "UTF8" src/gfx_hud.h
-"#pragma once `n{0}`n{1}`n{2}`n{3}`n{4}`n{5}" -f (w4 png2src --cpp .\SPRITE_PlayerDebug.png) | Out-File -Encoding "UTF8" src/gfx_playerdebug.h
-"#pragma once `n{0}`n{1}`n{2}`n{3}`n{4}`n{5}" -f (w4 png2src --cpp .\SPRITE_Player.png) | Out-File -Encoding "UTF8" src/gfx_player.h
-"#pragma once `n{0}`n{1}`n{2}`n{3}`n{4}`n{5}" -f (w4 png2src --cpp .\SPRITE_Overworld.png) | Out-File -Encoding "UTF8" src/gfx_overworld.h
-"#pragma once `n{0}`n{1}`n{2}`n{3}`n{4}`n{5}" -f (w4 png2src --cpp .\SPRITE_NPCs.png) | Out-File -Encoding "UTF8" src/gfx_npcs.h
-"#pragma once `n{0}`n{1}`n{2}`n{3}`n{4}`n{5}" -f (w4 png2src --cpp .\SPRITE_Interiors.png) | Out-File -Encoding "UTF8" src/gfx_interiors.h
+w4 png2src --c .\FONT_6px.png -t gfxtemplate_h.txt -o src/gfx_font6.h; w4 png2src --c .\FONT_6px.png -t gfxtemplate_c.txt -o src/gfx_font6.c
+w4 png2src --c .\FONT_8px.png -t gfxtemplate_h.txt -o src/gfx_font8.h; w4 png2src --c .\FONT_8px.png -t gfxtemplate_c.txt -o src/gfx_font8.c
+w4 png2src --c .\SPRITE_Hud.png -t gfxtemplate_h.txt -o src/gfx_hud.h; w4 png2src --c .\SPRITE_Hud.png -t gfxtemplate_c.txt -o src/gfx_hud.c
+w4 png2src --c .\SPRITE_Player.png -t gfxtemplate_h.txt -o src/gfx_player.h; w4 png2src --c .\SPRITE_Player.png -t gfxtemplate_c.txt -o src/gfx_player.c
+w4 png2src --c .\SPRITE_Overworld.png -t gfxtemplate_h.txt -o src/gfx_overworld.h; w4 png2src --c .\SPRITE_Overworld.png -t gfxtemplate_c.txt -o src/gfx_overworld.c
+w4 png2src --c .\SPRITE_NPCs.png -t gfxtemplate_h.txt -o src/gfx_npcs.h; w4 png2src --c .\SPRITE_NPCs.png -t gfxtemplate_c.txt -o src/gfx_npcs.c
+w4 png2src --c .\SPRITE_AnimTiles.png -t gfxtemplate_h.txt -o src/gfx_animtiles.h; w4 png2src --c .\SPRITE_AnimTiles.png -t gfxtemplate_c.txt -o src/gfx_animtiles.c
+w4 png2src --c .\SPRITE_Interiors.png -t gfxtemplate_h.txt -o src/gfx_interiors.h; w4 png2src --c .\SPRITE_Interiors.png -t gfxtemplate_c.txt -o src/gfx_interiors.c
+w4 png2src --c .\SPRITE_Weapon.png -t gfxtemplate_h.txt -o src/gfx_weapon.h; w4 png2src --c .\SPRITE_Weapon.png -t gfxtemplate_c.txt -o src/gfx_weapon.c
 
 # package
-make
+make clean; make
 w4 bundle --html testout.html build/cart.wasm
 
 ## Links

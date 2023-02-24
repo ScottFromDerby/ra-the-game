@@ -26,9 +26,9 @@ extern enum Direction g_currentFacing;
 enum GameState
 {
     INGAME,
+    PAUSE,
     GAMEOVER
 };
-
 extern enum GameState g_gameState;
 
 extern struct ScreenMeta* g_currentScreen;

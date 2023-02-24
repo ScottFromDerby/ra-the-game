@@ -1,5 +1,4 @@
 #pragma once
-
 #include "wasm4.h"
 
 enum

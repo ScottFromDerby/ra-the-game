@@ -2,6 +2,7 @@
 #include "main.h"
 
 #include "animtiles.h"
+#include "animtiles.h"
 #include "dialog.h"
 #include "gfx.h"
 #include "input.h"
@@ -18,8 +19,6 @@
 #include "gfx_npcs.h"
 
 u32 g_uTicks = 0;
-u32 g_uTicksInGame = UINT32_MAX;
-u32 g_uHighScore = 0;
 
 u8 g_upHeldFrames = 0;
 u8 g_downHeldFrames = 0;
@@ -38,6 +37,103 @@ u8 g_currentWorldX = 2;
 u8 g_currentWorldY = 2;
 int g_transitionFramesLeft = 0;
 enum Direction g_transitionDirection = Left;
+
+enum PauseState
+{
+    Off,
+    Entering,
+    Visible,
+    Leaving,
+};
+enum PauseState g_pauseState;
+int g_pauseStateFramesLeft = 0;
+
+void toggle_pause()
+{
+    if (g_pauseState == Off)
+    {
+        g_pauseState = Entering;
+        g_pauseStateFramesLeft = SCREEN_HEIGHT;
+        g_gameState = PAUSE;
+    }
+    else if (g_pauseState == Visible)
+    {
+        g_pauseState = Leaving;
+        g_pauseStateFramesLeft = SCREEN_HEIGHT;
+    }
+}
+
+void tick_pause()
+{
+    if (g_pauseStateFramesLeft > 0 && ((g_pauseState == Entering) || (g_pauseState == Leaving)))
+    {
+        g_pauseStateFramesLeft -= 8;
+        if( g_pauseStateFramesLeft == 0 )
+        {
+            if( g_pauseState == Entering )
+            {
+                g_pauseState = Visible;
+            }
+            if (g_pauseState == Leaving)
+            {
+                g_pauseState = Off;
+                g_gameState = INGAME;
+            }
+        }
+    }
+}
+
+void draw_pause()
+{
+    if (g_pauseState == Off)
+    {
+        return;
+    }
+
+    int yOffset = 0;
+    if (g_pauseState == Entering)
+    {
+        yOffset = g_pauseStateFramesLeft;
+    }
+    else if (g_pauseState == Leaving)
+    {
+        yOffset = SCREEN_HEIGHT - g_pauseStateFramesLeft;
+    }
+
+    for (int i = 0; i < SCREEN_WIDTH; ++i)
+    {
+        for (int j = yOffset; j < SCREEN_HEIGHT; ++j)
+        {
+            gfx_setpixel(i, j, 0x1234);
+        }
+    }
+
+    //for( )
+
+    gfx_drawstr("Inventory", HALFTILE * 4, HALFTILE * 3 + yOffset, 0x0032, false);
+    gfx_drawstr("Spanner", HALFTILE * 4, HALFTILE * 4 + yOffset, 0x0032, false);
+    gfx_drawstr("Flowers", HALFTILE * 4, HALFTILE * 5 + yOffset, 0x0032, false);
+
+    *DRAW_COLORS = 0x3241;
+
+    //  Draw borders
+    blitSub(SPRITE_Hud, HALFTILE * 0, HALFTILE * 0 + yOffset, HALFTILE, HALFTILE, HALFTILE * 2, HALFTILE * 0, SPRITE_HudWidth, SPRITE_HudFlags);
+    blitSub(SPRITE_Hud, HALFTILE * 19, HALFTILE * 0 + yOffset, HALFTILE, HALFTILE, HALFTILE * 2, HALFTILE * 0, SPRITE_HudWidth, SPRITE_HudFlags | BLIT_FLIP_X);
+    blitSub(SPRITE_Hud, HALFTILE * 0, HALFTILE * 17 + yOffset, HALFTILE, HALFTILE, HALFTILE * 2, HALFTILE * 0, SPRITE_HudWidth, SPRITE_HudFlags | BLIT_FLIP_Y);
+    blitSub(SPRITE_Hud, HALFTILE * 19, HALFTILE * 17 + yOffset, HALFTILE, HALFTILE, HALFTILE * 2, HALFTILE * 0, SPRITE_HudWidth, SPRITE_HudFlags | BLIT_FLIP_X | BLIT_FLIP_Y);
+    for (int i = 1; i < 19; ++i)
+    {
+        blitSub(SPRITE_Hud, HALFTILE * i, HALFTILE * 0 + yOffset, HALFTILE, HALFTILE, HALFTILE * 3, HALFTILE * 0, SPRITE_HudWidth, SPRITE_HudFlags);
+        blitSub(SPRITE_Hud, HALFTILE * i, HALFTILE * 17 + yOffset, HALFTILE, HALFTILE, HALFTILE * 3, HALFTILE * 0, SPRITE_HudWidth, SPRITE_HudFlags | BLIT_FLIP_Y);
+    }
+    for (int i = 1; i < 17; ++i)
+    {
+        blitSub(SPRITE_Hud, HALFTILE * 0, HALFTILE * i + yOffset, HALFTILE, HALFTILE, HALFTILE * 3, HALFTILE * 0, SPRITE_HudWidth, SPRITE_HudFlags | BLIT_ROTATE);
+        blitSub(SPRITE_Hud, HALFTILE * 19, HALFTILE * i + yOffset, HALFTILE, HALFTILE, HALFTILE * 3, HALFTILE * 0, SPRITE_HudWidth, SPRITE_HudFlags | BLIT_ROTATE | BLIT_FLIP_Y);
+    }
+
+
+}
 
 bool is_tile_blocked_by_npc(u8 x, u8 y)
 {
@@ -334,55 +430,9 @@ void draw_player()
     draw_weapon();
 }
 
-void draw_dialog()
-{
-    if (!g_bShowingDialogBG)
-    {
-        return;
-    }
-
-    //  TBD: Scrolling text!
-
-    *DRAW_COLORS = 0x1121;
-
-    for (int i = 0; i < 10; ++i)
-    {
-        blitSub(SPRITE_Hud, TILESIZE * i, TILESIZE * 7, 16, 16, TILESIZE * 1, 0, SPRITE_HudWidth, SPRITE_HudFlags);
-        blitSub(SPRITE_Hud, TILESIZE * i, TILESIZE * 8, 16, 16, TILESIZE * 1, 0, SPRITE_HudWidth, SPRITE_HudFlags);
-        blitSub(SPRITE_Hud, TILESIZE * i, TILESIZE * 9, 16, 16, TILESIZE * 1, 0, SPRITE_HudWidth, SPRITE_HudFlags);
-    }
-
-    //  TL
-    blitSub(SPRITE_Hud, 0, TILESIZE * 7, 16, 16, 0, 0, SPRITE_HudWidth, SPRITE_HudFlags);
-    //  TR
-    blitSub(SPRITE_Hud, TILESIZE * 9, TILESIZE * 7, 16, 16, 0, 0, SPRITE_HudWidth, SPRITE_HudFlags | BLIT_FLIP_X);
-    //  BL
-    blitSub(SPRITE_Hud, 0, TILESIZE * 9, 16, 16, 0, 0, SPRITE_HudWidth, SPRITE_HudFlags | BLIT_FLIP_Y);
-    //  BR
-    blitSub(SPRITE_Hud, TILESIZE * 9, TILESIZE * 9, 16, 16, 0, 0, SPRITE_HudWidth, SPRITE_HudFlags | BLIT_FLIP_X | BLIT_FLIP_Y);
-
-    // gfx_drawstr(g_dialogContent, 4, TILESIZE*7 + 4,0x1112, false);
-    // gfx_drawstr("Or maybe not... Pack the whole plot into this", 4, TILESIZE*7 + 12,0x1112, false);
-    ////gfx_drawstr("ABCDEF.GHIJKL.MNOPQR.STUVWX.YZ", 0, TILESIZE*7 + 12,0x1112, false);
-    // gfx_drawstr("tiny bit of dialog box... could work... heh", 4, TILESIZE*7 + 20,0x1112, false);
-    ////gfx_drawstr("ab.cd.ef.gh.ij.kl.mn.op.qr.st.uv.wx.yz", 0, TILESIZE*7 + 20,0x1112, false);
-    // gfx_drawstr("Hi there RA!", 4, TILESIZE*7 + 28,0x1112, false);
-    // gfx_drawstr("Hey Cheevo its Tele, lets go adventuring!", 4, TILESIZE*7 + 36,0x1112, false);
-
-    // gfx_drawstr("A very bad quack might jinx zippy ", 8, TILESIZE*7 + 7, 0x0032, false);
-    // gfx_drawstr("fowls.  Can you tell me if", 8, TILESIZE*7 + 19, 0x0042, false);
-    // gfx_drawstr("you think this font is ok? Cost 5G", 8, TILESIZE*7 + 31, 0x0012, false);
-
-    gfx_drawstr(g_dialogContentLine1, 8, TILESIZE * 7 + 7, 0x0032, false);
-    gfx_drawstr(g_dialogContentLine2, 8, TILESIZE * 7 + 19, 0x0042, false);
-    gfx_drawstr(g_dialogContentLine3, 8, TILESIZE * 7 + 31, 0x0012, false);
-
-    *DRAW_COLORS = 0x0021;
-    blitSub(SPRITE_Hud, TILESIZE * 9, TILESIZE * 9, TILESIZE, TILESIZE, (g_uTicksInGame % 30 > 5) ? TILESIZE * 2 : TILESIZE * 3, 0, SPRITE_HudWidth, SPRITE_HudFlags);
-}
-
 void draw_statusbar()
 {
+    *DRAW_COLORS = 0x0021;
     //  Clear
     for (int i = 0; i < 20; ++i)
     {
@@ -408,8 +458,17 @@ void draw_statusbar()
     gfx_drawstr(buffer, 27, 152, 0x31, false);
     tostr(buffer, g_currentWorldY);
     gfx_drawstr(buffer, 41, 152, 0x31, false);
+    
+    tostr(buffer, (int)g_gameState);
+    gfx_drawstr(buffer, 57, 152, 0x31, false);
 
-    tostr(buffer, (int)g_uTicksInGame % 60);
+    tostr(buffer, (int)g_pauseState);
+    gfx_drawstr(buffer, 67, 152, 0x31, false);
+
+    tostr(buffer, (int)g_pauseStateFramesLeft);
+    gfx_drawstr(buffer, 77, 152, 0x31, false);
+
+    tostr(buffer, (int)g_uTicks % 60);
     gfx_drawstr(buffer, SCREEN_WIDTH, 152, 0x21, true);
 }
 
@@ -636,12 +695,7 @@ void start()
 void update()
 {
     input_update_early();
-
     g_uTicks++;
-    if (g_gameState == INGAME)
-    {
-        g_uTicksInGame++;
-    }
 
     process_player_movement();
     //  Debug go faster
@@ -656,14 +710,21 @@ void update()
     //  process_interaction
     if (button_newly_pressed(BUTTON_1))
     {
-        trace("button newly pressed!");
+        //trace("button newly pressed!");
         if (g_bShowingDialogBG)
         {
-            on_dialog_confirm();
+            if( g_bDialogFinished)
+            {
+                on_dialog_confirm();
+            }
+            else
+            {
+                g_bDialogSpeedup = true;
+            }
         }
         else
         {
-            trace("testing for interactables!");
+            //trace("testing for interactables!");
             //  Test for interactable
             for (int i = 0; i < NUM_INTERACTABLES; ++i)
             {
@@ -684,15 +745,32 @@ void update()
         }
     }
 
-    static int resetCount = 0;
-    if( button_held(BUTTON_1) && button_held(BUTTON_2) && button_held(BUTTON_UP) && button_held(BUTTON_LEFT))
+    if (g_gameState == INGAME && !g_bShowingDialogBG)
     {
-        trace("Resetting save...");
-        resetCount++;
-        if( resetCount == 60)
+        static int resetCount = 0;
+        if (button_held(BUTTON_1) && button_held(BUTTON_2) && button_held(BUTTON_UP) && button_held(BUTTON_LEFT))
         {
-            reset_game();
-            start();
+            trace("Resetting save...");
+            resetCount++;
+            if (resetCount == 60)
+            {
+                resetCount = 0;
+                reset_game();
+                start();
+            }
+        }
+
+        if (button_held(BUTTON_1) && button_held(BUTTON_2))
+        {
+            toggle_pause();
+        }
+    }
+    
+    if( g_gameState == PAUSE )
+    {
+        if (button_held(BUTTON_1) && button_held(BUTTON_2))
+        {
+            toggle_pause();
         }
     }
 
@@ -707,6 +785,10 @@ void update()
     draw_interactables();
 
     draw_player_sprite();
+
+    tick_pause();
+
+    draw_pause();
 
     draw_statusbar();
 

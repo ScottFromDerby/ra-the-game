@@ -71,3 +71,13 @@ static char* strcpy(char* destination, const char* source)
     return ptr;
 }
  
+static int strlen(char* str)
+{
+    int len = 0;
+    while(*str != '\0')
+    {
+        len++;
+        str++;
+    }
+    return len;
+}

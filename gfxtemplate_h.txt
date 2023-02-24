@@ -1,0 +1,8 @@
+{{#sprites}}
+// {{name}}
+#define {{name}}Width {{width}}
+#define {{name}}Height {{height}}
+#define {{name}}Flags {{flagsHumanReadable}}
+extern const uint8_t {{name}}[{{length}}];
+
+{{/sprites}}

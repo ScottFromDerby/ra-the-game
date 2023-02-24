@@ -14,6 +14,7 @@ enum InventoryItemType
     Shield,
     Sword,
     Book,
+    Gameboy,
 };
 
 struct PlayerProgress

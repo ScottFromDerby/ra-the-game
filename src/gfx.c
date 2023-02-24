@@ -1,6 +1,7 @@
 #include "wasm4.h"
 #include "gfx.h"
 #include "tools.h"
+#include "dialog.h"
 
 #include "gfx_font6.h"
 #include "gfx_font8.h"
@@ -99,6 +100,34 @@ u32 gfx_drawchar(char which, int x, int y, u16 drawcolors)
 
 	blitSub(FONT_8px, x, y, offsetSize, FONT_8pxHeight, offset, 0, FONT_8pxWidth, FONT_8pxFlags);
 	return offsetSize;
+}
+
+void gfx_drawstrn(const char* str, int x, int y, u16 drawcolors, bool rightalign, int numChars)
+{
+	if (rightalign)
+	{
+		x -= gfx_strlenpx(str);
+	}
+
+	while (*str != '\0' && numChars > 0)
+	{
+		if (*str == '#')
+		{
+			str++;
+			drawcolors = DIALOG_ALT;
+		}
+		else if (*str == '~')
+		{
+			str++;
+			drawcolors = DIALOG_DEFAULT;
+		}
+		else
+		{
+			x += gfx_drawchar(*str, x, y, drawcolors);
+			str++;
+			numChars--;
+		}
+	}
 }
 
 void gfx_drawstr(const char *str, int x, int y, u16 drawcolors, bool rightalign)
