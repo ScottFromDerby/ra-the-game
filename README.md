@@ -6,8 +6,10 @@ Currently being built using [VS Code](https://code.visualstudio.com/), [Tortoise
 
 
 # dev/build
+```
 make clean; make
 w4 watch
+```
 
 # generate asset code
 ```
