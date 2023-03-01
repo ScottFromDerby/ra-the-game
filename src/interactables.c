@@ -3,6 +3,7 @@
 #include "main.h"
 #include "progress.h"
 #include "dialog.h"
+#include "dialog_data.h"
 
 struct Interactable g_Interactables[NUM_INTERACTABLES];
 
@@ -85,18 +86,19 @@ void do_start_test_npc()
 {
     if( g_Progress.musicBoxState == 1)
     {
-        toggle_dialog("Yes! Love this song! It reminds", "me of this kid I once knew.", "Looks a lot like you actually...");
+        toggle_dialog(DLGTEXT_WelcomeNPCEnjoyingMusic);
     }
     else
     {
         if (g_currentInteractable->interactPhase == 0)
         {
-            show_dialog("Hey, I recognise you! Aren't you #the", "#one that we found ~on the #beach~?", "It's pretty quiet around here.");
+            show_dialog(DLGTEXT_WelcomeNPC1);
+            //show_dialog("Hey, I recognise you! Aren't you #the", "#one that we found ~on the #beach~?", "It's pretty quiet around here.");
             g_currentInteractable->interactPhase = 1;
         }
         else if (g_currentInteractable->interactPhase == 1)
         {
-            show_dialog("Do you like music? Try poking", "my #spiky record player~.", "");
+            show_dialog(DLGTEXT_WelcomeNPC2);
             g_currentInteractable->interactPhase = 2;
         }
         else if (g_currentInteractable->interactPhase == 2)
@@ -107,7 +109,8 @@ void do_start_test_npc()
         }
         else if(g_currentInteractable->interactPhase == 3)
         {
-            show_dialog("Can you talk to #that spiky thing~", "please? I think it will help.", "");
+            show_dialog(DLGTEXT_WelcomeNPC2);
+            //show_dialog("Can you talk to #that spiky thing~", "please? I think it will help.", "");
             g_currentInteractable->interactPhase = 4;
         }
         else if(g_currentInteractable->interactPhase == 4)
@@ -136,17 +139,17 @@ void on_interact(struct Interactable* pInteractedWith)
     case IT_AnotherNPC:
         if (g_currentInteractable->interactPhase == 0)
         {
-            show_dialog("I'm the guy to hand out", "#shields~, but I ran out. I wonder", "if you could go get one?");
+            show_dialog(DLGTEXT_ShieldMan);
             g_currentInteractable->interactPhase = 1;
         }
         else if (g_currentInteractable->interactPhase == 1)
         {
-            show_dialog("There aren't any #yes~ or", "#no~ prompts yet.", "Sorry.");
+            show_dialog(DLGTEXT_ShieldMan2);
             g_currentInteractable->interactPhase = 2;
         }
         else if (g_currentInteractable->interactPhase == 2)
         {
-            show_dialog("Maybe you could help?", "Come to the #RetroAchievements~", "#Discord~ and come help add them!");
+            show_dialog(DLGTEXT_ShieldMan3);
             g_currentInteractable->interactPhase = 3;
         }
         else if (g_currentInteractable->interactPhase == 3)
@@ -166,27 +169,27 @@ void on_interact(struct Interactable* pInteractedWith)
         {
             if (g_Progress.musicBoxState == 0)
             {
-                show_dialog("You switched it #on~.", "", "");
+                show_dialog(DLGTEXT_MusicBoxOn);
                 g_Progress.musicBoxState = 1;
             }
             else
             {
-                show_dialog("You switched it #off~.", "", "");
+                show_dialog(DLGTEXT_MusicBoxOff);
                 g_Progress.musicBoxState = 0;
             }
         }
         break;
     case IT_RA_NPC01:
-        toggle_dialog("I'm a placeholder NPC 1!", "I wobble a bit. I need gfx!", "Will this #one day be you~?");
+        toggle_dialog(DLGTEXT_NPCPlaceholder1);
         break;
     case IT_RA_NPC02:
-        toggle_dialog("I'm a placeholder NPC 2!", "I wobble a bit. I need gfx!", "Will this #one day be you~?");
+        toggle_dialog(DLGTEXT_NPCPlaceholder2);
         break;
     case IT_RA_NPC03:
-        toggle_dialog("I'm a placeholder NPC 3!", "I wobble a bit. I need gfx!", "Will this #one day be you~?");
+        toggle_dialog(DLGTEXT_NPCPlaceholder3);
         break;
     case IT_RA_NPC04:
-        toggle_dialog("I'm a placeholder NPC 4!", "I wobble a bit. I need gfx!", "Will this #one day be you~?");
+        toggle_dialog(DLGTEXT_NPCPlaceholder4);
         break;
     case IT_None:
         break;

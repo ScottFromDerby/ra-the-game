@@ -1,0 +1,14 @@
+WelcomeNPC1,Hi there! Welcome to our village. It is #great~ here!
+WelcomeNPC2,Do you like music? Try poking my #spiky record player~.
+WelcomeNPCImpatient,Why are you still talking to me? Go look around the village.
+WelcomeNPCEnjoyingMusic,Yes! Love this song! It reminds me of this kid I once knew. Looks a lot like you actually...
+GrumpyNPC,I don't want you in our village. Go away. It is not #great~ here.
+ShieldMan,I'm the guy to hand out #shields~, but I ran out. I wonder if you could go get one?
+ShieldMan2,There aren't any #yes~ or #no~ prompts yet. Sorry.
+ShieldMan3,Maybe you could help? Come to the #RetroAchievements~ #Discord~ and come help add them
+MusicBoxOn,You switched it #on~.
+MusicBoxOff,You switched it #off~.
+NPCPlaceholder1,I'm a placeholder NPC 1! I wobble a bit. I need gfx! Will this #one day be you~?
+NPCPlaceholder2,I'm a placeholder NPC 2! I wobble a bit. I need gfx! Will this #one day be you~?
+NPCPlaceholder3,I'm a placeholder NPC 3! I wobble a bit. I need gfx! Will this #one day be you~?
+NPCPlaceholder4,I'm a placeholder NPC 4! I wobble a bit. I need gfx! Will this #one day be you~?

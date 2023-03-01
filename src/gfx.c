@@ -102,12 +102,10 @@ u32 gfx_drawchar(char which, int x, int y, u16 drawcolors)
 	return offsetSize;
 }
 
-void gfx_drawstrn(const char* str, int x, int y, u16 drawcolors, bool rightalign, int numChars)
+void gfx_drawstrn(const char* str, int x, int y, u16 drawcolors, int numChars, int targetWidthPx)
 {
-	if (rightalign)
-	{
-		x -= gfx_strlenpx(str);
-	}
+	const char* startStr = str;
+	int startX = x;
 
 	while (*str != '\0' && numChars > 0)
 	{
@@ -126,6 +124,18 @@ void gfx_drawstrn(const char* str, int x, int y, u16 drawcolors, bool rightalign
 			x += gfx_drawchar(*str, x, y, drawcolors);
 			str++;
 			numChars--;
+
+			if( x > targetWidthPx - startX )
+			{
+				y += 8;
+				x = startX;
+				//	Also wind back to last space NB bit dangerous
+				while (*str != ' ' && str != startStr)
+				{
+					str--;
+				}
+				str++;
+			}
 		}
 	}
 }

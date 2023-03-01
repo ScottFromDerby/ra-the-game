@@ -1,5 +1,6 @@
 #include "wasm4.h"
 #include "dialog.h"
+#include "dialog_data.h"
 
 #include "gfx.h"
 #include "tools.h"
@@ -9,15 +10,11 @@ bool g_bShowingDialogBG = false;
 bool g_bDialogFinished = false;
 bool g_bDialogSpeedup = false;
 
-char g_dialogContentLine1[64];
-char g_dialogContentLine2[64];
-char g_dialogContentLine3[64];
+char g_dialogContent[512];
 int g_dialogTicks = 0;
 
 //  nonglobal
-int dialogNumChars1 = 0;
-int dialogNumChars2 = 0;
-int dialogNumChars3 = 0;
+int dialogNumChars = 0;
 
 int strlendlg(char* str)
 {
@@ -34,20 +31,32 @@ int strlendlg(char* str)
     return len;
 }
 
-void show_dialog(const char* line1, const char* line2, const char* line3)
+void show_dialog(const uint16_t* pDialogData)
 {
-    strcpy(g_dialogContentLine1, line1);
-    strcpy(g_dialogContentLine2, line2);
-    strcpy(g_dialogContentLine3, line3);
+    //tracef("show_dialog2, %d", pDialogData[0]);
+
+    char *pDlg = &g_dialogContent[0];
+    while (*pDialogData != (uint16_t)-1)
+    {
+        const char *nextToken = DLG_IDLOOKUP[*pDialogData];
+        //tracef("nextToken, %d = '%s'", *pDialogData, nextToken);
+        while (*nextToken != '\0')
+        {
+            *pDlg++ = *nextToken++;
+        }
+
+        //  Reinject spaces!
+        *pDlg++ = ' ';
+        pDialogData++;
+    }
+    *pDlg = '\0';
 
     g_bShowingDialogBG = true;
     g_dialogTicks = 0;
     g_bDialogFinished = false;
     g_bDialogSpeedup = false;
 
-    dialogNumChars1 = strlendlg(g_dialogContentLine1);
-    dialogNumChars2 = strlendlg(g_dialogContentLine2);
-    dialogNumChars3 = strlendlg(g_dialogContentLine3);
+    dialogNumChars = strlendlg(g_dialogContent);
 }
 
 void close_dialog()
@@ -56,11 +65,11 @@ void close_dialog()
 }
 
 //  Either shows a new dialog or allows itself to be simply closed.
-void toggle_dialog(const char* line1, const char* line2, const char* line3)
+void toggle_dialog(const uint16_t* pDialogData)
 {
     if (!g_bShowingDialogBG)
     {
-        show_dialog(line1, line2, line3);
+        show_dialog(pDialogData);
     }
     else
     {
@@ -107,18 +116,20 @@ void draw_dialog()
     // gfx_drawstr("fowls.  Can you tell me if", 8, TILESIZE*7 + 19, 0x0042, false);
     // gfx_drawstr("you think this font is ok? Cost 5G", 8, TILESIZE*7 + 31, 0x0012, false);
 
+    const int dialogWidth = 100;
+
     int charsToDraw = g_dialogTicks / 2;
-    gfx_drawstrn(g_dialogContentLine1, HALFTILE - 1, TILESIZE * 6 + 7, DIALOG_DEFAULT, false, charsToDraw);
-    charsToDraw -= dialogNumChars1;
-    gfx_drawstrn(g_dialogContentLine2, HALFTILE - 1, TILESIZE * 7 + 4, DIALOG_DEFAULT, false, charsToDraw);
-    charsToDraw -= dialogNumChars2;
-    gfx_drawstrn(g_dialogContentLine3, HALFTILE - 1, TILESIZE * 8 + 1, DIALOG_DEFAULT, false, charsToDraw);
-    charsToDraw -= dialogNumChars3;
+    gfx_drawstrn(g_dialogContent, HALFTILE - 1, TILESIZE * 6 + 7, DIALOG_DEFAULT, charsToDraw, dialogWidth);
+    charsToDraw -= dialogNumChars;
+    //gfx_drawstrn(g_dialogContentLine2, HALFTILE - 1, TILESIZE * 7 + 4, DIALOG_DEFAULT, false, charsToDraw);
+    //charsToDraw -= dialogNumChars2;
+    //gfx_drawstrn(g_dialogContentLine3, HALFTILE - 1, TILESIZE * 8 + 1, DIALOG_DEFAULT, false, charsToDraw);
+    //charsToDraw -= dialogNumChars3;
 
     g_bDialogFinished = (charsToDraw >= 0);
 
-    //  Press X 
-    if( g_bDialogFinished || !g_bDialogSpeedup)
+    //  Press X
+    if (g_bDialogFinished || !g_bDialogSpeedup)
     {
         *DRAW_COLORS = 0x4000;
         blitSub(SPRITE_Hud, TILESIZE * 9, TILESIZE * 8, TILESIZE, TILESIZE, (g_uTicks % 30 > 5) ? TILESIZE * 2 : TILESIZE * 3, TILESIZE * 0, SPRITE_HudWidth, SPRITE_HudFlags);

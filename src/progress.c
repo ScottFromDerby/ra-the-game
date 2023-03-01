@@ -16,8 +16,13 @@ void reset_game()
     savefile.playerY = 100;
     savefile.worldX = 2;
     savefile.worldY = 2;
+    for (int i = 0; i < WORLD_MAX_X * WORLD_MAX_Y; ++i)
+    {
+        savefile.progress.visited[i] = false;
+    }
     diskw(&savefile, sizeof(savefile));
-    start();
+
+    start();    //  Will then loadgame
 }
 
 void load_game()
@@ -29,7 +34,9 @@ void load_game()
     {
         g_playerX = savefile.playerX;
         g_playerY = savefile.playerY;
+        //tracef("Loadstate: %d", g_Progress.musicBoxState);
         g_Progress = savefile.progress;
+        //tracef("Loadstate: %d", g_Progress.musicBoxState);
         set_screen(savefile.worldX, savefile.worldY, true);
     }
 }

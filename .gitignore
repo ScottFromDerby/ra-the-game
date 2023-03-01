@@ -55,3 +55,8 @@ dkms.conf
 /testout.html
 /*.bat
 /*.html
+/RATGTextCompressor/x64/Debug
+/RATGTextCompressor/x64/Release
+/RATGTextCompressor/*.user
+/RATGTextCompressor/.vs/RATGTextCompressor/FileContentIndex
+/RATGTextCompressor/.vs/RATGTextCompressor/v17

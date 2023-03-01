@@ -1,5 +1,6 @@
 #pragma once
 #include "wasm4.h"
+#include "mapdata.h"
 
 //  Player progress
 
@@ -23,6 +24,7 @@ struct PlayerProgress
     bool bHasVisitedOtherScreens;
     u8 musicBoxState;
     enum InventoryItemType inventoryItems[NUM_INVENTORY_ITEMS];
+    bool visited[WORLD_MAX_X*WORLD_MAX_Y];
 };
 
 void init_progress();
@@ -34,6 +36,7 @@ struct SaveData
     u8 worldY;
     u8 playerX;
     u8 playerY;
+
     struct PlayerProgress progress;
 };
 

@@ -11,6 +11,12 @@ static int clamp(int val, int lower, int upper)
                                                  : val;
 }
 
+static float clampf(float val, float lower, float upper)
+{
+    return (val < lower) ? lower : (val > upper) ? upper
+                                                 : val;
+}
+
 static u8 clampu8(u8 val, u8 lower, u8 upper)
 {
     return (val < lower) ? lower : (val > upper) ? upper
@@ -39,7 +45,17 @@ static int max(int a, int b)
     return a > b ? a : b;
 }
 
+static float maxf(float a, float b)
+{
+    return a > b ? a : b;
+}
+
 static int min(int a, int b)
+{
+    return a < b ? a : b;
+}
+
+static float minf(float a, float b)
 {
     return a < b ? a : b;
 }
@@ -80,4 +96,13 @@ static int strlen(char* str)
         str++;
     }
     return len;
+}
+static void* memset(void* s, int c, unsigned int len)
+{
+    unsigned char* p = s;
+    while(len--)
+    {
+        *p++ = (unsigned char)c;
+    }
+    return s;
 }

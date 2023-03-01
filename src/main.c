@@ -2,7 +2,7 @@
 #include "main.h"
 
 #include "animtiles.h"
-#include "animtiles.h"
+#include "dialog_data.h"
 #include "dialog.h"
 #include "gfx.h"
 #include "input.h"
@@ -17,6 +17,9 @@
 //  Assets
 #include "gfx_hud.h"
 #include "gfx_npcs.h"
+#include "gfx_title.h"
+
+//#define NO_SPLASH
 
 u32 g_uTicks = 0;
 
@@ -143,7 +146,7 @@ bool is_tile_blocked_by_npc(u8 x, u8 y)
             (g_Interactables[i].xPos == x) && 
             (g_Interactables[i].yPos == y))
         {
-            trace("Blocked by NPC");
+            //trace("Blocked by NPC");
             return true;
         }
     }
@@ -152,6 +155,8 @@ bool is_tile_blocked_by_npc(u8 x, u8 y)
 
 void on_start_screen()
 {
+    g_Progress.visited[g_currentWorldX + (g_currentWorldY * WORLD_MAX_X)] = true;
+
     switch (g_currentWorldX | (g_currentWorldY << 4))   //  NB. this = 0x[X][Y] for world pos
     {
         case 0x12:
@@ -444,32 +449,123 @@ void draw_statusbar()
         gfx_setpixel(i, SCREEN_HEIGHT, 0x0003);
     }
 
+
+    //  Micromap
+    const int MapX = 4;
+    const int MapY = 149;
+    const int col_white = 0x0000;
+    const int col_visited = 0x0001;
+    const int col_unknown = 0x0002;
+    const int col_black = 0x0003;
+
+    for (int i = 0; i < WORLD_MAX_X + 2; ++i)
+    {
+        gfx_setpixel(MapX + i - 1, MapY - 1, col_black);
+        gfx_setpixel(MapX + i - 1, MapY + 8, col_black);
+    }
+    for (int i = 0; i < WORLD_MAX_Y + 2; ++i)
+    {
+        gfx_setpixel(MapX - 1, MapY + i - 1, col_black);
+        gfx_setpixel(MapX + 8, MapY + i - 1, col_black);
+    }
+
+    for (int i = 0; i < WORLD_MAX_X; ++i)
+    {
+        for (int j = 0; j < WORLD_MAX_Y; ++j)
+        {
+            if (i == g_currentWorldX && j == g_currentWorldY)
+            {
+                //  Local pixel
+                gfx_setpixel(MapX + i, MapY + j, (g_uTicks % 40 < 20) ? col_visited : col_white);
+            }
+            else
+            {
+                //  Visited?
+                gfx_setpixel(MapX + i, MapY + j, g_Progress.visited[i + j * WORLD_MAX_X] ? col_visited : col_unknown);
+            }
+        }
+    }
+
     char buffer[16];
 
     // tostr(buffer, sizeof(*MainWorldMap.World[0]));
     // gfx_drawstr(buffer, 64, 152, 0x21, false);
 
-    tostr(buffer, g_playerX);
-    gfx_drawstr(buffer, 1, 152, 0x21, false);
-    tostr(buffer, g_playerY);
-    gfx_drawstr(buffer, 14, 152, 0x21, false);
+    //tostr(buffer, g_playerX);
+    //gfx_drawstr(buffer, 1, 152, 0x21, false);
+    //tostr(buffer, g_playerY);
+    //gfx_drawstr(buffer, 14, 152, 0x21, false);
 
-    tostr(buffer, g_currentWorldX);
-    gfx_drawstr(buffer, 27, 152, 0x31, false);
-    tostr(buffer, g_currentWorldY);
-    gfx_drawstr(buffer, 41, 152, 0x31, false);
+    //tostr(buffer, g_currentWorldX);
+    //gfx_drawstr(buffer, 27, 152, 0x31, false);
+    //tostr(buffer, g_currentWorldY);
+    //gfx_drawstr(buffer, 41, 152, 0x31, false);
     
-    tostr(buffer, (int)g_gameState);
-    gfx_drawstr(buffer, 57, 152, 0x31, false);
+    //tostr(buffer, (int)g_gameState);
+    //gfx_drawstr(buffer, 57, 152, 0x31, false);
 
-    tostr(buffer, (int)g_pauseState);
-    gfx_drawstr(buffer, 67, 152, 0x31, false);
+    //tostr(buffer, (int)g_pauseState);
+    //gfx_drawstr(buffer, 67, 152, 0x31, false);
 
-    tostr(buffer, (int)g_pauseStateFramesLeft);
-    gfx_drawstr(buffer, 77, 152, 0x31, false);
+    //tostr(buffer, (int)g_pauseStateFramesLeft);
+    //gfx_drawstr(buffer, 77, 152, 0x31, false);
+
+    //tostr(buffer, (int)g_gamepad);
+    //gfx_drawstr(buffer, 87, 152, 0x31, false);
+
+    //tostr(buffer, (int)g_swordSwingState);
+    //gfx_drawstr(buffer, 87, 152, 0x31, false);
+
+    //tostr(buffer, sizeof(DLG_IDLOOKUP));
+    //gfx_drawstr(buffer, 87, 152, 0x31, false);
 
     tostr(buffer, (int)g_uTicks % 60);
     gfx_drawstr(buffer, SCREEN_WIDTH, 152, 0x21, true);
+
+
+    //  Inventory
+    //  No transparency
+    *DRAW_COLORS = 0x4321;
+
+    //blitHalfTile_SPRITE_Hud(12, 18, 0, 4, 0);
+    //blitHalfTile_SPRITE_Hud(12, 19, 0, 4, BLIT_FLIP_Y);
+    //blitHalfTile_SPRITE_Hud(13, 18, 0, 5, BLIT_ROTATE | BLIT_FLIP_X);
+    //blitHalfTile_SPRITE_Hud(13, 19, 0, 5, BLIT_ROTATE);
+    //blitHalfTile_SPRITE_Hud(14, 18, 0, 4, BLIT_FLIP_X);
+    //blitHalfTile_SPRITE_Hud(14, 19, 0, 4, BLIT_FLIP_X | BLIT_FLIP_Y);
+
+    blitHalfTile_SPRITE_Hud(15, 18, 0, 4, 0);
+    blitHalfTile_SPRITE_Hud(15, 19, 0, 4, BLIT_FLIP_Y);
+    blitHalfTile_SPRITE_Hud(16, 18, 0, 5, BLIT_ROTATE | BLIT_FLIP_X);
+    blitHalfTile_SPRITE_Hud(16, 19, 0, 5, BLIT_ROTATE);
+    blitHalfTile_SPRITE_Hud(17, 18, 0, 4, BLIT_FLIP_X);
+    blitHalfTile_SPRITE_Hud(17, 19, 0, 4, BLIT_FLIP_X | BLIT_FLIP_Y);
+
+    //  Inventory Item
+    *DRAW_COLORS = 0x4321;  //  0x4320 = White = transparent
+    blitSub(SPRITE_Hud, TILESIZE * 7 + 12, TILESIZE * 9, TILESIZE, TILESIZE, TILESIZE * 1, TILESIZE * 3, SPRITE_HudWidth, SPRITE_HudFlags);
+
+    *DRAW_COLORS = 0x4320;  //  0x4320 = White = transparent
+    //  Hearts
+    blitSub(SPRITE_Hud, HALFTILE * 2, HALFTILE * 18 + 0, HALFTILE, HALFTILE, HALFTILE * 3, HALFTILE * 4, SPRITE_HudWidth, SPRITE_HudFlags);
+    blitSub(SPRITE_Hud, HALFTILE * 2, HALFTILE * 18 + 7, HALFTILE, HALFTILE, HALFTILE * 3, HALFTILE * 4, SPRITE_HudWidth, SPRITE_HudFlags);
+    blitSub(SPRITE_Hud, HALFTILE * 3, HALFTILE * 18 + 0, HALFTILE, HALFTILE, HALFTILE * 3, HALFTILE * 4, SPRITE_HudWidth, SPRITE_HudFlags);
+    blitSub(SPRITE_Hud, HALFTILE * 3, HALFTILE * 18 + 7, HALFTILE, HALFTILE, HALFTILE * 3, HALFTILE * 4, SPRITE_HudWidth, SPRITE_HudFlags);
+    blitSub(SPRITE_Hud, HALFTILE * 4, HALFTILE * 18 + 0, HALFTILE, HALFTILE, HALFTILE * 3, HALFTILE * 4, SPRITE_HudWidth, SPRITE_HudFlags);
+    blitSub(SPRITE_Hud, HALFTILE * 4, HALFTILE * 18 + 7, HALFTILE, HALFTILE, HALFTILE * 3, HALFTILE * 4, SPRITE_HudWidth, SPRITE_HudFlags);
+    blitSub(SPRITE_Hud, HALFTILE * 5, HALFTILE * 18 + 0, HALFTILE, HALFTILE, HALFTILE * 2, HALFTILE * 4, SPRITE_HudWidth, SPRITE_HudFlags);
+    blitSub(SPRITE_Hud, HALFTILE * 5, HALFTILE * 18 + 7, HALFTILE, HALFTILE, HALFTILE * 2, HALFTILE * 4, SPRITE_HudWidth, SPRITE_HudFlags);
+    blitSub(SPRITE_Hud, HALFTILE * 6, HALFTILE * 18 + 0, HALFTILE, HALFTILE, HALFTILE * 2, HALFTILE * 4, SPRITE_HudWidth, SPRITE_HudFlags);
+    blitSub(SPRITE_Hud, HALFTILE * 6, HALFTILE * 18 + 7, HALFTILE, HALFTILE, HALFTILE * 2, HALFTILE * 4, SPRITE_HudWidth, SPRITE_HudFlags);
+    blitSub(SPRITE_Hud, HALFTILE * 7, HALFTILE * 18 + 0, HALFTILE, HALFTILE, HALFTILE * 2, HALFTILE * 4, SPRITE_HudWidth, SPRITE_HudFlags);
+    blitSub(SPRITE_Hud, HALFTILE * 7, HALFTILE * 18 + 7, HALFTILE, HALFTILE, HALFTILE * 2, HALFTILE * 4, SPRITE_HudWidth, SPRITE_HudFlags);
+
+    //  Currency
+    blitSub(SPRITE_Hud, HALFTILE * 9, HALFTILE * 18 + 4, HALFTILE, HALFTILE, HALFTILE * 2, HALFTILE * 5, SPRITE_HudWidth, SPRITE_HudFlags);
+    blitSub(SPRITE_Hud, HALFTILE * 10, HALFTILE * 18 + 4, HALFTILE, HALFTILE, HALFTILE * 3, HALFTILE * 5, SPRITE_HudWidth, SPRITE_HudFlags);
+    
+    gfx_drawstr("0", HALFTILE * 11, HALFTILE * 18 + 5, 0x41, false);
+
 }
 
 void process_player_movement()
@@ -480,6 +576,11 @@ void process_player_movement()
     }
 
     if (g_transitionFramesLeft > 0)
+    {
+        return;
+    }
+
+    if( g_swordSwingState != Swing_Off)
     {
         return;
     }
@@ -680,7 +781,7 @@ void start()
     //PALETTE[2] = 0x306850; //
     //PALETTE[3] = 0x071821; //
     PALETTE[0] = 0xffffff; //
-    PALETTE[1] = 0xaaaaaa; //  GB
+    PALETTE[1] = 0xaaaaaa; //  black greys and white
     PALETTE[2] = 0x666666; //
     PALETTE[3] = 0x000000; //
 
@@ -692,8 +793,81 @@ void start()
     load_game();
 }
 
+bool do_dirty_splash_screen()
+{
+    const int TotalDuration = 200;
+    #ifdef NO_SPLASH
+    static u32 g_splashFramesLeft = 0;
+    #else
+    static u32 g_splashFramesLeft = TotalDuration;
+    #endif
+
+    if (g_splashFramesLeft > 0)
+    {
+        g_splashFramesLeft--;
+        
+        if( g_splashFramesLeft <= 0 )
+        {
+            //  Reset palette
+            PALETTE[0] = 0xffffff; //
+            PALETTE[1] = 0xaaaaaa; //  black greys and white
+            PALETTE[2] = 0x666666; //
+            PALETTE[3] = 0x000000; //
+            return false;
+        }
+
+        const int FadeInFrames = 90;
+        const int FadeOutFrames = 40;
+
+        float pct = 1.0f;
+        if (g_splashFramesLeft > (TotalDuration - FadeInFrames))
+        {
+            //  Fade in
+            pct = 1.0f - ((float)(g_splashFramesLeft - (TotalDuration - FadeInFrames)) / FadeInFrames);
+        }
+        else if (g_splashFramesLeft < FadeOutFrames)
+        {
+            //  Fade out
+            pct = (float)(g_splashFramesLeft) / FadeOutFrames;
+        }
+        //pct = clampf(pct, 0.0f, 1.0f);
+
+        u32 col1 = (u32)((float)0xff * pct);
+        u32 col2 = (u32)((float)0xaa * pct);
+        u32 col3 = (u32)((float)0x66 * pct);
+        u32 col4 = 0;
+
+        PALETTE[0] = col1 | col1 << 8 | col1 << 16 | col1 << 24;
+        PALETTE[1] = col2 | col2 << 8 | col2 << 16 | col2 << 24;
+        PALETTE[2] = col3 | col3 << 8 | col3 << 16 | col3 << 24;
+        PALETTE[3] = 0x000000;
+        
+        //tracef("%d %d", (u32)pct, PALETTE[0]);
+
+        *DRAW_COLORS = 0x4321;
+        memset(FRAMEBUFFER, 3 | (3 << 2) | (3 << 4) | (3 << 6), 160*160/4);
+
+        blitSub(SPRITE_Title, HALFTILE * 1, HALFTILE * 6, 48, 32, 16, 0, SPRITE_TitleWidth, SPRITE_TitleFlags);
+        blitSub(SPRITE_Title, HALFTILE * 7, HALFTILE * 6, 64, 32, 0, 32, SPRITE_TitleWidth, SPRITE_TitleFlags);
+        blitSub(SPRITE_Title, HALFTILE * 15, HALFTILE * 6, 32, 32, 0, 64, SPRITE_TitleWidth, SPRITE_TitleFlags);
+
+        gfx_drawstr("Presents...", 60, 80, 0x1234, false);
+
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
 void update()
 {
+    if (do_dirty_splash_screen())
+    {
+        return;
+    }
+
     input_update_early();
     g_uTicks++;
 
@@ -726,6 +900,7 @@ void update()
         {
             //trace("testing for interactables!");
             //  Test for interactable
+            bool bInteractableFound = false;
             for (int i = 0; i < NUM_INTERACTABLES; ++i)
             {
                 if (g_Interactables[i].type != IT_None)
@@ -738,35 +913,44 @@ void update()
                     {
                         //  Trying to interact
                         on_interact(&g_Interactables[i]);
+                        bInteractableFound = true;
                         break;
                     }
                 }
             }
+
+            if (!bInteractableFound)
+            {
+                start_swing_sword();
+            }
         }
     }
 
+    static int resetCount = 0;
     if (g_gameState == INGAME && !g_bShowingDialogBG)
     {
-        static int resetCount = 0;
         if (button_held(BUTTON_1) && button_held(BUTTON_2) && button_held(BUTTON_UP) && button_held(BUTTON_LEFT))
         {
-            trace("Resetting save...");
             resetCount++;
             if (resetCount == 60)
             {
+                trace("Resetting save...");
                 resetCount = 0;
                 reset_game();
                 start();
             }
         }
-
-        if (button_held(BUTTON_1) && button_held(BUTTON_2))
+        else
         {
-            toggle_pause();
+            resetCount = 0;
+            if (button_held(BUTTON_1) && button_held(BUTTON_2))
+            {
+                toggle_pause();
+            }
         }
     }
-    
-    if( g_gameState == PAUSE )
+
+    if (g_gameState == PAUSE)
     {
         if (button_held(BUTTON_1) && button_held(BUTTON_2))
         {
@@ -784,7 +968,9 @@ void update()
 
     draw_interactables();
 
-    draw_player_sprite();
+    draw_player();
+
+    tick_weapon();
 
     tick_pause();
 
