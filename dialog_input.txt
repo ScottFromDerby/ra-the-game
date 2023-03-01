@@ -6,6 +6,7 @@ GrumpyNPC,I don't want you in our village. Go away. It is not #great~ here.
 ShieldMan,I'm the guy to hand out #shields~, but I ran out. I wonder if you could go get one?
 ShieldMan2,There aren't any #yes~ or #no~ prompts yet. Sorry.
 ShieldMan3,Maybe you could help? Come to the #RetroAchievements~ #Discord~ and come help add them
+ShieldMan4,My creator, the amazing #Scott~ has decided that I have to have a really long dialog prompt full of lots and lots of words to test out my ability to speak really long bits of information. Will it work?
 MusicBoxOn,You switched it #on~.
 MusicBoxOff,You switched it #off~.
 NPCPlaceholder1,I'm a placeholder NPC 1! I wobble a bit. I need gfx! Will this #one day be you~?

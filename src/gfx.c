@@ -12,6 +12,8 @@ const u32 FONT_8pxOffsets[] = {0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 
 
 const u32* FONT_CurrentOffsets = FONT_8pxOffsets;
 
+const int LINE_SPACING = 9;
+
 void gfx_charlenpx(char which, u32 *offset, u32 *offsetSize)
 {
 	if (which >= 'A' && which <= 'Z')
@@ -102,9 +104,13 @@ u32 gfx_drawchar(char which, int x, int y, u16 drawcolors)
 	return offsetSize;
 }
 
-void gfx_drawstrn(const char* str, int x, int y, u16 drawcolors, int numChars, int targetWidthPx)
+void gfx_drawstrn(const char* str, int x, int y, u16 drawcolors, bool rightalign, int numChars)
 {
-	const char* startStr = str;
+	if (rightalign)
+	{
+		x -= gfx_strlenpx(str);
+	}
+
 	int startX = x;
 
 	while (*str != '\0' && numChars > 0)
@@ -119,23 +125,17 @@ void gfx_drawstrn(const char* str, int x, int y, u16 drawcolors, int numChars, i
 			str++;
 			drawcolors = DIALOG_DEFAULT;
 		}
+		else if( *str == '\n')
+		{
+			str++;
+			x = startX;
+			y += LINE_SPACING;	//	expose
+		}
 		else
 		{
 			x += gfx_drawchar(*str, x, y, drawcolors);
 			str++;
 			numChars--;
-
-			if( x > targetWidthPx - startX )
-			{
-				y += 8;
-				x = startX;
-				//	Also wind back to last space NB bit dangerous
-				while (*str != ' ' && str != startStr)
-				{
-					str--;
-				}
-				str++;
-			}
 		}
 	}
 }

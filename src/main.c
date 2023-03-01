@@ -19,7 +19,7 @@
 #include "gfx_npcs.h"
 #include "gfx_title.h"
 
-//#define NO_SPLASH
+#define NO_SPLASH
 
 u32 g_uTicks = 0;
 
@@ -795,7 +795,7 @@ void start()
 
 bool do_dirty_splash_screen()
 {
-    const int TotalDuration = 200;
+    const int TotalDuration = 250;
     #ifdef NO_SPLASH
     static u32 g_splashFramesLeft = 0;
     #else
@@ -816,8 +816,8 @@ bool do_dirty_splash_screen()
             return false;
         }
 
-        const int FadeInFrames = 90;
-        const int FadeOutFrames = 40;
+        const int FadeInFrames = 30;
+        const int FadeOutFrames = 60;
 
         float pct = 1.0f;
         if (g_splashFramesLeft > (TotalDuration - FadeInFrames))
@@ -845,13 +845,55 @@ bool do_dirty_splash_screen()
         //tracef("%d %d", (u32)pct, PALETTE[0]);
 
         *DRAW_COLORS = 0x4321;
-        memset(FRAMEBUFFER, 3 | (3 << 2) | (3 << 4) | (3 << 6), 160*160/4);
+        memset(FRAMEBUFFER, 0 | (0 << 2) | (0 << 4) | (0 << 6), 160*160/4);
 
-        blitSub(SPRITE_Title, HALFTILE * 1, HALFTILE * 6, 48, 32, 16, 0, SPRITE_TitleWidth, SPRITE_TitleFlags);
-        blitSub(SPRITE_Title, HALFTILE * 7, HALFTILE * 6, 64, 32, 0, 32, SPRITE_TitleWidth, SPRITE_TitleFlags);
-        blitSub(SPRITE_Title, HALFTILE * 15, HALFTILE * 6, 32, 32, 0, 64, SPRITE_TitleWidth, SPRITE_TitleFlags);
+        int yOffset = clamp((TotalDuration - g_splashFramesLeft) / 2, 0, 32) * 2;
 
-        gfx_drawstr("Presents...", 60, 80, 0x1234, false);
+        blitSub(SPRITE_Title, HALFTILE * 1, yOffset, 48, 32, 16, 0, SPRITE_TitleWidth, SPRITE_TitleFlags);
+        blitSub(SPRITE_Title, HALFTILE * 7, yOffset, 64, 32, 0, 32, SPRITE_TitleWidth, SPRITE_TitleFlags);
+        blitSub(SPRITE_Title, HALFTILE * 15, yOffset, 32, 32, 0, 64, SPRITE_TitleWidth, SPRITE_TitleFlags);
+
+        if (g_splashFramesLeft < 150)
+        {
+            static int n = 0; n++;
+            gfx_drawstrn("Presents...", 60, 94, 0x40, false, n / 2);
+        }
+
+        if( g_splashFramesLeft < 180)
+        {
+            static int delayFrames = 0;
+            if (delayFrames > 0)
+            {
+                delayFrames--;
+            }
+            else
+            {
+                static int xPos = 64;
+                static int yPos = 64;
+                static int sparkleFrame = 0;
+                static int sparkle1 = 0;
+                sparkle1++;
+
+                *DRAW_COLORS = 0x4320;
+                u32 sparkleX = (u32)(2 + sparkleFrame % 2);
+                u32 sparkleY = (u32)(4 + (sparkleFrame / 2));
+                // tracef("sparkle %d %d", sparkleX, sparkleY);
+                blitSub(SPRITE_Title, xPos, yPos, TILESIZE, TILESIZE, TILESIZE * sparkleX, TILESIZE * sparkleY, SPRITE_TitleWidth, SPRITE_TitleFlags);
+
+                if (sparkle1 == 3)
+                {
+                    sparkle1 = 0;
+                    sparkleFrame = (sparkleFrame + 1);
+                    if (sparkleFrame == 4)
+                    {
+                        xPos = rand_range(8, 140);
+                        yPos = rand_range(66, 80);
+                        sparkleFrame = 0;
+                        delayFrames = rand_range(0, 12);
+                    }
+                }
+            }
+        }
 
         return true;
     }

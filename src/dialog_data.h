@@ -9,6 +9,7 @@ extern const uint16_t DLGTEXT_GrumpyNPC[];
 extern const uint16_t DLGTEXT_ShieldMan[];
 extern const uint16_t DLGTEXT_ShieldMan2[];
 extern const uint16_t DLGTEXT_ShieldMan3[];
+extern const uint16_t DLGTEXT_ShieldMan4[];
 extern const uint16_t DLGTEXT_MusicBoxOn[];
 extern const uint16_t DLGTEXT_MusicBoxOff[];
 extern const uint16_t DLGTEXT_NPCPlaceholder1[];

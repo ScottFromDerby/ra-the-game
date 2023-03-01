@@ -14,6 +14,8 @@ char g_dialogContent[512];
 int g_dialogTicks = 0;
 
 //  nonglobal
+const int DIALOG_WIDTH = 150;
+
 int dialogNumChars = 0;
 
 int strlendlg(char* str)
@@ -57,6 +59,40 @@ void show_dialog(const uint16_t* pDialogData)
     g_bDialogSpeedup = false;
 
     dialogNumChars = strlendlg(g_dialogContent);
+
+    //  Calculate where linebreaks are going to be needed! Inject inplace of space
+    int textPxLength = 0;
+    for (int i = 0; i < dialogNumChars; ++i)
+    {
+        u32 unused;
+        u32 charSizePx;
+        gfx_charlenpx(g_dialogContent[i], &unused, &charSizePx);
+        textPxLength += charSizePx;
+        //tracef("Adding %c, total size %d", g_dialogContent[i], textPxLength);
+        if( g_dialogContent[i+1] == ' ')
+        {
+            //tracef("Detecting space. Are we over %d", DIALOG_WIDTH);
+            if (textPxLength >= DIALOG_WIDTH)
+            {
+                //trace("Rewind! Going back to last known space...");
+                //  Rewind back to last full word, inject a newline, then reset charSizePx
+                i--;
+                while (g_dialogContent[i] != ' ')
+                {
+                    //tracef("Not a space at %d (%c)", i, g_dialogContent[i]);
+                    i--;
+                }
+
+                //tracef("OK found a space at %d, replacing with a newline", i);
+                g_dialogContent[i] = '\n';
+
+                //trace("Dialog is now:");
+                //tracef("[%s]", g_dialogContent);
+                textPxLength = 0;
+            }
+        }
+        
+    }
 }
 
 void close_dialog()
@@ -116,10 +152,9 @@ void draw_dialog()
     // gfx_drawstr("fowls.  Can you tell me if", 8, TILESIZE*7 + 19, 0x0042, false);
     // gfx_drawstr("you think this font is ok? Cost 5G", 8, TILESIZE*7 + 31, 0x0012, false);
 
-    const int dialogWidth = 100;
 
     int charsToDraw = g_dialogTicks / 2;
-    gfx_drawstrn(g_dialogContent, HALFTILE - 1, TILESIZE * 6 + 7, DIALOG_DEFAULT, charsToDraw, dialogWidth);
+    gfx_drawstrn(g_dialogContent, HALFTILE - 1, TILESIZE * 6 + 7, DIALOG_DEFAULT, false, charsToDraw);
     charsToDraw -= dialogNumChars;
     //gfx_drawstrn(g_dialogContentLine2, HALFTILE - 1, TILESIZE * 7 + 4, DIALOG_DEFAULT, false, charsToDraw);
     //charsToDraw -= dialogNumChars2;

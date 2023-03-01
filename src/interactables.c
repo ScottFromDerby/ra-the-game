@@ -154,6 +154,11 @@ void on_interact(struct Interactable* pInteractedWith)
         }
         else if (g_currentInteractable->interactPhase == 3)
         {
+            show_dialog(DLGTEXT_ShieldMan4);
+            g_currentInteractable->interactPhase = 4;
+        }
+        else if (g_currentInteractable->interactPhase == 4)
+        {
             close_dialog();
             g_currentInteractable->interactPhase = 0;
             g_currentInteractable = 0;
