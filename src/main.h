@@ -31,7 +31,7 @@ enum GameState
 };
 extern enum GameState g_gameState;
 
-extern struct ScreenMeta* g_currentScreen;
-extern struct ScreenMeta* g_transitionFromScreen;
+extern struct ScreenMeta g_currentScreen;
+extern struct ScreenMeta g_transitionFromScreen;
 
 void set_screen(u8 x, u8 y, bool bForce);

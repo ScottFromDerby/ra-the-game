@@ -59,6 +59,12 @@ void show_dialog(const uint16_t* pDialogData)
     g_bDialogSpeedup = false;
 
     dialogNumChars = strlendlg(g_dialogContent);
+    //  NB. doesn't not include terminating \0 character!
+
+    //  Inject a sneaky space at the end to make sure we can still wrap on the last word too!
+    g_dialogContent[dialogNumChars+1] = ' ';
+    g_dialogContent[dialogNumChars+2] = '\0';
+    dialogNumChars++;
 
     //  Calculate where linebreaks are going to be needed! Inject inplace of space
     int textPxLength = 0;

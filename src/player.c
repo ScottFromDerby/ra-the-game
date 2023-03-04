@@ -1,11 +1,19 @@
 #include "player.h"
+#include "collectable.h"
 #include "main.h"
+#include "mapdata.h"
+#include "rendering.h"
 #include "gfx_weapon.h"
-
 #include "gfx_player.h"
+#include "tools.h"
+#include "vfx.h"
 
 enum SwordSwingState g_swordSwingState = Swing_Off;
 u8 g_swordSwingTicks = 0;
+
+int g_playerNumHalfHearts = 12;
+int g_playerMaxNumHalfHearts = 24;
+int g_playerNumCoins = 69;
 
 void start_swing_sword()
 {
@@ -277,5 +285,50 @@ void tick_weapon()
 
         default:
         break;
+    }
+
+    //  Attempt cut grass
+    if (g_swordSwingState == Swing_Forwards)
+    {
+        //  Check grass under middle of sword
+        u8 tileX;
+        u8 tileY;
+        get_tile_infront_of_player(&tileX, &tileY);
+
+        MetaTile tile = get_meta_tile(tileX, tileY);
+        if (tile == TGrs)
+        {
+            for( int i = 0; i < 4; ++i )
+            {
+                //  Add vfx
+                int startX;
+                int startY;
+                get_tile_centerpoint(tileX, tileY, &startX, &startY);
+                startX += rand_range( -5, 5 );
+                startY += rand_range( -5, 5 );
+                int velX = (rand() % 2 == 0) ? rand_range( -4, -1 ) : rand_range( 1, 4 );
+                int velY = (rand() % 2 == 0) ? rand_range( -4, -1 ) : rand_range( 1, 4 );
+                add_vfx(VFX_LeafFoliage, startX, startY, velX, velY, 26, 0);
+            }
+
+            //  Maybe popup collectable
+            if( rand() % 8 == 0 )
+            {
+                int centerX;
+                int centerY;
+                get_tile_centerpoint(tileX, tileY, &centerX, &centerY);
+                add_collectable(COLL_Heart, centerX, centerY, 600);
+            }
+            else if( rand() % 8 == 0 )
+            {
+                int centerX;
+                int centerY;
+                get_tile_centerpoint(tileX, tileY, &centerX, &centerY);
+                add_collectable(COLL_Coin, centerX, centerY, 600);
+            }
+
+            //  Set to grass
+            g_currentScreen.screen_metatiles[tileX + tileY * NUM_TILES_WIDTH] = Gras;
+        }
     }
 }

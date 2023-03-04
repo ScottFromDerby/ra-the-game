@@ -61,6 +61,12 @@ void gfx_charlenpx(char which, u32 *offset, u32 *offsetSize)
 		*offset = 0;
 		*offsetSize = 2;
 	}
+	else if (which == '#' || which == '~')
+	{	
+		//	Acceptable fails; these are charcodes for alt col etc
+		*offset = 0;
+		*offsetSize = 0;
+	}
 	else
 	{
 		*offset = 0;

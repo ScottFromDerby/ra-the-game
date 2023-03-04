@@ -15,6 +15,7 @@
         "gfx.h": "c",
         "gfx_player.h": "c",
         "interactables.h": "c",
-        "main.h": "c"
+        "main.h": "c",
+        "player.h": "c"
     }
 }

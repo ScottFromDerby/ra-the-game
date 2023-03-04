@@ -15,3 +15,7 @@ enum SwordSwingState
 };
 extern enum SwordSwingState g_swordSwingState;
 extern u8 g_swordSwingTicks;
+
+extern int g_playerNumHalfHearts;
+extern int g_playerMaxNumHalfHearts;
+extern int g_playerNumCoins;

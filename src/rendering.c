@@ -9,18 +9,24 @@ void get_tile_from_point(u8 x, u8 y, u8 *xTile, u8 *yTile)
     *yTile = y / TILESIZE;
 }
 
+void get_tile_centerpoint(int xTile, int yTile, int* x, int* y)
+{
+    *x = (xTile * TILESIZE) + HALFTILE;
+    *y = (yTile * TILESIZE) + HALFTILE;
+}
+
 MetaTile get_meta_tile(uint8_t x, uint8_t y)
 {
     if (x >= NUM_TILES_WIDTH || y >= NUM_TILES_HEIGHT)
     {
         return Empt;
     }
-    return g_currentScreen->screen_metatiles[x + y * NUM_TILES_WIDTH];
+    return g_currentScreen.screen_metatiles[x + y * NUM_TILES_WIDTH];
 }
 
 MetaTile get_meta_tile_transition(uint8_t x, uint8_t y)
 {
-    return g_transitionFromScreen->screen_metatiles[x + y * 10];
+    return g_transitionFromScreen.screen_metatiles[x + y * 10];
 }
 
 MetaTile get_metatile_at_point(u8 x, u8 y)

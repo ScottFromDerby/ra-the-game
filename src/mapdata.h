@@ -8,7 +8,7 @@ enum MetaTileLookup
     IWal,   //  Empty but blocking
     Gras,
     Gra2,   //  Grass backwards
-    Bush,
+    TGrs,   //  Tall grass
     Path,
     HsWn,   //  House window
     HsDr,   //  House door
@@ -52,6 +52,8 @@ struct WorldMap
 extern struct WorldMap MainWorldMap;
 
 struct ScreenMeta* get_screen(uint8_t x, uint8_t y);
+
+extern void copy_screen(struct ScreenMeta* pSrc, struct ScreenMeta* pDest);
 
 uint32_t get_meta_tile_info(MetaTile metaTile, uint8_t* TL, uint8_t* TR, uint8_t* BL, uint8_t* BR);
 

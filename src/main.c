@@ -2,6 +2,7 @@
 #include "main.h"
 
 #include "animtiles.h"
+#include "collectable.h"
 #include "dialog_data.h"
 #include "dialog.h"
 #include "gfx.h"
@@ -13,6 +14,7 @@
 #include "progress.h"
 #include "rendering.h"
 #include "tools.h"
+#include "vfx.h"
 
 //  Assets
 #include "gfx_hud.h"
@@ -34,10 +36,10 @@ enum GameState g_gameState = INGAME;
 u8 g_playerX = 100;
 u8 g_playerY = 100;
 
-struct ScreenMeta* g_currentScreen = 0;
-struct ScreenMeta* g_transitionFromScreen = 0;
-u8 g_currentWorldX = 2;
-u8 g_currentWorldY = 2;
+struct ScreenMeta g_currentScreen;
+struct ScreenMeta g_transitionFromScreen;
+u8 g_currentWorldX = (u8)-1;
+u8 g_currentWorldY = (u8)-1;
 int g_transitionFramesLeft = 0;
 enum Direction g_transitionDirection = Left;
 
@@ -157,6 +159,19 @@ void on_start_screen()
 {
     g_Progress.visited[g_currentWorldX + (g_currentWorldY * WORLD_MAX_X)] = true;
 
+    // clear_foliage();
+    
+    // for (int i = 0; i < NUM_TILES_HEIGHT; ++i)
+    // {
+    //     for (int j = 0; j < NUM_TILES_WIDTH; ++j)
+    //     {
+    //         if (g_currentScreen.screen_metatiles[i * NUM_TILES_HEIGHT + j] == TGrs)
+    //         {
+    //             add_foliage(i, j, Foliage_TallGrass);
+    //         }
+    //     }
+    // }
+
     switch (g_currentWorldX | (g_currentWorldY << 4))   //  NB. this = 0x[X][Y] for world pos
     {
         case 0x12:
@@ -199,6 +214,7 @@ void clear_screen()
     }
     //  Clear NPC
     clear_interactables();
+    clear_collectables();
 }
 
 void set_screen(u8 x, u8 y, bool bForce)
@@ -209,7 +225,7 @@ void set_screen(u8 x, u8 y, bool bForce)
 
     if (bForce)
     {
-        g_currentScreen = get_screen(x, y);
+        copy_screen(get_screen(x, y), &g_currentScreen);
         g_currentWorldX = x;
         g_currentWorldY = y;
         on_start_screen();
@@ -219,7 +235,8 @@ void set_screen(u8 x, u8 y, bool bForce)
         g_Progress.bHasVisitedOtherScreens = true;
 
         g_transitionFromScreen = g_currentScreen;
-        g_currentScreen = get_screen(x, y);
+        copy_screen(get_screen(x, y), &g_currentScreen);
+        //g_currentScreen = get_screen(x, y);
         if (x > g_currentWorldX)
         {
             g_transitionFramesLeft = SCREEN_WIDTH;
@@ -251,7 +268,8 @@ void set_screen(u8 x, u8 y, bool bForce)
 
 void update_map()
 {
-    if (g_currentScreen == 0)
+    //if (g_currentScreen == 0)
+    if(g_currentWorldX >= WORLD_MAX_X || g_currentWorldY >= WORLD_MAX_Y )
     {
         trace("Setting initial screen");
         set_screen(START_WORLD_X, START_WORLD_Y, true);
@@ -546,25 +564,45 @@ void draw_statusbar()
     blitSub(SPRITE_Hud, TILESIZE * 7 + 12, TILESIZE * 9, TILESIZE, TILESIZE, TILESIZE * 1, TILESIZE * 3, SPRITE_HudWidth, SPRITE_HudFlags);
 
     *DRAW_COLORS = 0x4320;  //  0x4320 = White = transparent
+
     //  Hearts
-    blitSub(SPRITE_Hud, HALFTILE * 2, HALFTILE * 18 + 0, HALFTILE, HALFTILE, HALFTILE * 3, HALFTILE * 4, SPRITE_HudWidth, SPRITE_HudFlags);
-    blitSub(SPRITE_Hud, HALFTILE * 2, HALFTILE * 18 + 7, HALFTILE, HALFTILE, HALFTILE * 3, HALFTILE * 4, SPRITE_HudWidth, SPRITE_HudFlags);
-    blitSub(SPRITE_Hud, HALFTILE * 3, HALFTILE * 18 + 0, HALFTILE, HALFTILE, HALFTILE * 3, HALFTILE * 4, SPRITE_HudWidth, SPRITE_HudFlags);
-    blitSub(SPRITE_Hud, HALFTILE * 3, HALFTILE * 18 + 7, HALFTILE, HALFTILE, HALFTILE * 3, HALFTILE * 4, SPRITE_HudWidth, SPRITE_HudFlags);
-    blitSub(SPRITE_Hud, HALFTILE * 4, HALFTILE * 18 + 0, HALFTILE, HALFTILE, HALFTILE * 3, HALFTILE * 4, SPRITE_HudWidth, SPRITE_HudFlags);
-    blitSub(SPRITE_Hud, HALFTILE * 4, HALFTILE * 18 + 7, HALFTILE, HALFTILE, HALFTILE * 3, HALFTILE * 4, SPRITE_HudWidth, SPRITE_HudFlags);
-    blitSub(SPRITE_Hud, HALFTILE * 5, HALFTILE * 18 + 0, HALFTILE, HALFTILE, HALFTILE * 2, HALFTILE * 4, SPRITE_HudWidth, SPRITE_HudFlags);
-    blitSub(SPRITE_Hud, HALFTILE * 5, HALFTILE * 18 + 7, HALFTILE, HALFTILE, HALFTILE * 2, HALFTILE * 4, SPRITE_HudWidth, SPRITE_HudFlags);
-    blitSub(SPRITE_Hud, HALFTILE * 6, HALFTILE * 18 + 0, HALFTILE, HALFTILE, HALFTILE * 2, HALFTILE * 4, SPRITE_HudWidth, SPRITE_HudFlags);
-    blitSub(SPRITE_Hud, HALFTILE * 6, HALFTILE * 18 + 7, HALFTILE, HALFTILE, HALFTILE * 2, HALFTILE * 4, SPRITE_HudWidth, SPRITE_HudFlags);
-    blitSub(SPRITE_Hud, HALFTILE * 7, HALFTILE * 18 + 0, HALFTILE, HALFTILE, HALFTILE * 2, HALFTILE * 4, SPRITE_HudWidth, SPRITE_HudFlags);
-    blitSub(SPRITE_Hud, HALFTILE * 7, HALFTILE * 18 + 7, HALFTILE, HALFTILE, HALFTILE * 2, HALFTILE * 4, SPRITE_HudWidth, SPRITE_HudFlags);
+    const int HEART_E = 1;
+    const int HEART_H = 2;
+    const int HEART_F = 3;
+    int numHeartsReq = 2;
+
+    u32 tileX = 0;
+    tileX = g_playerNumHalfHearts >= (numHeartsReq) ? HEART_F : g_playerNumHalfHearts >= (numHeartsReq - 1) ? HEART_H : HEART_E; numHeartsReq += 2;
+    blitSub(SPRITE_Hud, HALFTILE * 2, HALFTILE * 18 + 0, HALFTILE, HALFTILE, HALFTILE * tileX, HALFTILE * 5, SPRITE_HudWidth, SPRITE_HudFlags);
+    tileX = g_playerNumHalfHearts >= (numHeartsReq) ? HEART_F : g_playerNumHalfHearts >= (numHeartsReq - 1) ? HEART_H : HEART_E; numHeartsReq += 2;
+    blitSub(SPRITE_Hud, HALFTILE * 3, HALFTILE * 18 + 0, HALFTILE, HALFTILE, HALFTILE * tileX, HALFTILE * 5, SPRITE_HudWidth, SPRITE_HudFlags);
+    tileX = g_playerNumHalfHearts >= (numHeartsReq) ? HEART_F : g_playerNumHalfHearts >= (numHeartsReq - 1) ? HEART_H : HEART_E; numHeartsReq += 2;
+    blitSub(SPRITE_Hud, HALFTILE * 4, HALFTILE * 18 + 0, HALFTILE, HALFTILE, HALFTILE * tileX, HALFTILE * 5, SPRITE_HudWidth, SPRITE_HudFlags);
+    tileX = g_playerNumHalfHearts >= (numHeartsReq) ? HEART_F : g_playerNumHalfHearts >= (numHeartsReq - 1) ? HEART_H : HEART_E; numHeartsReq += 2;
+    blitSub(SPRITE_Hud, HALFTILE * 5, HALFTILE * 18 + 0, HALFTILE, HALFTILE, HALFTILE * tileX, HALFTILE * 5, SPRITE_HudWidth, SPRITE_HudFlags);
+    tileX = g_playerNumHalfHearts >= (numHeartsReq) ? HEART_F : g_playerNumHalfHearts >= (numHeartsReq - 1) ? HEART_H : HEART_E; numHeartsReq += 2;
+    blitSub(SPRITE_Hud, HALFTILE * 6, HALFTILE * 18 + 0, HALFTILE, HALFTILE, HALFTILE * tileX, HALFTILE * 5, SPRITE_HudWidth, SPRITE_HudFlags);
+    tileX = g_playerNumHalfHearts >= (numHeartsReq) ? HEART_F : g_playerNumHalfHearts >= (numHeartsReq - 1) ? HEART_H : HEART_E; numHeartsReq += 2;
+    blitSub(SPRITE_Hud, HALFTILE * 7, HALFTILE * 18 + 0, HALFTILE, HALFTILE, HALFTILE * tileX, HALFTILE * 5, SPRITE_HudWidth, SPRITE_HudFlags);
+    tileX = g_playerNumHalfHearts >= (numHeartsReq) ? HEART_F : g_playerNumHalfHearts >= (numHeartsReq - 1) ? HEART_H : HEART_E; numHeartsReq += 2;
+    blitSub(SPRITE_Hud, HALFTILE * 2, HALFTILE * 18 + 7, HALFTILE, HALFTILE, HALFTILE * tileX, HALFTILE * 5, SPRITE_HudWidth, SPRITE_HudFlags);
+    tileX = g_playerNumHalfHearts >= (numHeartsReq) ? HEART_F : g_playerNumHalfHearts >= (numHeartsReq - 1) ? HEART_H : HEART_E; numHeartsReq += 2;
+    blitSub(SPRITE_Hud, HALFTILE * 3, HALFTILE * 18 + 7, HALFTILE, HALFTILE, HALFTILE * tileX, HALFTILE * 5, SPRITE_HudWidth, SPRITE_HudFlags);
+    tileX = g_playerNumHalfHearts >= (numHeartsReq) ? HEART_F : g_playerNumHalfHearts >= (numHeartsReq - 1) ? HEART_H : HEART_E; numHeartsReq += 2;
+    blitSub(SPRITE_Hud, HALFTILE * 4, HALFTILE * 18 + 7, HALFTILE, HALFTILE, HALFTILE * tileX, HALFTILE * 5, SPRITE_HudWidth, SPRITE_HudFlags);
+    tileX = g_playerNumHalfHearts >= (numHeartsReq) ? HEART_F : g_playerNumHalfHearts >= (numHeartsReq - 1) ? HEART_H : HEART_E; numHeartsReq += 2;
+    blitSub(SPRITE_Hud, HALFTILE * 5, HALFTILE * 18 + 7, HALFTILE, HALFTILE, HALFTILE * tileX, HALFTILE * 5, SPRITE_HudWidth, SPRITE_HudFlags);
+    tileX = g_playerNumHalfHearts >= (numHeartsReq) ? HEART_F : g_playerNumHalfHearts >= (numHeartsReq - 1) ? HEART_H : HEART_E; numHeartsReq += 2;
+    blitSub(SPRITE_Hud, HALFTILE * 6, HALFTILE * 18 + 7, HALFTILE, HALFTILE, HALFTILE * tileX, HALFTILE * 5, SPRITE_HudWidth, SPRITE_HudFlags);
+    tileX = g_playerNumHalfHearts >= (numHeartsReq) ? HEART_F : g_playerNumHalfHearts >= (numHeartsReq - 1) ? HEART_H : HEART_E; numHeartsReq += 2;
+    blitSub(SPRITE_Hud, HALFTILE * 7, HALFTILE * 18 + 7, HALFTILE, HALFTILE, HALFTILE * tileX, HALFTILE * 5, SPRITE_HudWidth, SPRITE_HudFlags);
 
     //  Currency
-    blitSub(SPRITE_Hud, HALFTILE * 9, HALFTILE * 18 + 4, HALFTILE, HALFTILE, HALFTILE * 2, HALFTILE * 5, SPRITE_HudWidth, SPRITE_HudFlags);
-    blitSub(SPRITE_Hud, HALFTILE * 10, HALFTILE * 18 + 4, HALFTILE, HALFTILE, HALFTILE * 3, HALFTILE * 5, SPRITE_HudWidth, SPRITE_HudFlags);
+    blitSub(SPRITE_Hud, HALFTILE * 9, HALFTILE * 18 + 4, HALFTILE, HALFTILE, HALFTILE * 2, HALFTILE * 4, SPRITE_HudWidth, SPRITE_HudFlags);
+    blitSub(SPRITE_Hud, HALFTILE * 10, HALFTILE * 18 + 4, HALFTILE, HALFTILE, HALFTILE * 3, HALFTILE * 4, SPRITE_HudWidth, SPRITE_HudFlags);
     
-    gfx_drawstr("0", HALFTILE * 11, HALFTILE * 18 + 5, 0x41, false);
+    tostr(buffer, g_playerNumCoins);
+    gfx_drawstr(buffer, HALFTILE * 11, HALFTILE * 18 + 5, 0x41, false);
 
 }
 
@@ -926,10 +964,10 @@ void update()
     //  process_interaction
     if (button_newly_pressed(BUTTON_1))
     {
-        //trace("button newly pressed!");
+        // trace("button newly pressed!");
         if (g_bShowingDialogBG)
         {
-            if( g_bDialogFinished)
+            if (g_bDialogFinished)
             {
                 on_dialog_confirm();
             }
@@ -1013,6 +1051,14 @@ void update()
     draw_player();
 
     tick_weapon();
+
+    tick_vfx();
+
+    draw_vfx();
+
+    tick_collectables();
+
+    draw_collectables();
 
     tick_pause();
 

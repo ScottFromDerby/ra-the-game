@@ -1,12 +1,13 @@
 #include "mapdata.h"
+#include "tools.h"
 
 struct ScreenMeta SCR_00000 = {
 Fenc,Fenc,Fenc,Fenc,Fenc,Fenc,Fenc,Fenc,Fenc,Fenc,
 Fenc,Path,Gras,Gras,Gras,Path,Gras,Gras,Gras,Gras,
 Fenc,Path,Gras,Gras,Gras,Path,Path,Gras,Gras,Gras,
-Fenc,Path,Gras,Gras,Gras,Gras,Path,Bush,Gras,Gras,
-Fenc,Path,Path,Path,Path,Bush,Path,Bush,Bush,Gras,
-Fenc,Gras,Gras,Bush,Bush,Path,Path,Bush,Gras,Gras,
+Fenc,Path,Gras,Gras,Gras,Gras,Path,TGrs,Gras,Gras,
+Fenc,Path,Path,Path,Path,TGrs,Path,TGrs,TGrs,Gras,
+Fenc,Gras,Gras,TGrs,TGrs,Path,Path,TGrs,Gras,Gras,
 Fenc,Path,Gras,Gras,Gras,Path,Path,Gras,Gras,Gras,
 Fenc,Path,Path,Path,Path,Path,Path,Path,Path,Path,
 Fenc,Gras,Gras,Gras,Gras,Path,Gras,Gras,Gras,Gras,
@@ -16,9 +17,9 @@ struct ScreenMeta SCR_00001 = {
 Fenc,Fenc,Fenc,Fenc,Fenc,Fenc,Fenc,Fenc,Fenc,Fenc,
 Path,Path,Gras,Gras,Gras,Path,Gras,Gras,Gras,Gras,
 Gras,Path,Gras,Gras,Gras,Path,Path,Gras,Gras,Gras,
-Gras,Path,Gras,Gras,Gras,Gras,Path,Bush,Gras,Gras,
-Gras,Path,Path,Path,Path,Bush,Path,Bush,Bush,Gras,
-Gras,Gras,Gras,Bush,Bush,Path,Path,Bush,Gras,Gras,
+Gras,Path,Gras,Gras,Gras,Gras,Path,TGrs,Gras,Gras,
+Gras,Path,Path,Path,Path,TGrs,Path,TGrs,TGrs,Gras,
+Gras,Gras,Gras,TGrs,TGrs,Path,Path,TGrs,Gras,Gras,
 Path,Path,Gras,Gras,Gras,Path,Path,Gras,Gras,Gras,
 Gras,Path,Path,Path,Path,Path,Path,Path,Path,Path,
 Gras,Gras,Gras,Gras,Gras,Path,Gras,Gras,Gras,Gras,
@@ -28,9 +29,9 @@ struct ScreenMeta SCR_00002 = {
 Fenc,Fenc,Fenc,Fenc,Fenc,Fenc,Fenc,Fenc,Fenc,Fenc,
 Path,Path,Gras,Gras,Gras,Path,Gras,Gras,Gras,Gras,
 Gras,Path,Gras,Gras,Gras,Path,Path,Gras,Gras,Gras,
-Gras,Path,Gras,Gras,Gras,Gras,Path,Bush,Gras,Gras,
-Gras,Path,Path,Path,Path,Bush,Path,Bush,Bush,Gras,
-Gras,Gras,Gras,Bush,Bush,Path,Path,Bush,Gras,Gras,
+Gras,Path,Gras,Gras,Gras,Gras,Path,TGrs,Gras,Gras,
+Gras,Path,Path,Path,Path,TGrs,Path,TGrs,TGrs,Gras,
+Gras,Gras,Gras,TGrs,TGrs,Path,Path,TGrs,Gras,Gras,
 Path,Path,Gras,Gras,Gras,Path,Path,Gras,Gras,Gras,
 Gras,Path,Path,Path,Path,Path,Path,Path,Path,Path,
 Gras,Gras,Gras,Gras,Gras,Path,Gras,Gras,Gras,Gras,
@@ -40,9 +41,9 @@ struct ScreenMeta SCR_00003 = {
 Fenc,Fenc,Fenc,Fenc,Fenc,Fenc,Fenc,Fenc,Fenc,Fenc,
 Path,Path,Gras,Gras,Gras,Path,Gras,Gras,Gras,Path,
 Gras,Path,Gras,Gras,Gras,Path,Path,Gras,Gras,Path,
-Gras,Path,Gras,Gras,Gras,Gras,Path,Bush,Gras,Path,
-Gras,Path,Path,Path,Path,Bush,Path,Bush,Bush,Path,
-Gras,Gras,Gras,Bush,Bush,Path,Path,Bush,Gras,Path,
+Gras,Path,Gras,Gras,Gras,Gras,Path,TGrs,Gras,Path,
+Gras,Path,Path,Path,Path,TGrs,Path,TGrs,TGrs,Path,
+Gras,Gras,Gras,TGrs,TGrs,Path,Path,TGrs,Gras,Path,
 Path,Path,Gras,Gras,Gras,Path,Path,Gras,Gras,Path,
 Gras,Path,Path,Path,Path,Path,Path,Path,Path,Path,
 Gras,Gras,Gras,Gras,Gras,Path,Gras,Gras,Gras,Path,
@@ -88,57 +89,57 @@ struct ScreenMeta SCR_00007 = {
 Fenc,Fenc,Fenc,Fenc,Fenc,Fenc,Fenc,Fenc,Fenc,Fenc,
 Path,Path,Gras,Gras,Gras,Path,Gras,Gras,Gras,Fenc,
 Gras,Path,Gras,Gras,Gras,Path,Path,Gras,Gras,Fenc,
-Gras,Path,Gras,Gras,Gras,Gras,Path,Bush,Gras,Fenc,
-Gras,Path,Path,Path,Path,Bush,Path,Bush,Bush,Fenc,
-Gras,Gras,Gras,Bush,Bush,Path,Path,Bush,Gras,Fenc,
+Gras,Path,Gras,Gras,Gras,Gras,Path,TGrs,Gras,Fenc,
+Gras,Path,Path,Path,Path,TGrs,Path,TGrs,TGrs,Fenc,
+Gras,Gras,Gras,TGrs,TGrs,Path,Path,TGrs,Gras,Fenc,
 Path,Path,Gras,Gras,Gras,Path,Path,Gras,Gras,Fenc,
 Gras,Path,Path,Path,Path,Path,Path,Path,Path,Fenc,
 Gras,Gras,Gras,Gras,Gras,Path,Gras,Gras,Gras,Fenc,
 };
 
 struct ScreenMeta SCR_00010 = {
-Fenc,Gras,Gras,Gras,Bush,Path,Gras,Gras,Gras,Gras,
+Fenc,Gras,Gras,Gras,TGrs,Path,Gras,Gras,Gras,Gras,
 Fenc,Path,Gras,Gras,Gras,Path,Gras,Gras,Gras,Gras,
 Fenc,Path,Gras,Gras,Gras,Path,Path,Gras,Gras,Gras,
-Fenc,Path,Gras,Gras,Gras,Gras,Path,Bush,Gras,Gras,
-Fenc,Path,Path,Path,Path,Bush,Path,Bush,Bush,Gras,
-Fenc,Gras,Gras,Bush,Bush,Path,Path,Bush,Gras,Gras,
+Fenc,Path,Gras,Gras,Gras,Gras,Path,TGrs,Gras,Gras,
+Fenc,Path,Path,Path,Path,TGrs,Path,TGrs,TGrs,Gras,
+Fenc,Gras,Gras,TGrs,TGrs,Path,Path,TGrs,Gras,Gras,
 Fenc,Path,Gras,Gras,Gras,Path,Path,Gras,Gras,Gras,
-Fenc,Path,Path,Path,Path,Path,Path,Path,Path,Path,
-Fenc,Gras,Gras,Gras,Gras,Path,Gras,Gras,Gras,Gras,
+Fenc,Path,Path,Path,Path,Path,Path,Path,Tre1,Tre2,
+Fenc,Gras,Gras,Gras,Gras,Path,Gras,Gras,Tre3,Tre4,
 };
 
 struct ScreenMeta SCR_00011 = {
-Gras,Gras,Gras,Gras,Bush,Path,Gras,Gras,Gras,Gras,
+Gras,Gras,Gras,Gras,TGrs,Path,Gras,Gras,Gras,Gras,
 Path,Path,Gras,Gras,Gras,Path,Gras,Gras,Gras,Gras,
 Gras,Path,Gras,Gras,Gras,Path,Path,Gras,Gras,Gras,
-Gras,Path,Gras,Gras,Gras,Gras,Path,Bush,Gras,Gras,
-Gras,Path,Path,Path,Path,Bush,Path,Bush,Bush,Gras,
-Gras,Gras,Gras,Bush,Bush,Path,Path,Bush,Gras,Gras,
+Gras,Path,Gras,Gras,Gras,Gras,Path,TGrs,Gras,Gras,
+Gras,Path,Path,Path,Path,TGrs,Path,TGrs,TGrs,Gras,
+Gras,Gras,Gras,TGrs,TGrs,Path,Path,TGrs,Gras,Gras,
 Path,Path,Gras,Gras,Gras,Path,Path,Gras,Gras,Gras,
-Gras,Path,Path,Path,Path,Path,Path,Path,Path,Path,
+Barl,Path,Path,Path,Path,Path,Path,Path,Path,Path,
 Tre1,Tre2,Tre1,Tre2,Tre1,Tre2,Tre1,Tre2,Tre1,Tre2,
 };
 
 struct ScreenMeta SCR_00012 = {
-Gras,Gras,Gras,Gras,Bush,Path,Gras,Gras,Gras,Gras,
+Gras,Gras,Gras,Gras,TGrs,Path,Gras,Gras,Gras,Gras,
 Path,Path,Gras,Gras,Gras,Path,Gras,Gras,Gras,Gras,
 Gras,Path,Gras,Gras,Gras,Path,Path,Gras,Gras,Gras,
-Gras,Path,Gras,Gras,Gras,Gras,Path,Bush,Gras,Gras,
-Gras,Path,Path,Path,Path,Bush,Path,Bush,Bush,Gras,
-Gras,Gras,Gras,Bush,Bush,Path,Path,Bush,Gras,Gras,
+Gras,Path,Gras,Gras,Gras,Gras,Path,TGrs,Gras,Gras,
+Gras,Path,Path,Path,Path,TGrs,Path,TGrs,TGrs,Gras,
+Gras,Gras,Gras,TGrs,TGrs,Path,Path,TGrs,Gras,Gras,
 Path,Path,Gras,Gras,Gras,Path,Path,Gras,Gras,Gras,
 Gras,Path,Path,Path,Path,Path,Path,Path,Path,Path,
 Tre1,Tre2,Tre1,Tre2,Gras,Path,Gras,Tre1,Tre2,Tre1,
 };
 
 struct ScreenMeta SCR_00013 = {
-Gras,Gras,Gras,Gras,Bush,Path,Gras,Gras,Gras,Path,
+Gras,Gras,Gras,Gras,TGrs,Path,Gras,Gras,Gras,Path,
 Path,Path,Gras,Gras,Gras,Path,Gras,Gras,Gras,Path,
 Gras,Path,Gras,Gras,Gras,Path,Path,Gras,Gras,Path,
-Gras,Path,Gras,Gras,Gras,Gras,Path,Bush,Gras,Path,
-Gras,Path,Path,Path,Path,Bush,Path,Bush,Bush,Path,
-Gras,Gras,Gras,Bush,Bush,Path,Path,Bush,Gras,Path,
+Gras,Path,Gras,Gras,Gras,Gras,Path,TGrs,Gras,Path,
+Gras,Path,Path,Path,Path,TGrs,Path,TGrs,TGrs,Path,
+Gras,Gras,Gras,TGrs,TGrs,Path,Path,TGrs,Gras,Path,
 Path,Path,Gras,Gras,Gras,Path,Path,Gras,Gras,Path,
 Gras,Path,Path,Path,Path,Path,Path,Path,Path,Path,
 Tre2,Gras,Gras,Gras,Gras,Path,Gras,Gras,Gras,Path,
@@ -181,24 +182,24 @@ Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,
 };
 
 struct ScreenMeta SCR_00017 = {
-Gras,Gras,Gras,Gras,Bush,Path,Gras,Gras,Gras,Fenc,
+Gras,Gras,Gras,Gras,TGrs,Path,Gras,Gras,Gras,Fenc,
 Path,Path,Gras,Gras,Gras,Path,Gras,Gras,Gras,Fenc,
 Gras,Path,Gras,Gras,Gras,Path,Path,Gras,Gras,Fenc,
-Gras,Path,Gras,Gras,Gras,Gras,Path,Bush,Gras,Fenc,
-Gras,Path,Path,Path,Path,Bush,Path,Bush,Bush,Fenc,
-Gras,Gras,Gras,Bush,Bush,Path,Path,Bush,Gras,Fenc,
+Gras,Path,Gras,Gras,Gras,Gras,Path,TGrs,Gras,Fenc,
+Gras,Path,Path,Path,Path,TGrs,Path,TGrs,TGrs,Fenc,
+Gras,Gras,Gras,TGrs,TGrs,Path,Path,TGrs,Gras,Fenc,
 Path,Path,Gras,Gras,Gras,Path,Path,Gras,Gras,Fenc,
 Gras,Path,Path,Path,Path,Path,Path,Path,Path,Fenc,
 Gras,Gras,Gras,Gras,Gras,Path,Gras,Gras,Gras,Fenc,
 };
 
 struct ScreenMeta SCR_00020 = {
-Fenc,Gras,Gras,Gras,Bush,Path,Gras,Gras,Gras,Gras,
-Fenc,Path,Gras,Gras,Gras,Path,Gras,Gras,Gras,Gras,
+Fenc,Gras,Gras,Gras,TGrs,Path,Gras,Gras,Tre1,Tre2,
+Fenc,Path,Gras,Gras,Gras,Path,Gras,Gras,Tre3,Tre4,
 Fenc,Path,Gras,Gras,Gras,Path,Path,Gras,Gras,Gras,
-Fenc,Path,Gras,Gras,Gras,Gras,Path,Bush,Gras,Gras,
-Fenc,Path,Path,Path,Path,Bush,Path,Bush,Bush,Gras,
-Fenc,Gras,Gras,Bush,Bush,Path,Path,Bush,Gras,Gras,
+Fenc,Path,Gras,Gras,Gras,Gras,Path,TGrs,Gras,Gras,
+Fenc,Path,Path,Path,Path,TGrs,Path,TGrs,TGrs,Gras,
+Fenc,Gras,Gras,TGrs,TGrs,Path,Path,TGrs,Gras,Gras,
 Fenc,Path,Gras,Gras,Gras,Path,Path,Gras,Gras,Gras,
 Fenc,Path,Path,Path,Path,Path,Path,Path,Path,Path,
 Fenc,Gras,Gras,Gras,Gras,Path,Gras,Gras,Gras,Gras,
@@ -206,35 +207,35 @@ Fenc,Gras,Gras,Gras,Gras,Path,Gras,Gras,Gras,Gras,
 
 struct ScreenMeta SCR_00021 = {
 Tre3,Tre4,Tre3,Tre4,Tre3,Tre4,Tre3,Tre4,Tre3,Tre4,
-Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,
-Gras,Gras,Barl,Gras,Gras,Barl,Barl,Gras,Barl,Gras,
-Gras,Gras,Gras,Barl,Gras,Gras,Gras,Bush,Gras,Gras,
-Gras,Path,Path,Path,Path,Path,Bush,Bush,Bush,Gras,
-Gras,Path,Gras,Path,Path,Path,Bush,Bush,Gras,Gras,
-Gras,Path,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,
-Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Tre1,
-Gras,Path,Path,Path,Path,Path,Path,Path,Path,Tre3,
+Barl,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,
+Gras,Gras,Barl,Gras,Gras,Barl,TGrs,Gras,Barl,Gras,
+Gras,Gras,Gras,Barl,Gras,Gras,Gras,TGrs,Gras,Gras,
+Gras,Path,Path,Path,Path,Path,TGrs,TGrs,TGrs,Gras,
+Gras,Path,Path,Gras,Gras,Path,TGrs,TGrs,Gras,Gras,
+Gras,Barl,Barl,Gras,Gras,Path,Gras,Gras,Path,Path,
+Gras,Gras,Gras,Gras,Path,Path,Path,Path,Path,Tre1,
+Gras,Gras,Gras,Gras,Path,Gras,Gras,Gras,Gras,Tre3,
 };
 
 struct ScreenMeta SCR_00022 = {
-Tre3,Tre4,Tre3,Tre4,Bush,Bush,Bush,Tre3,Tre4,Tre3,
-Path,Path,RfTL,RfTC,RfTR,Bush,Gras,Gras,Gras,Gras,
+Tre3,Tre4,Tre3,Tre4,TGrs,TGrs,TGrs,Tre3,Tre4,Tre3,
+Path,Path,RfTL,RfTC,RfTR,TGrs,Gras,Gras,Gras,Gras,
 Gras,Path,RfBL,RfBC,RfBR,Kenl,Gra2,Gras,Gras,Gras,
 Gras,Path,HsWn,HsDr,HsWn,HsDr,Fenc,Gras,Gras,Gras,
-Gras,Path,Path,Path,Path,Bush,Bush,Bush,Bush,Gras,
-Gras,Gras,Gra2,Bush,Bush,Bush,Bush,Bush,Gras,Gras,
+Gras,Path,Path,Path,Path,TGrs,TGrs,TGrs,TGrs,Gras,
+Gras,Gras,Gra2,TGrs,TGrs,TGrs,TGrs,TGrs,Gras,Gras,
 Path,Path,Gras,Gras,Gras,Gras,Gras,Gras,Gra2,Gras,
 Tre2,Path,Path,Path,Path,Path,Path,Path,Path,Path,
-Tre4,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,
+Tre4,Gras,Gras,Gras,Gras,Gras,Path,Gras,Gras,Gras,
 };
 
 struct ScreenMeta SCR_00023 = {
-Tre4,Gras,Gras,Gras,Bush,Path,Gras,Gras,Gras,Gras,
+Tre4,Gras,Gras,Gras,TGrs,Path,Gras,Gras,Gras,Gras,
 Path,Path,Gras,Gras,Gras,Path,Gras,Gras,Gras,Gras,
 Gras,Path,Gras,Gras,Gras,Path,Path,Gras,Gras,Gras,
-Gras,Path,Gras,Gras,Gras,Gras,Path,Bush,Gras,Gras,
-Gras,Path,Path,Path,Path,Bush,Path,Bush,Bush,Gras,
-Gras,Gras,Gras,Bush,Bush,Path,Path,Bush,Gras,Gras,
+Gras,Path,Gras,Gras,Gras,Gras,Path,TGrs,Gras,Gras,
+Gras,Path,Path,Path,Path,TGrs,Path,TGrs,TGrs,Gras,
+Gras,Gras,Gras,TGrs,TGrs,Path,Path,TGrs,Gras,Gras,
 Path,Path,Gras,Gras,Gras,Path,Path,Gras,Gras,Gras,
 Gras,Path,Path,Path,Path,Path,Path,Path,Path,Gras,
 Gras,Gras,Gras,Gras,Gras,Path,Gras,Gras,Gras,Gras,
@@ -277,51 +278,51 @@ Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,
 };
 
 struct ScreenMeta SCR_00027 = {
-Gras,Gras,Gras,Gras,Bush,Path,Gras,Gras,Gras,Fenc,
+Gras,Gras,Gras,Gras,TGrs,Path,Gras,Gras,Gras,Fenc,
 Path,Path,Gras,Gras,Gras,Path,Gras,Gras,Gras,Fenc,
 Gras,Path,Gras,Gras,Gras,Path,Path,Gras,Gras,Fenc,
-Gras,Path,Gras,Gras,Gras,Gras,Path,Bush,Gras,Fenc,
-Gras,Path,Path,Path,Path,Bush,Path,Bush,Bush,Fenc,
-Gras,Gras,Gras,Bush,Bush,Path,Path,Bush,Gras,Fenc,
+Gras,Path,Gras,Gras,Gras,Gras,Path,TGrs,Gras,Fenc,
+Gras,Path,Path,Path,Path,TGrs,Path,TGrs,TGrs,Fenc,
+Gras,Gras,Gras,TGrs,TGrs,Path,Path,TGrs,Gras,Fenc,
 Path,Path,Gras,Gras,Gras,Path,Path,Gras,Gras,Fenc,
 Gras,Path,Path,Path,Path,Path,Path,Path,Path,Fenc,
 Gras,Gras,Gras,Gras,Gras,Path,Gras,Gras,Gras,Fenc,
 };
 
 struct ScreenMeta SCR_00030 = {
-Fenc,Gras,Gras,Gras,Bush,Path,Gras,Gras,Gras,Gras,
+Fenc,Gras,Gras,Gras,TGrs,Path,Gras,Gras,Gras,Gras,
 Fenc,Path,Gras,Gras,Gras,Path,Gras,Gras,Gras,Gras,
 Fenc,Path,Gras,Gras,Gras,Path,Path,Gras,Gras,Gras,
-Fenc,Path,Gras,Gras,Gras,Gras,Path,Bush,Gras,Gras,
-Fenc,Path,Path,Path,Path,Bush,Path,Bush,Bush,Gras,
-Fenc,Gras,Gras,Bush,Bush,Path,Path,Bush,Gras,Gras,
+Fenc,Path,Gras,Gras,Gras,Gras,Path,TGrs,Gras,Gras,
+Fenc,Path,Path,Path,Path,TGrs,Path,TGrs,TGrs,Gras,
+Fenc,Gras,Gras,TGrs,TGrs,Path,Path,TGrs,Gras,Gras,
 Fenc,Path,Gras,Gras,Gras,Path,Path,Gras,Gras,Gras,
 Fenc,Path,Path,Path,Path,Path,Path,Path,Path,Path,
 Fenc,Gras,Gras,Gras,Gras,Path,Gras,Gras,Gras,Gras,
 };
 
 struct ScreenMeta SCR_00031 = {
-Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,
-Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,
-Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,
-Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,
-Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,
-Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,
-Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,
-Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,
-Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,
+Path,Path,Path,Path,Path,Gras,Gras,Gras,Gras,Tre1,
+Path,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Tre3,
+Path,Gras,TGrs,TGrs,TGrs,Gras,Gras,TGrs,Gras,Tre1,
+Path,Gras,TGrs,Gras,TGrs,Gras,TGrs,Gras,TGrs,Tre3,
+Path,Gras,TGrs,TGrs,Gras,Gras,TGrs,TGrs,TGrs,Tre1,
+Path,Gras,TGrs,Gras,TGrs,Gras,TGrs,Gras,TGrs,Tre3,
+Path,Gras,TGrs,Gras,TGrs,Gras,TGrs,Gras,TGrs,Tre1,
+Path,Path,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Tre3,
+Gras,Path,Path,Path,Path,Path,Path,Path,Path,Path,
 };
 
 struct ScreenMeta SCR_00032 = {
-Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,
-Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,
-Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,
-Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,
-Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,
-Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,
-Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,
-Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,
-Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,Gras,
+Tre2,Gras,Gras,Gras,Gras,Gras,Path,Gras,Gras,Gras,
+Tre4,Gras,Gras,Gras,Gras,Path,Path,Gras,Gras,Gras,
+Tre2,Gras,TGrs,Gras,Gras,Path,Gras,Gras,Gras,Gras,
+Tre4,TGrs,Gras,TGrs,Gras,Path,Gras,Gras,Gras,Gras,
+Tre2,Gras,TGrs,Gras,Gras,Path,TGrs,TGrs,Gras,Gras,
+Tre4,Gras,Gras,Gras,Path,Path,TGrs,TGrs,Gras,Gras,
+Tre2,Gras,Gras,Path,Path,TGrs,TGrs,TGrs,Gras,Gras,
+Tre4,Gras,Gras,Path,Gras,TGrs,TGrs,Gras,Gras,Gras,
+Path,Path,Path,Path,TGrs,TGrs,TGrs,Gras,Gras,Gras,
 };
 
 struct ScreenMeta SCR_00033 = {
@@ -818,7 +819,7 @@ uint32_t get_meta_tile_info(MetaTile metaTile, uint8_t* TL, uint8_t* TR, uint8_t
         *BR = 0x00;
         return 0;
         
-        case Bush:
+        case TGrs:
         *TL = *TR = *BL = *BR = 0x55;
         return 0;
 
@@ -948,7 +949,7 @@ bool can_move_onto_tile(MetaTile metaTile)
         case Empt:
         case Gras:
         case Gra2:
-        case Bush:
+        case TGrs:
         case Path:
         case HsDr:
         return true;
@@ -962,4 +963,9 @@ struct ScreenMeta* get_screen(uint8_t x, uint8_t y)
 {
     //tracef("get_screen %d %d", x, y);
     return MainWorldMap.World[x+y*WORLD_MAX_X];
+}
+
+void copy_screen(struct ScreenMeta* pSrc, struct ScreenMeta* pDest)
+{
+    memcpy(pDest, pSrc, sizeof(struct ScreenMeta));
 }

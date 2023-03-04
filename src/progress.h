@@ -36,6 +36,10 @@ struct SaveData
     u8 worldY;
     u8 playerX;
     u8 playerY;
+    
+    int coins;
+    int hearts;
+    int maxHearts;
 
     struct PlayerProgress progress;
 };
