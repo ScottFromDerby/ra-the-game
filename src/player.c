@@ -29,23 +29,23 @@ void draw_player_sprite()
     switch (g_currentFacing)
     {
     case Up:
-        spriteSheetOffsetX = 16;
-        spriteSheetOffsetY = 0;
+        spriteSheetOffsetX = TILESIZE;
+        spriteSheetOffsetY = TILESIZE;
         spriteSheetRenderFlags = (g_upHeldFrames % 16 > 8) ? BLIT_FLIP_X : 0;
         break;
     case Down:
         spriteSheetOffsetX = 0;
-        spriteSheetOffsetY = 0;
+        spriteSheetOffsetY = TILESIZE;
         spriteSheetRenderFlags = (g_downHeldFrames % 16 > 8) ? BLIT_FLIP_X : 0;
         break;
     case Right:
         spriteSheetOffsetX = (g_rightHeldFrames % 16 > 8) ? 32 : 48;
-        spriteSheetOffsetY = 0;
+        spriteSheetOffsetY = TILESIZE;
         spriteSheetRenderFlags = BLIT_FLIP_X;
         break;
     case Left:
         spriteSheetOffsetX = (g_leftHeldFrames % 16 > 8) ? 32 : 48;
-        spriteSheetOffsetY = 0;
+        spriteSheetOffsetY = TILESIZE;
         spriteSheetRenderFlags = 0;
         break;
     default:
@@ -98,32 +98,32 @@ void draw_player_sprite()
         //tracef("Swingforwards plysprite %u", g_currentFacing);
 
         u32 tileWantedX = TILESIZE * 2;
-        u32 tileWantedY = TILESIZE * 2;
+        u32 tileWantedY = TILESIZE * 3;
 
         if( g_currentFacing == Left)
         {
             spriteSheetRenderFlags = 0;
             tileWantedX = TILESIZE * 2;
-            tileWantedY = TILESIZE * 2;
+            tileWantedY = TILESIZE * 3;
         }
         else if( g_currentFacing == Right )
         {
             spriteSheetRenderFlags = BLIT_FLIP_X;
             tileWantedX = TILESIZE * 2;
-            tileWantedY = TILESIZE * 2;
+            tileWantedY = TILESIZE * 3;
         }
         else if( g_currentFacing == Up )
         {
             spriteSheetRenderFlags = 0;
             tileWantedX = TILESIZE * 1;
-            tileWantedY = TILESIZE * 2;
+            tileWantedY = TILESIZE * 3;
             playerExtraOffsetY = -2;
         }
         else if( g_currentFacing == Down )
         {
             spriteSheetRenderFlags = 0;
             tileWantedX = TILESIZE * 0;
-            tileWantedY = TILESIZE * 2;
+            tileWantedY = TILESIZE * 3;
             playerExtraOffsetY = 2;
         }
         
