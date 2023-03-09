@@ -75,58 +75,58 @@ void draw_player_sprite()
         }
     }
 
-    if( g_swordSwingState == Swing_Off )
+    if (g_swordSwingState == Swing_Off)
     {
         //  Regular
         *DRAW_COLORS = 0x0421;
         blitSub(SPRITE_Player, g_playerX - HALFTILE + playerExtraOffsetX, g_playerY - HALFTILE + playerExtraOffsetY, TILESIZE, TILESIZE, spriteSheetOffsetX, spriteSheetOffsetY, SPRITE_PlayerWidth, SPRITE_PlayerFlags | spriteSheetRenderFlags);
     }
-    else if( g_swordSwingState == Swing_Side)
+    else if (g_swordSwingState == Swing_Side)
     {
         *DRAW_COLORS = 0x0421;
         blitSub(SPRITE_Player, g_playerX - HALFTILE + playerExtraOffsetX, g_playerY - HALFTILE + playerExtraOffsetY, TILESIZE, TILESIZE, spriteSheetOffsetX, spriteSheetOffsetY, SPRITE_PlayerWidth, SPRITE_PlayerFlags | spriteSheetRenderFlags);
     }
-    else if( g_swordSwingState == Swing_Diagonal)
+    else if (g_swordSwingState == Swing_Diagonal)
     {
         *DRAW_COLORS = 0x0421;
         blitSub(SPRITE_Player, g_playerX - HALFTILE + playerExtraOffsetX, g_playerY - HALFTILE + playerExtraOffsetY, TILESIZE, TILESIZE, spriteSheetOffsetX, spriteSheetOffsetY, SPRITE_PlayerWidth, SPRITE_PlayerFlags | spriteSheetRenderFlags);
     }
-    else if( g_swordSwingState == Swing_Forwards)
-    {    
+    else if (g_swordSwingState == Swing_Forwards)
+    {
         *DRAW_COLORS = 0x0421;
 
-        //tracef("Swingforwards plysprite %u", g_currentFacing);
+        // tracef("Swingforwards plysprite %u", g_currentFacing);
 
         u32 tileWantedX = TILESIZE * 2;
         u32 tileWantedY = TILESIZE * 3;
 
-        if( g_currentFacing == Left)
+        if (g_currentFacing == Left)
         {
             spriteSheetRenderFlags = 0;
             tileWantedX = TILESIZE * 2;
             tileWantedY = TILESIZE * 3;
         }
-        else if( g_currentFacing == Right )
+        else if (g_currentFacing == Right)
         {
             spriteSheetRenderFlags = BLIT_FLIP_X;
             tileWantedX = TILESIZE * 2;
             tileWantedY = TILESIZE * 3;
         }
-        else if( g_currentFacing == Up )
+        else if (g_currentFacing == Up)
         {
             spriteSheetRenderFlags = 0;
             tileWantedX = TILESIZE * 1;
             tileWantedY = TILESIZE * 3;
             playerExtraOffsetY = -2;
         }
-        else if( g_currentFacing == Down )
+        else if (g_currentFacing == Down)
         {
             spriteSheetRenderFlags = 0;
             tileWantedX = TILESIZE * 0;
             tileWantedY = TILESIZE * 3;
             playerExtraOffsetY = 2;
         }
-        
+
         blitSub(SPRITE_Player, g_playerX - HALFTILE + playerExtraOffsetX, g_playerY - HALFTILE + playerExtraOffsetY, TILESIZE, TILESIZE, tileWantedX, tileWantedY, SPRITE_PlayerWidth, SPRITE_PlayerFlags | spriteSheetRenderFlags);
     }
 }

@@ -2,9 +2,9 @@
 
 // SPRITE_NPCs
 #define SPRITE_NPCsWidth 64
-#define SPRITE_NPCsHeight 256
+#define SPRITE_NPCsHeight 272
 #define SPRITE_NPCsFlags BLIT_2BPP
-extern const uint8_t SPRITE_NPCs[4096];
+extern const uint8_t SPRITE_NPCs[4352];
 
 static void blitHalfTile_SPRITE_NPCs(int32_t x, int32_t y, uint32_t tileX, uint32_t tileY, uint32_t flags)
 {

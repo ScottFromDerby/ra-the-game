@@ -5,6 +5,7 @@
 #include "collectable.h"
 #include "dialog_data.h"
 #include "dialog.h"
+#include "enemy.h"
 #include "gfx.h"
 #include "input.h"
 #include "interactables.h"
@@ -200,6 +201,9 @@ void on_start_screen()
         add_interactable(IT_MusicBox, 4, 4, INTERACTABLE_ACTIVE | INTERACTABLE_BLOCK_PLAYER);
         //add_anim_tile(ATT_MusicBox, 8, 2, 0);
         break;
+        case 0x31:
+        add_enemy(ET_Octorok, 40, 40);
+        break;
     }
 
     save_game();
@@ -215,6 +219,7 @@ void clear_screen()
     //  Clear NPC
     clear_interactables();
     clear_collectables();
+    clear_enemies();
 }
 
 void set_screen(u8 x, u8 y, bool bForce)
@@ -1047,6 +1052,10 @@ void update()
     tick_interactables();
 
     draw_interactables();
+
+    tick_enemies();
+
+    draw_enemies();
 
     draw_player();
 
