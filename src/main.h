@@ -5,6 +5,10 @@ extern u8 g_playerY;
 extern u8 g_currentWorldX;
 extern u8 g_currentWorldY;
 
+extern u8 g_damagePushX;
+extern u8 g_damagePushY;
+extern u8 g_damageFramesLeft;
+
 extern u8 g_upHeldFrames;
 extern u8 g_downHeldFrames;
 extern u8 g_leftHeldFrames;

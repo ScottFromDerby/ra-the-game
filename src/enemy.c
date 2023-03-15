@@ -26,6 +26,8 @@ void add_enemy(enum EnemyType type, u8 xPos, u8 yPos)
             g_Enemies[i].yPos = yPos;
             g_Enemies[i].flags = 0;
             g_Enemies[i].ticks = 0;
+            g_Enemies[i].moveTicks = 0;
+            
             switch(type)
             {
                 case ET_Octorok:
@@ -71,6 +73,8 @@ void tick_octorok(struct Enemy* pOcto)
 
     if (pOcto->logicPhase == OL_Wandering)
     {
+        //  Only increment moveTicks if it is wandering
+        pOcto->moveTicks = (pOcto->moveTicks + 1) % 10;
         switch (pOcto->flags)
         {
             default:
@@ -127,7 +131,8 @@ void draw_enemies()
         {
             case ET_Octorok:
             {
-                bool bAltFrame = g_Enemies[i].ticks >= 30;
+                //tracef("%d", g_Enemies[i].ticks);
+                bool bAltFrame = g_Enemies[i].moveTicks > 5;
                 switch(g_Enemies[i].flags)
                 {
                     default:

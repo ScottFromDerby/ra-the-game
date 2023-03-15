@@ -37,6 +37,10 @@ enum GameState g_gameState = INGAME;
 u8 g_playerX = 100;
 u8 g_playerY = 100;
 
+u8 g_damagePushX = 0;
+u8 g_damagePushY = 0;
+u8 g_damageFramesLeft = 0;
+
 struct ScreenMeta g_currentScreen;
 struct ScreenMeta g_transitionFromScreen;
 u8 g_currentWorldX = (u8)-1;
@@ -1040,6 +1044,13 @@ void update()
         if (button_held(BUTTON_1) && button_held(BUTTON_2))
         {
             toggle_pause();
+        }
+    }
+    else if(g_gameState == INGAME)
+    {
+        if (g_damageFramesLeft > 0)
+        {
+            g_damageFramesLeft--;
         }
     }
 

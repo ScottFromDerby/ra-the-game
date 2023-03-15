@@ -31,20 +31,20 @@ void draw_player_sprite()
     case Up:
         spriteSheetOffsetX = TILESIZE;
         spriteSheetOffsetY = TILESIZE;
-        spriteSheetRenderFlags = (g_upHeldFrames % 16 > 8) ? BLIT_FLIP_X : 0;
+        spriteSheetRenderFlags = (((g_upHeldFrames + 6) % 14) > 7) ? BLIT_FLIP_X : 0;
         break;
     case Down:
         spriteSheetOffsetX = 0;
         spriteSheetOffsetY = TILESIZE;
-        spriteSheetRenderFlags = (g_downHeldFrames % 16 > 8) ? BLIT_FLIP_X : 0;
+        spriteSheetRenderFlags = (((g_downHeldFrames + 6) % 14) > 7) ? BLIT_FLIP_X : 0;
         break;
     case Right:
-        spriteSheetOffsetX = (g_rightHeldFrames % 16 > 8) ? 32 : 48;
+        spriteSheetOffsetX = (((g_rightHeldFrames + 6) % 14) > 7) ? 48 : 32;
         spriteSheetOffsetY = TILESIZE;
         spriteSheetRenderFlags = BLIT_FLIP_X;
         break;
     case Left:
-        spriteSheetOffsetX = (g_leftHeldFrames % 16 > 8) ? 32 : 48;
+        spriteSheetOffsetX = (((g_leftHeldFrames + 6) % 14) > 7) ? 48 : 32;
         spriteSheetOffsetY = TILESIZE;
         spriteSheetRenderFlags = 0;
         break;
@@ -75,20 +75,29 @@ void draw_player_sprite()
         }
     }
 
+    u16 NORMAL_PLY_SPRITE = 0x0421;
+    u16 INVERTED_PLY_SPRITE = 0x0234;
+    if (g_damageFramesLeft > 0)
+    {   
+        *DRAW_COLORS = (g_damageFramesLeft % 8 > 4 ) ? NORMAL_PLY_SPRITE : INVERTED_PLY_SPRITE;
+    }
+    else
+    {
+        *DRAW_COLORS = NORMAL_PLY_SPRITE;
+    }
+    
+
     if (g_swordSwingState == Swing_Off)
     {
         //  Regular
-        *DRAW_COLORS = 0x0421;
         blitSub(SPRITE_Player, g_playerX - HALFTILE + playerExtraOffsetX, g_playerY - HALFTILE + playerExtraOffsetY, TILESIZE, TILESIZE, spriteSheetOffsetX, spriteSheetOffsetY, SPRITE_PlayerWidth, SPRITE_PlayerFlags | spriteSheetRenderFlags);
     }
     else if (g_swordSwingState == Swing_Side)
     {
-        *DRAW_COLORS = 0x0421;
         blitSub(SPRITE_Player, g_playerX - HALFTILE + playerExtraOffsetX, g_playerY - HALFTILE + playerExtraOffsetY, TILESIZE, TILESIZE, spriteSheetOffsetX, spriteSheetOffsetY, SPRITE_PlayerWidth, SPRITE_PlayerFlags | spriteSheetRenderFlags);
     }
     else if (g_swordSwingState == Swing_Diagonal)
     {
-        *DRAW_COLORS = 0x0421;
         blitSub(SPRITE_Player, g_playerX - HALFTILE + playerExtraOffsetX, g_playerY - HALFTILE + playerExtraOffsetY, TILESIZE, TILESIZE, spriteSheetOffsetX, spriteSheetOffsetY, SPRITE_PlayerWidth, SPRITE_PlayerFlags | spriteSheetRenderFlags);
     }
     else if (g_swordSwingState == Swing_Forwards)

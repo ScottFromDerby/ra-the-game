@@ -41,6 +41,7 @@ struct Enemy
     u8 xPos;
     u8 yPos;
     u8 ticks;
+    u8 moveTicks;
     int ticksToNextPhase;
     u8 gfxPhase;
     u8 logicPhase;
