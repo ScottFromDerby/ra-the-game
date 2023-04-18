@@ -1032,7 +1032,7 @@ void update()
         else
         {
             resetCount = 0;
-            if (button_held(BUTTON_1) && button_held(BUTTON_2))
+            if (button_newly_pressed(BUTTON_2))
             {
                 toggle_pause();
             }
@@ -1041,7 +1041,7 @@ void update()
 
     if (g_gameState == PAUSE)
     {
-        if (button_held(BUTTON_1) && button_held(BUTTON_2))
+        if (button_newly_pressed(BUTTON_2))
         {
             toggle_pause();
         }
