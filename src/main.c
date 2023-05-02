@@ -3,8 +3,8 @@
 
 #include "animtiles.h"
 #include "collectable.h"
-#include "dialog_data.h"
 #include "dialog.h"
+#include "dialog_data.h"
 #include "enemy.h"
 #include "gfx.h"
 #include "input.h"
@@ -37,7 +37,7 @@ enum GameState g_gameState = INGAME;
 u8 g_playerX = 100;
 u8 g_playerY = 100;
 
-u8 g_damagePushX = 0;
+u8 g_damagePushX = 0;   //  TBD: implement!
 u8 g_damagePushY = 0;
 u8 g_damageFramesLeft = 0;
 
@@ -117,8 +117,6 @@ void draw_pause()
             gfx_setpixel(i, j, 0x1234);
         }
     }
-
-    //for( )
 
     gfx_drawstr("Inventory", HALFTILE * 4, HALFTILE * 3 + yOffset, 0x0032, false);
     gfx_drawstr("Spanner", HALFTILE * 4, HALFTILE * 4 + yOffset, 0x0032, false);
@@ -1089,4 +1087,6 @@ void update()
     draw_dialog();
 
     input_update_late();
+
+    gfx_drawdebugpixels();
 }

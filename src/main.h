@@ -17,6 +17,8 @@ extern u8 g_rightHeldFrames;
 extern int g_transitionFramesLeft;
 extern enum Direction g_transitionDirection;
 
+extern u32 g_uTicks;
+
 enum Direction
 {
     Left,

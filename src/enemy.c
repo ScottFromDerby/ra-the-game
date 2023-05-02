@@ -1,5 +1,7 @@
 #include "wasm4.h"
 #include "enemy.h"
+#include "main.h"
+#include "gfx.h"
 
 #include "tools.h"
 #include "gfx_npcs.h"
@@ -52,12 +54,11 @@ void tick_octorok(struct Enemy* pOcto)
     if (pOcto->ticksToNextPhase == 0)
     {
         //pOcto->flags = 2;
-
         if (pOcto->logicPhase == OL_Wait)
         {
             //  Pick new place to wander to
             //pOcto->flags = rand_range(0, 4);  //  Up, right, down, left
-            pOcto->flags = (pOcto->flags+1) % 4;
+            pOcto->flags = (pOcto->flags + 1) % 4;
             //pOcto->flags = 3;
             pOcto->ticksToNextPhase = rand_range(10, 30);
             pOcto->logicPhase = OL_Wandering;
@@ -95,11 +96,31 @@ void tick_octorok(struct Enemy* pOcto)
         //  Debug
         pOcto->xPos = clampu8(pOcto->xPos, 1, 139);
         pOcto->yPos = clampu8(pOcto->yPos, 1, 139);
-
-        //  TBD: Check collisions at this point!
-        //get_tile_from_point, check collisions, maybe rewind etc
-        //g_Enemies[i].xPos = 
     }
+
+    //  TBD: Check collisions at this point!
+    //get_tile_from_point, check collisions, maybe rewind etc
+    //tracef("dmgframes: %d", g_damageFramesLeft);
+    if (g_damageFramesLeft == 0)
+    {
+        //tracef("%d %d %d %d", pOcto->xPos, pOcto->yPos, g_playerX, g_playerY);
+        //tracef("%d %d %d %d", (pOcto->xPos+HALFTILE > g_playerX), (pOcto->xPos-HALFTILE < g_playerX), (pOcto->yPos+HALFTILE > g_playerY), (pOcto->yPos-HALFTILE < g_playerY));
+        if ((pOcto->xPos+HALFTILE > g_playerX) && (pOcto->xPos-HALFTILE < g_playerX) &&
+            (pOcto->yPos+HALFTILE > g_playerY) && (pOcto->yPos-HALFTILE < g_playerY))
+        {
+            g_damageFramesLeft = 32;
+        }
+    }
+    
+    
+    gfx_debughighlightpixel(pOcto->xPos+HALFTILE, pOcto->yPos-HALFTILE);
+    gfx_debughighlightpixel(pOcto->xPos+HALFTILE, pOcto->yPos+HALFTILE);
+    gfx_debughighlightpixel(pOcto->xPos-HALFTILE, pOcto->yPos+HALFTILE);
+    gfx_debughighlightpixel(pOcto->xPos-HALFTILE, pOcto->yPos-HALFTILE);
+    gfx_debughighlightpixel(g_playerX, g_playerY);
+
+    //gfx_setpixel(pOcto->xPos, pOcto->yPos, (int)rand());
+    //gfx_setpixel(g_playerX, g_playerY, (int)rand());
 }
 
 void tick_enemies()

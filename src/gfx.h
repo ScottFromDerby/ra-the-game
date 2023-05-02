@@ -14,3 +14,6 @@ void gfx_drawval(int val, int x, int y, u16 drawcolors);
 void gfx_drawval_rightalign(int val, int x, int y, u16 drawcolors);
 
 void gfx_setpixel(int x, int y, int paletteColor);
+
+void gfx_debughighlightpixel(int x, int y);
+void gfx_drawdebugpixels();

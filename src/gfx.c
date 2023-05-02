@@ -14,6 +14,16 @@ const u32* FONT_CurrentOffsets = FONT_8pxOffsets;
 
 const int LINE_SPACING = 9;
 
+struct Pixel
+{
+	int x;
+	int y;
+	int state;
+};
+
+int g_pixelsSetThisFrame = 0;
+struct Pixel g_debugPixel[16];
+
 void gfx_charlenpx(char which, u32 *offset, u32 *offsetSize)
 {
 	if (which >= 'A' && which <= 'Z')
@@ -194,4 +204,21 @@ void gfx_setpixel(int x, int y, int paletteColor)
 
 	// Write to the framebuffer
 	FRAMEBUFFER[idx] = (u8)((color << shift) | (FRAMEBUFFER[idx] & ~mask));
+}
+
+void gfx_debughighlightpixel(int x, int y)
+{
+	g_debugPixel[g_pixelsSetThisFrame].x = x;
+	g_debugPixel[g_pixelsSetThisFrame].y = y;
+	g_debugPixel[g_pixelsSetThisFrame].state = 0;
+	g_pixelsSetThisFrame++;
+}
+
+void gfx_drawdebugpixels()
+{
+	for( int i = 0; i < g_pixelsSetThisFrame; ++i)
+	{
+		gfx_setpixel(g_debugPixel[i].x, g_debugPixel[i].y, (g_uTicks/10)%4);
+	}
+	g_pixelsSetThisFrame = 0;
 }
