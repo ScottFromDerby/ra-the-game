@@ -1,6 +1,7 @@
 #pragma once
 #include "wasm4.h"
 
+extern const uint16_t DLGTEXT_InstructionDialog[];
 extern const uint16_t DLGTEXT_WelcomeNPC1[];
 extern const uint16_t DLGTEXT_WelcomeNPC2[];
 extern const uint16_t DLGTEXT_WelcomeNPCImpatient[];
@@ -10,6 +11,7 @@ extern const uint16_t DLGTEXT_ShieldMan[];
 extern const uint16_t DLGTEXT_ShieldMan2[];
 extern const uint16_t DLGTEXT_ShieldMan3[];
 extern const uint16_t DLGTEXT_ShieldMan4[];
+extern const uint16_t DLGTEXT_ShieldMan5[];
 extern const uint16_t DLGTEXT_MusicBoxOn[];
 extern const uint16_t DLGTEXT_MusicBoxOff[];
 extern const uint16_t DLGTEXT_NPCPlaceholder1[];

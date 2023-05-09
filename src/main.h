@@ -8,6 +8,7 @@ extern u8 g_currentWorldY;
 extern u8 g_damagePushX;
 extern u8 g_damagePushY;
 extern u8 g_damageFramesLeft;
+extern bool g_debugPlayerSpriteAlt;
 
 extern u8 g_upHeldFrames;
 extern u8 g_downHeldFrames;

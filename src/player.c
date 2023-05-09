@@ -23,6 +23,9 @@ void start_swing_sword()
 
 void draw_player_sprite()
 {
+    //  How fast the player animates
+    const int FRAME_CYCLE = 7;
+
     u32 spriteSheetOffsetX = 0;
     u32 spriteSheetOffsetY = 0;
     u32 spriteSheetRenderFlags = 0;
@@ -31,20 +34,29 @@ void draw_player_sprite()
     case Up:
         spriteSheetOffsetX = TILESIZE;
         spriteSheetOffsetY = TILESIZE;
-        spriteSheetRenderFlags = (((g_upHeldFrames + 6) % 14) > 7) ? BLIT_FLIP_X : 0;
+        //  NB. Plus 6 so that char immediately goes into alt-step as soon as it is pressed
+        //spriteSheetRenderFlags = (((g_upHeldFrames + 6) % 14) > 7) ? BLIT_FLIP_X : 0;
+        spriteSheetRenderFlags = (((g_upHeldFrames + (FRAME_CYCLE - 1)) % (FRAME_CYCLE * 2)) > FRAME_CYCLE) ? BLIT_FLIP_X : 0;
         break;
     case Down:
         spriteSheetOffsetX = 0;
         spriteSheetOffsetY = TILESIZE;
-        spriteSheetRenderFlags = (((g_downHeldFrames + 6) % 14) > 7) ? BLIT_FLIP_X : 0;
+
+        if (g_debugPlayerSpriteAlt)
+        {
+            spriteSheetOffsetX = TILESIZE;
+            spriteSheetOffsetY = 0;
+        }
+
+        spriteSheetRenderFlags = (((g_downHeldFrames + (FRAME_CYCLE - 1)) % (FRAME_CYCLE * 2)) > FRAME_CYCLE) ? BLIT_FLIP_X : 0;
         break;
     case Right:
-        spriteSheetOffsetX = (((g_rightHeldFrames + 6) % 14) > 7) ? 48 : 32;
+        spriteSheetOffsetX = (((g_rightHeldFrames + (FRAME_CYCLE - 1)) % (FRAME_CYCLE * 2)) > FRAME_CYCLE) ? 3 * TILESIZE : 2 * TILESIZE;
         spriteSheetOffsetY = TILESIZE;
         spriteSheetRenderFlags = BLIT_FLIP_X;
         break;
     case Left:
-        spriteSheetOffsetX = (((g_leftHeldFrames + 6) % 14) > 7) ? 48 : 32;
+        spriteSheetOffsetX = (((g_leftHeldFrames + (FRAME_CYCLE - 1)) % (FRAME_CYCLE * 2)) > FRAME_CYCLE) ? 3 * TILESIZE : 2 * TILESIZE;
         spriteSheetOffsetY = TILESIZE;
         spriteSheetRenderFlags = 0;
         break;
@@ -102,8 +114,6 @@ void draw_player_sprite()
     }
     else if (g_swordSwingState == Swing_Forwards)
     {
-        *DRAW_COLORS = 0x0421;
-
         // tracef("Swingforwards plysprite %u", g_currentFacing);
 
         u32 tileWantedX = TILESIZE * 2;
@@ -153,18 +163,18 @@ void draw_weapon()
         {
             case Swing_Side:
                 *DRAW_COLORS = 0x0421;
-                trace("downswing side");
+                //trace("downswing side");
                 blitSub(SPRITE_Weapon, g_playerX-16, g_playerY, HALFTILE, HALFTILE, HALFTILE * 4, HALFTILE * 1, SPRITE_WeaponWidth, SPRITE_WeaponFlags);
                 blitSub(SPRITE_Weapon, g_playerX-24, g_playerY, HALFTILE, HALFTILE, HALFTILE * 3, HALFTILE * 1, SPRITE_WeaponWidth, SPRITE_WeaponFlags);
             break;
             case Swing_Diagonal:
                 *DRAW_COLORS = 0x0421;
-                trace("downswing diagonal");
+                //trace("downswing diagonal");
                 blitSub(SPRITE_Weapon, g_playerX-21, g_playerY+6, TILESIZE, TILESIZE, HALFTILE * 5, HALFTILE * 0, SPRITE_WeaponWidth, SPRITE_WeaponFlags | BLIT_ROTATE);
             break;
             case Swing_Forwards:
                 *DRAW_COLORS = 0x0421;
-                trace("downswing forwards");
+                //trace("downswing forwards");
                 blitSub(SPRITE_Weapon, g_playerX, g_playerY+10, HALFTILE, HALFTILE, HALFTILE * 2, HALFTILE * 0, SPRITE_WeaponWidth, SPRITE_WeaponFlags);
                 blitSub(SPRITE_Weapon, g_playerX, g_playerY+18, HALFTILE, HALFTILE, HALFTILE * 2, HALFTILE * 1, SPRITE_WeaponWidth, SPRITE_WeaponFlags);
             break;
@@ -180,18 +190,18 @@ void draw_weapon()
         {
             case Swing_Side:
                 *DRAW_COLORS = 0x0421;
-                trace("leftswing side");
+                //trace("leftswing side");
                 blitSub(SPRITE_Weapon, g_playerX-8, g_playerY-16, HALFTILE, HALFTILE, HALFTILE * 2, HALFTILE * 0, SPRITE_WeaponWidth, SPRITE_WeaponFlags | BLIT_FLIP_Y);
                 blitSub(SPRITE_Weapon, g_playerX-8, g_playerY-24, HALFTILE, HALFTILE, HALFTILE * 2, HALFTILE * 1, SPRITE_WeaponWidth, SPRITE_WeaponFlags | BLIT_FLIP_Y);
             break;
             case Swing_Diagonal:
                 *DRAW_COLORS = 0x0421;
-                trace("leftswing diagonal");
+                //trace("leftswing diagonal");
                 blitSub(SPRITE_Weapon, g_playerX-20, g_playerY-21, TILESIZE, TILESIZE, HALFTILE * 5, HALFTILE * 0, SPRITE_WeaponWidth, SPRITE_WeaponFlags);
             break;
             case Swing_Forwards:
                 *DRAW_COLORS = 0x0421;
-                trace("leftswing forwards");
+                //trace("leftswing forwards");
                 blitSub(SPRITE_Weapon, g_playerX-16, g_playerY, HALFTILE, HALFTILE, HALFTILE * 4, HALFTILE * 1, SPRITE_WeaponWidth, SPRITE_WeaponFlags);
                 blitSub(SPRITE_Weapon, g_playerX-24, g_playerY, HALFTILE, HALFTILE, HALFTILE * 3, HALFTILE * 1, SPRITE_WeaponWidth, SPRITE_WeaponFlags);
             break;
@@ -207,18 +217,18 @@ void draw_weapon()
         {
             case Swing_Side:
                 *DRAW_COLORS = 0x0421;
-                trace("rightswing side");
+                //trace("rightswing side");
                 blitSub(SPRITE_Weapon, g_playerX, g_playerY-16, HALFTILE, HALFTILE, HALFTILE * 2, HALFTILE * 0, SPRITE_WeaponWidth, SPRITE_WeaponFlags | BLIT_FLIP_Y);
                 blitSub(SPRITE_Weapon, g_playerX, g_playerY-24, HALFTILE, HALFTILE, HALFTILE * 2, HALFTILE * 1, SPRITE_WeaponWidth, SPRITE_WeaponFlags | BLIT_FLIP_Y);
             break;
             case Swing_Diagonal:
                 *DRAW_COLORS = 0x0421;
-                trace("rightswing diagonal");
+                //trace("rightswing diagonal");
                 blitSub(SPRITE_Weapon, g_playerX+5, g_playerY-21, TILESIZE, TILESIZE, HALFTILE * 5, HALFTILE * 0, SPRITE_WeaponWidth, SPRITE_WeaponFlags | BLIT_FLIP_X);
             break;
             case Swing_Forwards:
                 *DRAW_COLORS = 0x0421;
-                trace("rightswing forwards");
+                //trace("rightswing forwards");
                 blitSub(SPRITE_Weapon, g_playerX+8, g_playerY, HALFTILE, HALFTILE, HALFTILE * 4, HALFTILE * 1, SPRITE_WeaponWidth, SPRITE_WeaponFlags | BLIT_FLIP_X);
                 blitSub(SPRITE_Weapon, g_playerX+16, g_playerY, HALFTILE, HALFTILE, HALFTILE * 3, HALFTILE * 1, SPRITE_WeaponWidth, SPRITE_WeaponFlags | BLIT_FLIP_X);
             break;
@@ -233,18 +243,18 @@ void draw_weapon()
         {
             case Swing_Side:
                 *DRAW_COLORS = 0x0421;
-                trace("upswing side");
+                //trace("upswing side");
                 blitSub(SPRITE_Weapon, g_playerX+7, g_playerY- 8, HALFTILE, HALFTILE, HALFTILE * 4, HALFTILE * 1, SPRITE_WeaponWidth, SPRITE_WeaponFlags | BLIT_FLIP_X);
                 blitSub(SPRITE_Weapon, g_playerX+15, g_playerY - 8, HALFTILE, HALFTILE, HALFTILE * 3, HALFTILE * 1, SPRITE_WeaponWidth, SPRITE_WeaponFlags | BLIT_FLIP_X);
             break;
             case Swing_Diagonal:
                 *DRAW_COLORS = 0x0421;
-                trace("upswing diagonal");
+                //trace("upswing diagonal");
                 blitSub(SPRITE_Weapon, g_playerX+5, g_playerY-22, TILESIZE, TILESIZE, HALFTILE * 5, HALFTILE * 0, SPRITE_WeaponWidth, SPRITE_WeaponFlags | BLIT_FLIP_X);
             break;
             case Swing_Forwards:
                 *DRAW_COLORS = 0x0421;
-                trace("upswing forwards");
+                //trace("upswing forwards");
                 blitSub(SPRITE_Weapon, g_playerX-8, g_playerY-18, HALFTILE, HALFTILE, HALFTILE * 2, HALFTILE * 0, SPRITE_WeaponWidth, SPRITE_WeaponFlags | BLIT_FLIP_Y);
                 blitSub(SPRITE_Weapon, g_playerX-8, g_playerY-26, HALFTILE, HALFTILE, HALFTILE * 2, HALFTILE * 1, SPRITE_WeaponWidth, SPRITE_WeaponFlags | BLIT_FLIP_Y);
             break;

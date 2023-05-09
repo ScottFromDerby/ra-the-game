@@ -1,12 +1,14 @@
+InstructionDialog,To devs! Dlg opcodes! Use #hash to change to alt colour and ~tilde to go back to regular text. @At symbol forces a new line.
 WelcomeNPC1,Hi there! Welcome to our village. It is #great~ here!
 WelcomeNPC2,Do you like music? Try poking my #spiky record player~.
 WelcomeNPCImpatient,Why are you still talking to me? Go look around the village.
 WelcomeNPCEnjoyingMusic,Yes! Love this song! It reminds me of this kid I once knew. Looks a lot like you actually...
 GrumpyNPC,I don't want you in our village. Go away. It is not #great~ here.
 ShieldMan,I'm the guy to hand out #shields~, but I ran out. I wonder if you could go get one?
-ShieldMan2,There aren't any #yes~ or #no~ prompts yet. Sorry.
-ShieldMan3,Maybe you could help? Come to the #RetroAchievements~ #Discord~ and come help add them
-ShieldMan4,My creator, the amazing #Scott~ has decided that I have to have a really long dialog prompt full of lots and lots of words to test out my ability to speak really long bits of information. Will it work?
+ShieldMan2,There aren't any #yes~ or #no~ prompts yet. Sorry about that.
+ShieldMan3,Maybe you could help? Come to the #RetroAchievements~ #Discord~ and come help add them!
+ShieldMan4,My creator, the amazing #Scott~ has decided that I have to have a really long dialog prompt full of lots and lots of words to test out my...
+ShieldMan5,ability to speak really long bits of information. Will it work? #Sort of.~@4 lines of dialog is plenty and will work anyway I'm sure.
 MusicBoxOn,You switched it #on~.
 MusicBoxOff,You switched it #off~.
 NPCPlaceholder1,I'm a placeholder NPC 1! I wobble a bit. I need gfx! Will this #one day be you~?

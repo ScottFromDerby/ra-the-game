@@ -159,6 +159,11 @@ void on_interact(struct Interactable* pInteractedWith)
         }
         else if (g_currentInteractable->interactPhase == 4)
         {
+            show_dialog(DLGTEXT_ShieldMan5);
+            g_currentInteractable->interactPhase = 5;
+        }
+        else if (g_currentInteractable->interactPhase == 5)
+        {
             close_dialog();
             g_currentInteractable->interactPhase = 0;
             g_currentInteractable = 0;
@@ -194,7 +199,7 @@ void on_interact(struct Interactable* pInteractedWith)
         toggle_dialog(DLGTEXT_NPCPlaceholder3);
         break;
     case IT_RA_NPC04:
-        toggle_dialog(DLGTEXT_NPCPlaceholder4);
+        toggle_dialog(DLGTEXT_InstructionDialog);
         break;
     case IT_None:
         break;

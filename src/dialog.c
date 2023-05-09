@@ -20,14 +20,14 @@ int dialogNumChars = 0;
 
 int strlendlg(char* str)
 {
-    //  strlen which ignores colcodes
+    //  strlen including opcodes!
     int len = 0;
     while (*str != '\0')
     {
-        if (*str != '#' && *str != '~')
-        {
+        //if (*str != '#' && *str != '~')
+        //{
             len++;
-        }
+        //}
         str++;
     }
     return len;
@@ -59,6 +59,7 @@ void show_dialog(const uint16_t* pDialogData)
     g_bDialogSpeedup = false;
 
     dialogNumChars = strlendlg(g_dialogContent);
+    //tracef("numchars: %d", dialogNumChars);
     //  NB. doesn't not include terminating \0 character!
 
     //  Inject a sneaky space at the end to make sure we can still wrap on the last word too!
@@ -75,7 +76,13 @@ void show_dialog(const uint16_t* pDialogData)
         gfx_charlenpx(g_dialogContent[i], &unused, &charSizePx);
         textPxLength += charSizePx;
         //tracef("Adding %c, total size %d", g_dialogContent[i], textPxLength);
-        if( g_dialogContent[i+1] == ' ')
+        
+        if( g_dialogContent[i] == '@')
+        {
+            g_dialogContent[i] = '\n';
+            textPxLength = 0;
+        }
+        else if( g_dialogContent[i+1] == ' ')
         {
             //tracef("Detecting space. Are we over %d", DIALOG_WIDTH);
             if (textPxLength >= DIALOG_WIDTH)
@@ -157,6 +164,8 @@ void draw_dialog()
     // gfx_drawstr("A very bad quack might jinx zippy ", 8, TILESIZE*7 + 7, 0x0032, false);
     // gfx_drawstr("fowls.  Can you tell me if", 8, TILESIZE*7 + 19, 0x0042, false);
     // gfx_drawstr("you think this font is ok? Cost 5G", 8, TILESIZE*7 + 31, 0x0012, false);
+
+    //tracef("%s", g_dialogContent);
 
 
     int charsToDraw = g_dialogTicks / 2;
