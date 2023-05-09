@@ -34,8 +34,8 @@ struct SaveData
     u8 saveIsActive;
     u8 worldX;
     u8 worldY;
-    u8 playerX;
-    u8 playerY;
+    int playerX;
+    int playerY;
     
     int coins;
     int hearts;

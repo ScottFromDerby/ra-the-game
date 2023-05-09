@@ -1,7 +1,6 @@
 #pragma once
 
-extern u8 g_playerX;
-extern u8 g_playerY;
+extern struct Rect g_rcPlayer;
 extern u8 g_currentWorldX;
 extern u8 g_currentWorldY;
 
@@ -17,6 +16,8 @@ extern u8 g_rightHeldFrames;
 
 extern int g_transitionFramesLeft;
 extern enum Direction g_transitionDirection;
+
+extern u32 g_uTicks;
 
 enum Direction
 {

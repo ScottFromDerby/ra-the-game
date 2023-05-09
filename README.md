@@ -9,6 +9,8 @@ Currently being built using [VS Code](https://code.visualstudio.com/), [Tortoise
 ```
 make clean; make
 w4 watch
+//Tools (linux)
+g++ ./RATGTextCompressor/RATGTextCompressor.cpp -cpp -o ./RATGTextCompressor/RATGTextCompressor
 ```
 
 # generate asset code
@@ -27,7 +29,10 @@ w4 png2src --c .\SPRITE_Weapon.png -t gfxtemplate_h.txt -o src/gfx_weapon.h; w4 
 
 # generate text
 ```
+Windows:
 RATGTextCompressor.exe dialog_input.txt src
+Linux:
+./RATGTextCompressor/RATGTextCompressor dialog_input.txt src
 ```
 
 # package

@@ -47,7 +47,7 @@ int main(int argc, char* argv[])
 	while (std::getline(input, line))
 	{
 		size_t firstCommaAt = line.find(',');
-		if (firstCommaAt != -1)
+		if (firstCommaAt != (size_t)-1)
 		{
 			std::string sTextID = line.substr(0, firstCommaAt);
 			std::string sTextContent = line.substr(firstCommaAt + 1);
@@ -59,7 +59,7 @@ int main(int argc, char* argv[])
 
 			size_t lastTokenStart = 0;
 			size_t nextSpaceAt = sTextContent.find(' ');
-			while (nextSpaceAt != -1)
+			while (nextSpaceAt != (size_t)-1)
 			{
 				std::string sNextToken = sTextContent.substr(lastTokenStart, nextSpaceAt - lastTokenStart);
 

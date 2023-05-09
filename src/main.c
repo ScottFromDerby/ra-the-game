@@ -3,8 +3,8 @@
 
 #include "animtiles.h"
 #include "collectable.h"
-#include "dialog_data.h"
 #include "dialog.h"
+#include "dialog_data.h"
 #include "enemy.h"
 #include "gfx.h"
 #include "input.h"
@@ -34,11 +34,11 @@ u8 g_rightHeldFrames = 0;
 enum Direction g_currentFacing = Down;
 enum GameState g_gameState = INGAME;
 
-u8 g_playerX = 100;
-u8 g_playerY = 100;
+//  Logical screen position and renderable w/h
+struct Rect g_rcPlayer = { 0, 0, TILESIZE, TILESIZE };
 bool g_debugPlayerSpriteAlt = false;
 
-u8 g_damagePushX = 0;
+u8 g_damagePushX = 0;   //  TBD: implement!
 u8 g_damagePushY = 0;
 u8 g_damageFramesLeft = 0;
 
@@ -210,9 +210,6 @@ void draw_pause()
             gfx_setpixel(i, j, 0x1234);
         }
     }
-
-    gfx_drawstr("Passive", 94, 35 + yOffset, 0x0030, false);
-    gfx_drawstr("Active", 126, 35 + yOffset, 0x0030, false);
 
     *DRAW_COLORS = 0x3240;
 
@@ -740,9 +737,9 @@ void draw_statusbar()
     // tostr(buffer, sizeof(*MainWorldMap.World[0]));
     // gfx_drawstr(buffer, 64, 152, 0x21, false);
 
-    //tostr(buffer, g_playerX);
+    //tostr(buffer, g_rcPlayer.x);
     //gfx_drawstr(buffer, 1, 152, 0x21, false);
-    //tostr(buffer, g_playerY);
+    //tostr(buffer, g_rcPlayer.y);
     //gfx_drawstr(buffer, 14, 152, 0x21, false);
 
     //tostr(buffer, g_currentWorldX);
@@ -945,11 +942,13 @@ void process_player_movement()
     //  oooo|ooooooo|ooo
     //  oooo---------ooo
     //  oooooooooooooooo
+
+
     if (bWantsMoveLeft)
     {
         u8 newX1, newY1, newX2, newY2;
-        get_tile_from_point(g_playerX - 4 - 1, g_playerY - 0, &newX1, &newY1);
-        get_tile_from_point(g_playerX - 4 - 1, g_playerY + 6, &newX2, &newY2);
+        get_tile_from_point(g_rcPlayer.x + 4 - 1, g_rcPlayer.y + 8, &newX1, &newY1);
+        get_tile_from_point(g_rcPlayer.x + 4 - 1, g_rcPlayer.y + 14, &newX2, &newY2);
 
         //  If my left side is allowed near my top and bottom to move onto the
         //   tile to the left of me, do so
@@ -958,18 +957,19 @@ void process_player_movement()
             !is_tile_blocked_by_npc(newX1, newY1) &&
             !is_tile_blocked_by_npc(newX2, newY2))
         {
-            g_playerX--;
+            g_rcPlayer.x--;
         }
         else
         {
             //trace("blocking left");
         }
+
     }
     else if (bWantsMoveRight)
     {
         u8 newX1, newY1, newX2, newY2;
-        get_tile_from_point(g_playerX + 4 + 1, g_playerY - 0, &newX1, &newY1);
-        get_tile_from_point(g_playerX + 4 + 1, g_playerY + 6, &newX2, &newY2);
+        get_tile_from_point(g_rcPlayer.x + 12 + 1, g_rcPlayer.y + 8, &newX1, &newY1);
+        get_tile_from_point(g_rcPlayer.x + 12 + 1, g_rcPlayer.y + 14, &newX2, &newY2);
         //  If my right side is allowed near the top and bottom to move onto the
         //   tile to the left of me, do so
         if (can_move_onto_tile(get_meta_tile(newX1, newY1)) &&
@@ -977,7 +977,7 @@ void process_player_movement()
             !is_tile_blocked_by_npc(newX1, newY1) &&
             !is_tile_blocked_by_npc(newX2, newY2))
         {
-            g_playerX++;
+            g_rcPlayer.x++;
         }
         else
         {
@@ -988,8 +988,8 @@ void process_player_movement()
     if (bWantsMoveUp)
     {
         u8 newX1, newY1, newX2, newY2;
-        get_tile_from_point(g_playerX - 4, g_playerY - 0 - 1, &newX1, &newY1);
-        get_tile_from_point(g_playerX + 4, g_playerY - 0 - 1, &newX2, &newY2);
+        get_tile_from_point(g_rcPlayer.x + 4, g_rcPlayer.y + 8 - 1, &newX1, &newY1);
+        get_tile_from_point(g_rcPlayer.x + 12, g_rcPlayer.y + 8 - 1, &newX2, &newY2);
         //  If my top side is allowed near my top left and right to move onto the
         //   tile above me, do so
         if (can_move_onto_tile(get_meta_tile(newX1, newY1)) &&
@@ -997,7 +997,7 @@ void process_player_movement()
             !is_tile_blocked_by_npc(newX1, newY1) &&
             !is_tile_blocked_by_npc(newX2, newY2))
         {
-            g_playerY--;
+            g_rcPlayer.y--;
         }
         else
         {
@@ -1007,8 +1007,8 @@ void process_player_movement()
     else if (bWantsMoveDown)
     {
         u8 newX1, newY1, newX2, newY2;
-        get_tile_from_point(g_playerX - 4, g_playerY + 6 + 1, &newX1, &newY1);
-        get_tile_from_point(g_playerX + 4, g_playerY + 6 + 1, &newX2, &newY2);
+        get_tile_from_point(g_rcPlayer.x + 4, g_rcPlayer.y + 14 + 1, &newX1, &newY1);
+        get_tile_from_point(g_rcPlayer.x + 12, g_rcPlayer.y + 14 + 1, &newX2, &newY2);
 
         //  If my bottom side is allowed near the bottom left and right to move onto the
         //   tile below me, do so
@@ -1017,7 +1017,7 @@ void process_player_movement()
             !is_tile_blocked_by_npc(newX1, newY1) &&
             !is_tile_blocked_by_npc(newX2, newY2))
         {
-            g_playerY++;
+            g_rcPlayer.y++;
         }
         else
         {
@@ -1025,27 +1025,39 @@ void process_player_movement()
         }
     }
 
-    if (g_playerX < 1)
+    if (g_rcPlayer.x < -HALFTILE)
     {
         set_screen(g_currentWorldX - 1, g_currentWorldY, false);
-        g_playerX = SCREEN_WIDTH - 2;
+        g_rcPlayer.x = SCREEN_WIDTH - 1 - HALFTILE;
     }
-    else if (g_playerX > SCREEN_WIDTH - 2)
+    else if (g_rcPlayer.x > SCREEN_WIDTH - HALFTILE)
     {
         set_screen(g_currentWorldX + 1, g_currentWorldY, false);
-        g_playerX = 2;
+        g_rcPlayer.x = -HALFTILE;
     }
 
-    if (g_playerY < 1)
+    if (g_rcPlayer.y < -HALFTILE)
     {
         set_screen(g_currentWorldX, g_currentWorldY - 1, false);
-        g_playerY = SCREEN_HEIGHT - 2;
+        g_rcPlayer.y = SCREEN_HEIGHT - 1 - HALFTILE;
     }
-    else if (g_playerY > SCREEN_HEIGHT - 2)
+    else if (g_rcPlayer.y > SCREEN_HEIGHT - HALFTILE)
     {
         set_screen(g_currentWorldX, g_currentWorldY + 1, false);
-        g_playerY = 2;
+        g_rcPlayer.y = -HALFTILE;
     }
+
+    //gfx_debughighlightpixel(g_rcPlayer.x + 4, g_rcPlayer.y + 8);
+    //gfx_debughighlightpixel(g_rcPlayer.x + 4, g_rcPlayer.y + 14);
+    //gfx_debughighlightpixel(g_rcPlayer.x + 12, g_rcPlayer.y + 8);
+    //gfx_debughighlightpixel(g_rcPlayer.x + 12, g_rcPlayer.y + 14);
+
+    //struct Rect rc;
+    //rc.x = g_rcPlayer.x + 4;
+    //rc.y = g_rcPlayer.y + 8;
+    //rc.w = g_rcPlayer.w + 8;
+    //rc.h = g_rcPlayer.h + 6;
+    //gfx_debughighlightrect(rc);
 }
 
 void start()
@@ -1285,6 +1297,22 @@ void update()
         }
     }
 
+	//	not sure about this?
+    if (g_gameState == PAUSE)
+    {
+        if (button_newly_pressed(BUTTON_2))
+        {
+            toggle_pause();
+        }
+    }
+    else if(g_gameState == INGAME)
+    {
+        if (g_damageFramesLeft > 0)
+        {
+            g_damageFramesLeft--;
+        }
+    }
+
     music_tick(g_Progress.musicBoxState == 1, g_Progress.musicBoxState == 1);
 
     update_room();
@@ -1320,4 +1348,6 @@ void update()
     draw_dialog();
 
     input_update_late();
+
+    gfx_drawdebugpixels();
 }
