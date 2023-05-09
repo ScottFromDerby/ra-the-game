@@ -38,8 +38,7 @@ enum Octorok_Logic
 struct Enemy
 {
     enum EnemyType type;
-    u8 xPos;
-    u8 yPos;
+    struct Rect rc;
     u8 ticks;
     u8 moveTicks;
     int ticksToNextPhase;
@@ -50,6 +49,8 @@ struct Enemy
 };
 
 extern struct Enemy g_Enemies[MAX_NUM_ENEMIES];
+
+void get_enemy_rect(enum EnemyType type, struct Rect* pRc);
 
 void clear_enemies();
 

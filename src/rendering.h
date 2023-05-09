@@ -3,7 +3,7 @@
 #include "mapdata.h"
 
 void get_tile_centerpoint(int xTile, int yTile, int* x, int* y);
-void get_tile_from_point(u8 x, u8 y, u8 *xTile, u8 *yTile);
+void get_tile_from_point(int x, int y, u8 *xTile, u8 *yTile);
 MetaTile get_meta_tile(uint8_t x, uint8_t y);
 MetaTile get_meta_tile_transition(uint8_t x, uint8_t y);
 MetaTile get_metatile_at_point(u8 x, u8 y);

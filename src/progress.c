@@ -38,8 +38,8 @@ void load_game()
     tracef("loading save: %d: %d %d %d %d %d", read, savefile.saveIsActive, savefile.playerX, savefile.playerY, savefile.worldX, savefile.worldY);
     if (savefile.saveIsActive)
     {
-        g_playerX = savefile.playerX;
-        g_playerY = savefile.playerY;
+        g_rcPlayer.x = savefile.playerX;
+        g_rcPlayer.y = savefile.playerY;
         g_Progress = savefile.progress;
         g_playerNumHalfHearts = savefile.hearts;
         g_playerMaxNumHalfHearts = savefile.maxHearts;
@@ -52,8 +52,8 @@ void save_game()
 {
     struct SaveData savefile;
     savefile.saveIsActive = 1;
-    savefile.playerX = g_playerX;
-    savefile.playerY = g_playerY;
+    savefile.playerX = g_rcPlayer.x;
+    savefile.playerY = g_rcPlayer.y;
     savefile.worldX = g_currentWorldX;
     savefile.worldY = g_currentWorldY;
     savefile.progress = g_Progress;

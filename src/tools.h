@@ -119,4 +119,14 @@ static void memcpy(void* dest, void* src, int n)
         cdest[i] = csrc[i];
     }
 } 
-  
+
+static bool rc_intersect(int x1, int w1, int y1, int h1, int x2, int w2, int y2, int h2)
+{
+    return !(x1 > x2+w2 || x1+w1 < x2 || y1 > y2+h2 || y1+h1 < y2);
+}
+
+static bool rc_intersect2(struct Rect* rc1, struct Rect* rc2)
+{
+    return !(rc1->x > rc2->x+rc2->w || rc1->x+rc1->w < rc2->x || rc1->y > rc2->y+rc2->h || rc1->y+rc1->h < rc2->y);
+}
+

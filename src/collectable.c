@@ -43,8 +43,8 @@ void tick_collectables()
             tracef("tick_collectables %d %d", i, g_collectables[i].ticksLeft);
             const int COLLISION_HALF = TILESIZE / 2;   //
             g_collectables[i].ticksLeft--;
-            if ((g_playerX > g_collectables[i].xPos - COLLISION_HALF) && (g_playerX < g_collectables[i].xPos + COLLISION_HALF) &&
-                (g_playerY > g_collectables[i].yPos - COLLISION_HALF) && (g_playerY < g_collectables[i].yPos + COLLISION_HALF))
+            if ((g_rcPlayer.x > g_collectables[i].xPos - COLLISION_HALF) && (g_rcPlayer.x < g_collectables[i].xPos + COLLISION_HALF) &&
+                (g_rcPlayer.y > g_collectables[i].yPos - COLLISION_HALF) && (g_rcPlayer.y < g_collectables[i].yPos + COLLISION_HALF))
             {
                 tracef("tick_collectables AWARD! %d", i);
                 //  Award

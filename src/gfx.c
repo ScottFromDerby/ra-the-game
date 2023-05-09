@@ -14,15 +14,14 @@ const u32* FONT_CurrentOffsets = FONT_8pxOffsets;
 
 const int LINE_SPACING = 9;
 
-struct Pixel
+struct DebugDrawCall
 {
-	int x;
-	int y;
+	struct Rect rc;
 	int state;
 };
 
 int g_pixelsSetThisFrame = 0;
-struct Pixel g_debugPixel[16];
+struct DebugDrawCall g_debugDrawCall[16];
 
 void gfx_charlenpx(char which, u32 *offset, u32 *offsetSize)
 {
@@ -186,7 +185,7 @@ void gfx_drawval_rightalign(int val, int x, int y, u16 drawcolors)
 
 void gfx_setpixel(int x, int y, int paletteColor)
 {
-	if (x > SCREEN_SIZE || y > SCREEN_SIZE)
+	if (x < 0 || y < 0 || x > SCREEN_SIZE || y > SCREEN_SIZE)
 	{
 		return;
 	}
@@ -208,17 +207,32 @@ void gfx_setpixel(int x, int y, int paletteColor)
 
 void gfx_debughighlightpixel(int x, int y)
 {
-	g_debugPixel[g_pixelsSetThisFrame].x = x;
-	g_debugPixel[g_pixelsSetThisFrame].y = y;
-	g_debugPixel[g_pixelsSetThisFrame].state = 0;
+	g_debugDrawCall[g_pixelsSetThisFrame].rc.x = x;
+	g_debugDrawCall[g_pixelsSetThisFrame].rc.y = y;
+	g_debugDrawCall[g_pixelsSetThisFrame].rc.w = 1;
+	g_debugDrawCall[g_pixelsSetThisFrame].rc.h = 1;
+	g_debugDrawCall[g_pixelsSetThisFrame].state = 0;
+	g_pixelsSetThisFrame++;
+}
+
+void gfx_debughighlightrect(struct Rect rc)
+{
+	g_debugDrawCall[g_pixelsSetThisFrame].rc = rc;
+	g_debugDrawCall[g_pixelsSetThisFrame].state = 0;
 	g_pixelsSetThisFrame++;
 }
 
 void gfx_drawdebugpixels()
 {
-	for( int i = 0; i < g_pixelsSetThisFrame; ++i)
+	for (int i = 0; i < g_pixelsSetThisFrame; ++i)
 	{
-		gfx_setpixel(g_debugPixel[i].x, g_debugPixel[i].y, (g_uTicks/10)%4);
+		for( int x = g_debugDrawCall[i].rc.x; x < g_debugDrawCall[i].rc.x+g_debugDrawCall[i].rc.w; ++x)
+		{
+			for( int y = g_debugDrawCall[i].rc.y; y < g_debugDrawCall[i].rc.y+g_debugDrawCall[i].rc.h; ++y)
+			{
+				gfx_setpixel((u8)x, (u8)y, (((int)g_uTicks+x+y)/10)%4);
+			}
+		}
 	}
 	g_pixelsSetThisFrame = 0;
 }

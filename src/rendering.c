@@ -3,10 +3,10 @@
 #include "gfx_overworld.h"
 #include "main.h"
 
-void get_tile_from_point(u8 x, u8 y, u8 *xTile, u8 *yTile)
+void get_tile_from_point(int x, int y, u8 *xTile, u8 *yTile)
 {
-    *xTile = x / TILESIZE;
-    *yTile = y / TILESIZE;
+    *xTile = (u8)(x / TILESIZE);
+    *yTile = (u8)(y / TILESIZE);
 }
 
 void get_tile_centerpoint(int xTile, int yTile, int* x, int* y)
@@ -40,7 +40,7 @@ MetaTile get_metatile_at_point(u8 x, u8 y)
 
 void get_tile_infront_of_player(u8* xTileOut, u8* yTileOut)
 {
-    get_tile_from_point(g_playerX, g_playerY, xTileOut, yTileOut);
+    get_tile_from_point(g_rcPlayer.x, g_rcPlayer.y, xTileOut, yTileOut);
     switch (g_currentFacing)
     {
         case Up:

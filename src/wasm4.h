@@ -165,4 +165,12 @@ enum
 
 #define NULL (0)
 
+struct Rect
+{
+    int x;
+    int y;
+    int w;
+    int h;
+};
+
 extern uint32_t g_uTicks;

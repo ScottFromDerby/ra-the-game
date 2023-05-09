@@ -24,8 +24,10 @@ void add_enemy(enum EnemyType type, u8 xPos, u8 yPos)
         if (g_Enemies[i].type == ET_None)
         {
             g_Enemies[i].type = type;
-            g_Enemies[i].xPos = xPos;
-            g_Enemies[i].yPos = yPos;
+            g_Enemies[i].rc.x = xPos;
+            g_Enemies[i].rc.y = yPos;
+            g_Enemies[i].rc.w = HALFTILE;
+            g_Enemies[i].rc.h = HALFTILE;   //  TBD
             g_Enemies[i].flags = 0;
             g_Enemies[i].ticks = 0;
             g_Enemies[i].moveTicks = 0;
@@ -80,22 +82,22 @@ void tick_octorok(struct Enemy* pOcto)
         {
             default:
             case 0:
-                pOcto->yPos--;
+                pOcto->rc.y--;
                 break;
             case 1:
-                pOcto->xPos++;
+                pOcto->rc.x++;
                 break;
             case 2:
-                pOcto->yPos++;
+                pOcto->rc.y++;
                 break;
             case 3:
-                pOcto->xPos--;
+                pOcto->rc.x--;
                 break;
         }
 
         //  Debug
-        pOcto->xPos = clampu8(pOcto->xPos, 1, 139);
-        pOcto->yPos = clampu8(pOcto->yPos, 1, 139);
+        pOcto->rc.x = clamp(pOcto->rc.x, 1, 139);
+        pOcto->rc.y = clamp(pOcto->rc.y, 1, 139);
     }
 
     //  TBD: Check collisions at this point!
@@ -103,24 +105,37 @@ void tick_octorok(struct Enemy* pOcto)
     //tracef("dmgframes: %d", g_damageFramesLeft);
     if (g_damageFramesLeft == 0)
     {
-        //tracef("%d %d %d %d", pOcto->xPos, pOcto->yPos, g_playerX, g_playerY);
-        //tracef("%d %d %d %d", (pOcto->xPos+HALFTILE > g_playerX), (pOcto->xPos-HALFTILE < g_playerX), (pOcto->yPos+HALFTILE > g_playerY), (pOcto->yPos-HALFTILE < g_playerY));
-        if ((pOcto->xPos+HALFTILE > g_playerX) && (pOcto->xPos-HALFTILE < g_playerX) &&
-            (pOcto->yPos+HALFTILE > g_playerY) && (pOcto->yPos-HALFTILE < g_playerY))
+        //tracef("%d %d %d %d", pOcto->xPos, pOcto->yPos, g_rcPlayer.x, g_rcPlayer.y);
+        //tracef("%d %d %d %d", (pOcto->xPos+HALFTILE > g_rcPlayer.x), (pOcto->xPos-HALFTILE < g_rcPlayer.x), (pOcto->yPos+HALFTILE > g_rcPlayer.y), (pOcto->yPos-HALFTILE < g_rcPlayer.y));
+        struct Rect rcOcto;
+        get_enemy_rect(ET_Octorok, &rcOcto);
+
+        if (rc_intersect2(&rcOcto, &g_rcPlayer))
+        {
+
+        }
+
+        if ((pOcto->rc.x+HALFTILE > g_rcPlayer.x) && (pOcto->rc.x-HALFTILE < g_rcPlayer.x) &&
+            (pOcto->rc.y+HALFTILE > g_rcPlayer.y) && (pOcto->rc.y-HALFTILE < g_rcPlayer.y))
         {
             g_damageFramesLeft = 32;
         }
     }
     
+    //gfx_debughighlightpixel(pOcto->rc.x+HALFTILE, pOcto->rc.y-HALFTILE);
+    //gfx_debughighlightpixel(pOcto->rc.x+HALFTILE, pOcto->rc.y+HALFTILE);
+    //gfx_debughighlightpixel(pOcto->rc.x-HALFTILE, pOcto->rc.y+HALFTILE);
+    //gfx_debughighlightpixel(pOcto->rc.x-HALFTILE, pOcto->rc.y-HALFTILE);
+    //gfx_debughighlightpixel(pOcto->rc.x, pOcto->rc.y);
     
-    gfx_debughighlightpixel(pOcto->xPos+HALFTILE, pOcto->yPos-HALFTILE);
-    gfx_debughighlightpixel(pOcto->xPos+HALFTILE, pOcto->yPos+HALFTILE);
-    gfx_debughighlightpixel(pOcto->xPos-HALFTILE, pOcto->yPos+HALFTILE);
-    gfx_debughighlightpixel(pOcto->xPos-HALFTILE, pOcto->yPos-HALFTILE);
-    gfx_debughighlightpixel(g_playerX, g_playerY);
+    //gfx_debughighlightpixel(g_rcPlayer.x, g_rcPlayer.y);
+    
+    gfx_debughighlightrect(pOcto->rc);
+
+    //gfx_debughighlightrect(g_rcPlayer);
 
     //gfx_setpixel(pOcto->xPos, pOcto->yPos, (int)rand());
-    //gfx_setpixel(g_playerX, g_playerY, (int)rand());
+    //gfx_setpixel(g_rcPlayer.x, g_rcPlayer.y, (int)rand());
 }
 
 void tick_enemies()
@@ -160,39 +175,39 @@ void draw_enemies()
                     case 0: //  Up
                     {
                         u32 frameX = bAltFrame ? 0 : 1;
-                        blitSub(SPRITE_NPCs, g_Enemies[i].xPos - HALFTILE, g_Enemies[i].yPos, HALFTILE, HALFTILE, HALFTILE * frameX, HALFTILE * 33, SPRITE_NPCsWidth, SPRITE_NPCsFlags | BLIT_FLIP_Y);
-                        blitSub(SPRITE_NPCs, g_Enemies[i].xPos - HALFTILE, g_Enemies[i].yPos + HALFTILE, HALFTILE, HALFTILE, HALFTILE * frameX, HALFTILE * 32, SPRITE_NPCsWidth, SPRITE_NPCsFlags | BLIT_FLIP_Y);
-                        blitSub(SPRITE_NPCs, g_Enemies[i].xPos, g_Enemies[i].yPos, HALFTILE, HALFTILE, HALFTILE * frameX, HALFTILE * 33, SPRITE_NPCsWidth, SPRITE_NPCsFlags | BLIT_FLIP_Y | BLIT_FLIP_X);
-                        blitSub(SPRITE_NPCs, g_Enemies[i].xPos, g_Enemies[i].yPos + HALFTILE, HALFTILE, HALFTILE, HALFTILE * frameX, HALFTILE * 32, SPRITE_NPCsWidth, SPRITE_NPCsFlags | BLIT_FLIP_Y | BLIT_FLIP_X);
+                        blitSub(SPRITE_NPCs, g_Enemies[i].rc.x - HALFTILE, g_Enemies[i].rc.y, HALFTILE, HALFTILE, HALFTILE * frameX, HALFTILE * 33, SPRITE_NPCsWidth, SPRITE_NPCsFlags | BLIT_FLIP_Y);
+                        blitSub(SPRITE_NPCs, g_Enemies[i].rc.x - HALFTILE, g_Enemies[i].rc.y + HALFTILE, HALFTILE, HALFTILE, HALFTILE * frameX, HALFTILE * 32, SPRITE_NPCsWidth, SPRITE_NPCsFlags | BLIT_FLIP_Y);
+                        blitSub(SPRITE_NPCs, g_Enemies[i].rc.x, g_Enemies[i].rc.y, HALFTILE, HALFTILE, HALFTILE * frameX, HALFTILE * 33, SPRITE_NPCsWidth, SPRITE_NPCsFlags | BLIT_FLIP_Y | BLIT_FLIP_X);
+                        blitSub(SPRITE_NPCs, g_Enemies[i].rc.x, g_Enemies[i].rc.y + HALFTILE, HALFTILE, HALFTILE, HALFTILE * frameX, HALFTILE * 32, SPRITE_NPCsWidth, SPRITE_NPCsFlags | BLIT_FLIP_Y | BLIT_FLIP_X);
                     }
                     break;
 
                     case 1: //  Right
                     {
                         u32 frameX = bAltFrame ? 2 : 4;
-                        blitSub(SPRITE_NPCs, g_Enemies[i].xPos, g_Enemies[i].yPos, HALFTILE, HALFTILE, HALFTILE * (frameX), HALFTILE * 32, SPRITE_NPCsWidth, SPRITE_NPCsFlags | BLIT_FLIP_X);
-                        blitSub(SPRITE_NPCs, g_Enemies[i].xPos, g_Enemies[i].yPos + HALFTILE, HALFTILE, HALFTILE, HALFTILE * (frameX), HALFTILE * 33, SPRITE_NPCsWidth, SPRITE_NPCsFlags | BLIT_FLIP_X);
-                        blitSub(SPRITE_NPCs, g_Enemies[i].xPos - HALFTILE, g_Enemies[i].yPos, HALFTILE, HALFTILE, HALFTILE * (frameX + 1), HALFTILE * 32, SPRITE_NPCsWidth, SPRITE_NPCsFlags | BLIT_FLIP_X);
-                        blitSub(SPRITE_NPCs, g_Enemies[i].xPos - HALFTILE, g_Enemies[i].yPos + HALFTILE, HALFTILE, HALFTILE, HALFTILE * (frameX + 1), HALFTILE * 33, SPRITE_NPCsWidth, SPRITE_NPCsFlags | BLIT_FLIP_X);
+                        blitSub(SPRITE_NPCs, g_Enemies[i].rc.x, g_Enemies[i].rc.y, HALFTILE, HALFTILE, HALFTILE * (frameX), HALFTILE * 32, SPRITE_NPCsWidth, SPRITE_NPCsFlags | BLIT_FLIP_X);
+                        blitSub(SPRITE_NPCs, g_Enemies[i].rc.x, g_Enemies[i].rc.y + HALFTILE, HALFTILE, HALFTILE, HALFTILE * (frameX), HALFTILE * 33, SPRITE_NPCsWidth, SPRITE_NPCsFlags | BLIT_FLIP_X);
+                        blitSub(SPRITE_NPCs, g_Enemies[i].rc.x - HALFTILE, g_Enemies[i].rc.y, HALFTILE, HALFTILE, HALFTILE * (frameX + 1), HALFTILE * 32, SPRITE_NPCsWidth, SPRITE_NPCsFlags | BLIT_FLIP_X);
+                        blitSub(SPRITE_NPCs, g_Enemies[i].rc.x - HALFTILE, g_Enemies[i].rc.y + HALFTILE, HALFTILE, HALFTILE, HALFTILE * (frameX + 1), HALFTILE * 33, SPRITE_NPCsWidth, SPRITE_NPCsFlags | BLIT_FLIP_X);
                     }
                     break;
                     case 2: //  Down
                     {
                         u32 frameX = bAltFrame ? 0 : 1;
-                        blitSub(SPRITE_NPCs, g_Enemies[i].xPos - HALFTILE, g_Enemies[i].yPos, HALFTILE, HALFTILE, HALFTILE * frameX, HALFTILE * 32, SPRITE_NPCsWidth, SPRITE_NPCsFlags);
-                        blitSub(SPRITE_NPCs, g_Enemies[i].xPos - HALFTILE, g_Enemies[i].yPos + HALFTILE, HALFTILE, HALFTILE, HALFTILE * frameX, HALFTILE * 33, SPRITE_NPCsWidth, SPRITE_NPCsFlags);
-                        blitSub(SPRITE_NPCs, g_Enemies[i].xPos, g_Enemies[i].yPos, HALFTILE, HALFTILE, HALFTILE * frameX, HALFTILE * 32, SPRITE_NPCsWidth, SPRITE_NPCsFlags | BLIT_FLIP_X);
-                        blitSub(SPRITE_NPCs, g_Enemies[i].xPos, g_Enemies[i].yPos + HALFTILE, HALFTILE, HALFTILE, HALFTILE * frameX, HALFTILE * 33, SPRITE_NPCsWidth, SPRITE_NPCsFlags | BLIT_FLIP_X);
+                        blitSub(SPRITE_NPCs, g_Enemies[i].rc.x - HALFTILE, g_Enemies[i].rc.y, HALFTILE, HALFTILE, HALFTILE * frameX, HALFTILE * 32, SPRITE_NPCsWidth, SPRITE_NPCsFlags);
+                        blitSub(SPRITE_NPCs, g_Enemies[i].rc.x - HALFTILE, g_Enemies[i].rc.y + HALFTILE, HALFTILE, HALFTILE, HALFTILE * frameX, HALFTILE * 33, SPRITE_NPCsWidth, SPRITE_NPCsFlags);
+                        blitSub(SPRITE_NPCs, g_Enemies[i].rc.x, g_Enemies[i].rc.y, HALFTILE, HALFTILE, HALFTILE * frameX, HALFTILE * 32, SPRITE_NPCsWidth, SPRITE_NPCsFlags | BLIT_FLIP_X);
+                        blitSub(SPRITE_NPCs, g_Enemies[i].rc.x, g_Enemies[i].rc.y + HALFTILE, HALFTILE, HALFTILE, HALFTILE * frameX, HALFTILE * 33, SPRITE_NPCsWidth, SPRITE_NPCsFlags | BLIT_FLIP_X);
                     }
                     break;
 
                     case 3: //  Left
                     {
                         u32 frameX = bAltFrame ? 2 : 4;
-                        blitSub(SPRITE_NPCs, g_Enemies[i].xPos - HALFTILE, g_Enemies[i].yPos, HALFTILE, HALFTILE, HALFTILE * (frameX), HALFTILE * 32, SPRITE_NPCsWidth, SPRITE_NPCsFlags);
-                        blitSub(SPRITE_NPCs, g_Enemies[i].xPos - HALFTILE, g_Enemies[i].yPos + HALFTILE, HALFTILE, HALFTILE, HALFTILE * (frameX), HALFTILE * 33, SPRITE_NPCsWidth, SPRITE_NPCsFlags);
-                        blitSub(SPRITE_NPCs, g_Enemies[i].xPos, g_Enemies[i].yPos, HALFTILE, HALFTILE, HALFTILE * (frameX + 1), HALFTILE * 32, SPRITE_NPCsWidth, SPRITE_NPCsFlags);
-                        blitSub(SPRITE_NPCs, g_Enemies[i].xPos, g_Enemies[i].yPos + HALFTILE, HALFTILE, HALFTILE, HALFTILE * (frameX + 1), HALFTILE * 33, SPRITE_NPCsWidth, SPRITE_NPCsFlags);
+                        blitSub(SPRITE_NPCs, g_Enemies[i].rc.x - HALFTILE, g_Enemies[i].rc.y, HALFTILE, HALFTILE, HALFTILE * (frameX), HALFTILE * 32, SPRITE_NPCsWidth, SPRITE_NPCsFlags);
+                        blitSub(SPRITE_NPCs, g_Enemies[i].rc.x - HALFTILE, g_Enemies[i].rc.y + HALFTILE, HALFTILE, HALFTILE, HALFTILE * (frameX), HALFTILE * 33, SPRITE_NPCsWidth, SPRITE_NPCsFlags);
+                        blitSub(SPRITE_NPCs, g_Enemies[i].rc.x, g_Enemies[i].rc.y, HALFTILE, HALFTILE, HALFTILE * (frameX + 1), HALFTILE * 32, SPRITE_NPCsWidth, SPRITE_NPCsFlags);
+                        blitSub(SPRITE_NPCs, g_Enemies[i].rc.x, g_Enemies[i].rc.y + HALFTILE, HALFTILE, HALFTILE, HALFTILE * (frameX + 1), HALFTILE * 33, SPRITE_NPCsWidth, SPRITE_NPCsFlags);
                     }
                     break;
                 }
@@ -206,5 +221,19 @@ void draw_enemies()
         if (g_Enemies[i].type == ET_None)
         {
         }
+    }
+}
+
+void get_enemy_rect(enum EnemyType type, struct Rect* pRc)
+{
+    switch(type)
+    {
+        case ET_Octorok:
+            pRc->x = 0;
+        break;
+        case ET_OctorokBullet:
+        break;
+        default:
+        break;
     }
 }
