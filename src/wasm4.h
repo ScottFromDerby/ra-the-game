@@ -165,6 +165,12 @@ enum
 
 #define NULL (0)
 
+struct Point
+{
+    int x;
+    int y;
+};
+
 struct Rect
 {
     int x;

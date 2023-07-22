@@ -40,7 +40,8 @@ MetaTile get_metatile_at_point(u8 x, u8 y)
 
 void get_tile_infront_of_player(u8* xTileOut, u8* yTileOut)
 {
-    get_tile_from_point(g_rcPlayer.x, g_rcPlayer.y, xTileOut, yTileOut);
+    //  NB. offset this; player center is (g_rcPlayer.x+HALFTILE, g_rcPlayer.y+HALFTILE)
+    get_tile_from_point(g_rcPlayer.x + HALFTILE, g_rcPlayer.y + HALFTILE, xTileOut, yTileOut);
     switch (g_currentFacing)
     {
         case Up:

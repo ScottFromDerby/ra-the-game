@@ -38,6 +38,8 @@ enum Octorok_Logic
 struct Enemy
 {
     enum EnemyType type;
+    
+    //  Logical screen position and renderable w/h
     struct Rect rc;
     u8 ticks;
     u8 moveTicks;

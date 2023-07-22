@@ -43,8 +43,11 @@ void tick_collectables()
             tracef("tick_collectables %d %d", i, g_collectables[i].ticksLeft);
             const int COLLISION_HALF = TILESIZE / 2;   //
             g_collectables[i].ticksLeft--;
-            if ((g_rcPlayer.x > g_collectables[i].xPos - COLLISION_HALF) && (g_rcPlayer.x < g_collectables[i].xPos + COLLISION_HALF) &&
-                (g_rcPlayer.y > g_collectables[i].yPos - COLLISION_HALF) && (g_rcPlayer.y < g_collectables[i].yPos + COLLISION_HALF))
+
+            struct Point pt = get_player_center();
+
+            if ((pt.x > g_collectables[i].xPos - COLLISION_HALF) && (pt.x < g_collectables[i].xPos + COLLISION_HALF) &&
+                (pt.y > g_collectables[i].yPos - COLLISION_HALF) && (pt.y < g_collectables[i].yPos + COLLISION_HALF))
             {
                 tracef("tick_collectables AWARD! %d", i);
                 //  Award

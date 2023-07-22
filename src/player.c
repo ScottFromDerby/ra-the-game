@@ -90,8 +90,8 @@ void draw_player_sprite()
     u16 NORMAL_PLY_SPRITE = 0x0421;
     u16 INVERTED_PLY_SPRITE = 0x0234;
     if (g_damageFramesLeft > 0)
-    {   
-        *DRAW_COLORS = (g_damageFramesLeft % 8 > 4 ) ? NORMAL_PLY_SPRITE : INVERTED_PLY_SPRITE;
+    {
+        *DRAW_COLORS = (g_damageFramesLeft % 8 > 4) ? NORMAL_PLY_SPRITE : INVERTED_PLY_SPRITE;
     }
     else
     {
@@ -170,19 +170,19 @@ void draw_weapon()
             case Swing_Side:
                 *DRAW_COLORS = 0x0421;
                 //trace("downswing side");
-                blitSub(SPRITE_Weapon, g_rcPlayer.x-16, g_rcPlayer.y-8, HALFTILE, HALFTILE, HALFTILE * 4, HALFTILE * 1, SPRITE_WeaponWidth, SPRITE_WeaponFlags);
-                blitSub(SPRITE_Weapon, g_rcPlayer.x-24, g_rcPlayer.y-8, HALFTILE, HALFTILE, HALFTILE * 3, HALFTILE * 1, SPRITE_WeaponWidth, SPRITE_WeaponFlags);
+                blitSub(SPRITE_Weapon, g_rcPlayer.x-8, g_rcPlayer.y, HALFTILE, HALFTILE, HALFTILE * 4, HALFTILE * 1, SPRITE_WeaponWidth, SPRITE_WeaponFlags);
+                blitSub(SPRITE_Weapon, g_rcPlayer.x-16, g_rcPlayer.y, HALFTILE, HALFTILE, HALFTILE * 3, HALFTILE * 1, SPRITE_WeaponWidth, SPRITE_WeaponFlags);
             break;
             case Swing_Diagonal:
                 *DRAW_COLORS = 0x0421;
                 //trace("downswing diagonal");
-                blitSub(SPRITE_Weapon, g_rcPlayer.x-21, g_rcPlayer.y+6, TILESIZE, TILESIZE, HALFTILE * 5, HALFTILE * 0, SPRITE_WeaponWidth, SPRITE_WeaponFlags | BLIT_ROTATE);
+                blitSub(SPRITE_Weapon, g_rcPlayer.x-13, g_rcPlayer.y+14, TILESIZE, TILESIZE, HALFTILE * 5, HALFTILE * 0, SPRITE_WeaponWidth, SPRITE_WeaponFlags | BLIT_ROTATE);
             break;
             case Swing_Forwards:
                 *DRAW_COLORS = 0x0421;
                 //trace("downswing forwards");
-                blitSub(SPRITE_Weapon, g_rcPlayer.x, g_rcPlayer.y+10, HALFTILE, HALFTILE, HALFTILE * 2, HALFTILE * 0, SPRITE_WeaponWidth, SPRITE_WeaponFlags);
-                blitSub(SPRITE_Weapon, g_rcPlayer.x, g_rcPlayer.y+18, HALFTILE, HALFTILE, HALFTILE * 2, HALFTILE * 1, SPRITE_WeaponWidth, SPRITE_WeaponFlags);
+                blitSub(SPRITE_Weapon, g_rcPlayer.x+8, g_rcPlayer.y+18, HALFTILE, HALFTILE, HALFTILE * 2, HALFTILE * 0, SPRITE_WeaponWidth, SPRITE_WeaponFlags);
+                blitSub(SPRITE_Weapon, g_rcPlayer.x+8, g_rcPlayer.y+26, HALFTILE, HALFTILE, HALFTILE * 2, HALFTILE * 1, SPRITE_WeaponWidth, SPRITE_WeaponFlags);
             break;
 
             case Swing_Off:
@@ -197,19 +197,19 @@ void draw_weapon()
             case Swing_Side:
                 *DRAW_COLORS = 0x0421;
                 //trace("leftswing side");
-                blitSub(SPRITE_Weapon, g_rcPlayer.x-8, g_rcPlayer.y-16, HALFTILE, HALFTILE, HALFTILE * 2, HALFTILE * 0, SPRITE_WeaponWidth, SPRITE_WeaponFlags | BLIT_FLIP_Y);
-                blitSub(SPRITE_Weapon, g_rcPlayer.x-8, g_rcPlayer.y-24, HALFTILE, HALFTILE, HALFTILE * 2, HALFTILE * 1, SPRITE_WeaponWidth, SPRITE_WeaponFlags | BLIT_FLIP_Y);
+                blitSub(SPRITE_Weapon, g_rcPlayer.x, g_rcPlayer.y-8, HALFTILE, HALFTILE, HALFTILE * 2, HALFTILE * 0, SPRITE_WeaponWidth, SPRITE_WeaponFlags | BLIT_FLIP_Y);
+                blitSub(SPRITE_Weapon, g_rcPlayer.x, g_rcPlayer.y-16, HALFTILE, HALFTILE, HALFTILE * 2, HALFTILE * 1, SPRITE_WeaponWidth, SPRITE_WeaponFlags | BLIT_FLIP_Y);
             break;
             case Swing_Diagonal:
                 *DRAW_COLORS = 0x0421;
                 //trace("leftswing diagonal");
-                blitSub(SPRITE_Weapon, g_rcPlayer.x-20, g_rcPlayer.y-21, TILESIZE, TILESIZE, HALFTILE * 5, HALFTILE * 0, SPRITE_WeaponWidth, SPRITE_WeaponFlags);
+                blitSub(SPRITE_Weapon, g_rcPlayer.x-12, g_rcPlayer.y-13, TILESIZE, TILESIZE, HALFTILE * 5, HALFTILE * 0, SPRITE_WeaponWidth, SPRITE_WeaponFlags);
             break;
             case Swing_Forwards:
                 *DRAW_COLORS = 0x0421;
                 //trace("leftswing forwards");
-                blitSub(SPRITE_Weapon, g_rcPlayer.x-16, g_rcPlayer.y, HALFTILE, HALFTILE, HALFTILE * 4, HALFTILE * 1, SPRITE_WeaponWidth, SPRITE_WeaponFlags);
-                blitSub(SPRITE_Weapon, g_rcPlayer.x-24, g_rcPlayer.y, HALFTILE, HALFTILE, HALFTILE * 3, HALFTILE * 1, SPRITE_WeaponWidth, SPRITE_WeaponFlags);
+                blitSub(SPRITE_Weapon, g_rcPlayer.x-8, g_rcPlayer.y+8, HALFTILE, HALFTILE, HALFTILE * 4, HALFTILE * 1, SPRITE_WeaponWidth, SPRITE_WeaponFlags);
+                blitSub(SPRITE_Weapon, g_rcPlayer.x-16, g_rcPlayer.y+8, HALFTILE, HALFTILE, HALFTILE * 3, HALFTILE * 1, SPRITE_WeaponWidth, SPRITE_WeaponFlags);
             break;
 
             case Swing_Off:
@@ -224,19 +224,19 @@ void draw_weapon()
             case Swing_Side:
                 *DRAW_COLORS = 0x0421;
                 //trace("rightswing side");
-                blitSub(SPRITE_Weapon, g_rcPlayer.x, g_rcPlayer.y-16, HALFTILE, HALFTILE, HALFTILE * 2, HALFTILE * 0, SPRITE_WeaponWidth, SPRITE_WeaponFlags | BLIT_FLIP_Y);
-                blitSub(SPRITE_Weapon, g_rcPlayer.x, g_rcPlayer.y-24, HALFTILE, HALFTILE, HALFTILE * 2, HALFTILE * 1, SPRITE_WeaponWidth, SPRITE_WeaponFlags | BLIT_FLIP_Y);
+                blitSub(SPRITE_Weapon, g_rcPlayer.x+8, g_rcPlayer.y-8, HALFTILE, HALFTILE, HALFTILE * 2, HALFTILE * 0, SPRITE_WeaponWidth, SPRITE_WeaponFlags | BLIT_FLIP_Y);
+                blitSub(SPRITE_Weapon, g_rcPlayer.x+8, g_rcPlayer.y-16, HALFTILE, HALFTILE, HALFTILE * 2, HALFTILE * 1, SPRITE_WeaponWidth, SPRITE_WeaponFlags | BLIT_FLIP_Y);
             break;
             case Swing_Diagonal:
                 *DRAW_COLORS = 0x0421;
                 //trace("rightswing diagonal");
-                blitSub(SPRITE_Weapon, g_rcPlayer.x+5, g_rcPlayer.y-21, TILESIZE, TILESIZE, HALFTILE * 5, HALFTILE * 0, SPRITE_WeaponWidth, SPRITE_WeaponFlags | BLIT_FLIP_X);
+                blitSub(SPRITE_Weapon, g_rcPlayer.x+13, g_rcPlayer.y-13, TILESIZE, TILESIZE, HALFTILE * 5, HALFTILE * 0, SPRITE_WeaponWidth, SPRITE_WeaponFlags | BLIT_FLIP_X);
             break;
             case Swing_Forwards:
                 *DRAW_COLORS = 0x0421;
                 //trace("rightswing forwards");
-                blitSub(SPRITE_Weapon, g_rcPlayer.x+8, g_rcPlayer.y, HALFTILE, HALFTILE, HALFTILE * 4, HALFTILE * 1, SPRITE_WeaponWidth, SPRITE_WeaponFlags | BLIT_FLIP_X);
-                blitSub(SPRITE_Weapon, g_rcPlayer.x+16, g_rcPlayer.y, HALFTILE, HALFTILE, HALFTILE * 3, HALFTILE * 1, SPRITE_WeaponWidth, SPRITE_WeaponFlags | BLIT_FLIP_X);
+                blitSub(SPRITE_Weapon, g_rcPlayer.x+16, g_rcPlayer.y+8, HALFTILE, HALFTILE, HALFTILE * 4, HALFTILE * 1, SPRITE_WeaponWidth, SPRITE_WeaponFlags | BLIT_FLIP_X);
+                blitSub(SPRITE_Weapon, g_rcPlayer.x+24, g_rcPlayer.y+8, HALFTILE, HALFTILE, HALFTILE * 3, HALFTILE * 1, SPRITE_WeaponWidth, SPRITE_WeaponFlags | BLIT_FLIP_X);
             break;
 
             case Swing_Off:
@@ -250,19 +250,19 @@ void draw_weapon()
             case Swing_Side:
                 *DRAW_COLORS = 0x0421;
                 //trace("upswing side");
-                blitSub(SPRITE_Weapon, g_rcPlayer.x+7, g_rcPlayer.y- 8, HALFTILE, HALFTILE, HALFTILE * 4, HALFTILE * 1, SPRITE_WeaponWidth, SPRITE_WeaponFlags | BLIT_FLIP_X);
-                blitSub(SPRITE_Weapon, g_rcPlayer.x+15, g_rcPlayer.y - 8, HALFTILE, HALFTILE, HALFTILE * 3, HALFTILE * 1, SPRITE_WeaponWidth, SPRITE_WeaponFlags | BLIT_FLIP_X);
+                blitSub(SPRITE_Weapon, g_rcPlayer.x+15, g_rcPlayer.y, HALFTILE, HALFTILE, HALFTILE * 4, HALFTILE * 1, SPRITE_WeaponWidth, SPRITE_WeaponFlags | BLIT_FLIP_X);
+                blitSub(SPRITE_Weapon, g_rcPlayer.x+23, g_rcPlayer.y, HALFTILE, HALFTILE, HALFTILE * 3, HALFTILE * 1, SPRITE_WeaponWidth, SPRITE_WeaponFlags | BLIT_FLIP_X);
             break;
             case Swing_Diagonal:
                 *DRAW_COLORS = 0x0421;
                 //trace("upswing diagonal");
-                blitSub(SPRITE_Weapon, g_rcPlayer.x+5, g_rcPlayer.y-22, TILESIZE, TILESIZE, HALFTILE * 5, HALFTILE * 0, SPRITE_WeaponWidth, SPRITE_WeaponFlags | BLIT_FLIP_X);
+                blitSub(SPRITE_Weapon, g_rcPlayer.x+13, g_rcPlayer.y-14, TILESIZE, TILESIZE, HALFTILE * 5, HALFTILE * 0, SPRITE_WeaponWidth, SPRITE_WeaponFlags | BLIT_FLIP_X);
             break;
             case Swing_Forwards:
                 *DRAW_COLORS = 0x0421;
                 //trace("upswing forwards");
-                blitSub(SPRITE_Weapon, g_rcPlayer.x-8, g_rcPlayer.y-18, HALFTILE, HALFTILE, HALFTILE * 2, HALFTILE * 0, SPRITE_WeaponWidth, SPRITE_WeaponFlags | BLIT_FLIP_Y);
-                blitSub(SPRITE_Weapon, g_rcPlayer.x-8, g_rcPlayer.y-26, HALFTILE, HALFTILE, HALFTILE * 2, HALFTILE * 1, SPRITE_WeaponWidth, SPRITE_WeaponFlags | BLIT_FLIP_Y);
+                blitSub(SPRITE_Weapon, g_rcPlayer.x, g_rcPlayer.y-10, HALFTILE, HALFTILE, HALFTILE * 2, HALFTILE * 0, SPRITE_WeaponWidth, SPRITE_WeaponFlags | BLIT_FLIP_Y);
+                blitSub(SPRITE_Weapon, g_rcPlayer.x, g_rcPlayer.y-18, HALFTILE, HALFTILE, HALFTILE * 2, HALFTILE * 1, SPRITE_WeaponWidth, SPRITE_WeaponFlags | BLIT_FLIP_Y);
             break;
 
             case Swing_Off:
@@ -315,6 +315,7 @@ void tick_weapon()
     //  Attempt cut grass
     if (g_swordSwingState == Swing_Forwards)
     {
+        tracef("swing forwards, tile is ");
         //  Check grass under middle of sword
         u8 tileX;
         u8 tileY;
@@ -323,28 +324,28 @@ void tick_weapon()
         MetaTile tile = get_meta_tile(tileX, tileY);
         if (tile == TGrs)
         {
-            for( int i = 0; i < 4; ++i )
+            for (int i = 0; i < 4; ++i)
             {
                 //  Add vfx
                 int startX;
                 int startY;
                 get_tile_centerpoint(tileX, tileY, &startX, &startY);
-                startX += rand_range( -5, 5 );
-                startY += rand_range( -5, 5 );
-                int velX = (rand() % 2 == 0) ? rand_range( -4, -1 ) : rand_range( 1, 4 );
-                int velY = (rand() % 2 == 0) ? rand_range( -4, -1 ) : rand_range( 1, 4 );
+                startX += rand_range(-5, 5);
+                startY += rand_range(-5, 5);
+                int velX = (rand() % 2 == 0) ? rand_range(-4, -1) : rand_range(1, 4);
+                int velY = (rand() % 2 == 0) ? rand_range(-4, -1) : rand_range(1, 4);
                 add_vfx(VFX_LeafFoliage, startX, startY, velX, velY, 26, 0);
             }
 
             //  Maybe popup collectable
-            if( rand() % 8 == 0 )
+            if (rand() % 8 == 0)
             {
                 int centerX;
                 int centerY;
                 get_tile_centerpoint(tileX, tileY, &centerX, &centerY);
                 add_collectable(COLL_Heart, centerX, centerY, 600);
             }
-            else if( rand() % 8 == 0 )
+            else if (rand() % 8 == 0)
             {
                 int centerX;
                 int centerY;

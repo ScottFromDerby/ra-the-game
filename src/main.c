@@ -36,6 +36,23 @@ enum GameState g_gameState = INGAME;
 
 //  Logical screen position and renderable w/h
 struct Rect g_rcPlayer = { 0, 0, TILESIZE, TILESIZE };
+
+struct Point get_player_center()
+{
+    struct Point pt;
+    pt.x = g_rcPlayer.x + HALFTILE;
+    pt.y = g_rcPlayer.y + HALFTILE;
+    return pt;
+}
+
+struct Rect get_player_floor_rect()
+{
+    struct Rect rc = g_rcPlayer;
+    rc.y += 6;
+    rc.h -= 6;
+    return rc;
+}
+
 bool g_debugPlayerSpriteAlt = false;
 
 u8 g_damagePushX = 0;   //  TBD: implement!
@@ -1025,26 +1042,31 @@ void process_player_movement()
         }
     }
 
-    if (g_rcPlayer.x < -HALFTILE)
+    
+    //  FIX
+    const int SCREEN_LIM_LEFT_PX = -2;
+    const int SCREEN_LIM_RIGHT_PX = -2;
+    
+    if (g_rcPlayer.x < SCREEN_LIM_LEFT_PX)
     {
         set_screen(g_currentWorldX - 1, g_currentWorldY, false);
-        g_rcPlayer.x = SCREEN_WIDTH - 1 - HALFTILE;
+        g_rcPlayer.x = SCREEN_WIDTH - TILESIZE + SCREEN_LIM_RIGHT_PX;
     }
-    else if (g_rcPlayer.x > SCREEN_WIDTH - HALFTILE)
-    {
+    else if (g_rcPlayer.x > SCREEN_WIDTH - TILESIZE + SCREEN_LIM_RIGHT_PX)
+    { 
         set_screen(g_currentWorldX + 1, g_currentWorldY, false);
-        g_rcPlayer.x = -HALFTILE;
+        g_rcPlayer.x = 0;
     }
 
     if (g_rcPlayer.y < -HALFTILE)
     {
         set_screen(g_currentWorldX, g_currentWorldY - 1, false);
-        g_rcPlayer.y = SCREEN_HEIGHT - 1 - HALFTILE;
+        g_rcPlayer.y = SCREEN_HEIGHT - 1 - TILESIZE;
     }
     else if (g_rcPlayer.y > SCREEN_HEIGHT - HALFTILE)
     {
         set_screen(g_currentWorldX, g_currentWorldY + 1, false);
-        g_rcPlayer.y = -HALFTILE;
+        g_rcPlayer.y = 0;
     }
 
     //gfx_debughighlightpixel(g_rcPlayer.x + 4, g_rcPlayer.y + 8);
@@ -1327,6 +1349,10 @@ void update()
 
     draw_enemies();
 
+    tick_collectables();
+
+    draw_collectables();
+
     draw_player();
 
     tick_weapon();
@@ -1334,10 +1360,6 @@ void update()
     tick_vfx();
 
     draw_vfx();
-
-    tick_collectables();
-
-    draw_collectables();
 
     tick_pause();
 
@@ -1350,4 +1372,6 @@ void update()
     input_update_late();
 
     gfx_drawdebugpixels();
+
+    //tracef("%dx%d", g_rcPlayer.x, g_rcPlayer.y);
 }
