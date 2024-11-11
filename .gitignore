@@ -60,3 +60,4 @@ dkms.conf
 /RATGTextCompressor/*.user
 /RATGTextCompressor/.vs/RATGTextCompressor/FileContentIndex
 /RATGTextCompressor/.vs/RATGTextCompressor/v17
+/wasm-opt
