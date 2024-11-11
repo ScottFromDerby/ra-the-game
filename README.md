@@ -47,3 +47,5 @@ w4 bundle --html testout.html build/cart.wasm
 - [Snake Tutorial](https://wasm4.org/docs/tutorials/snake/goal): Learn how to build a complete game
   with a step-by-step tutorial.
 - [GitHub](https://github.com/aduros/wasm4): Submit an issue or PR. Contributions are welcome!
+- Make not working on Windows? Download [msys2](https://www.msys2.org/), add to PATH
+- WASM4SDK not present? Download [wasi-sdk-19.0](https://github.com/WebAssembly/wasi-sdk/releases)
