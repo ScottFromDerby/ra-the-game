@@ -50,6 +50,33 @@ void add_enemy(enum EnemyType type, u8 xPos, u8 yPos)
     trace("Can't add enemy?!");
 }
 
+void do_kill_enemy(struct Enemy* pEnemy)
+{
+    //
+    pEnemy->type = ET_None;//deathexplosion
+}
+
+void player_cause_damage_to(struct Rect* rc)
+{
+    trace("player_cause_damage_to");
+    for (int i = 0; i < MAX_NUM_ENEMIES; ++i)
+    {
+        if (g_Enemies[i].health <= 0)
+            continue;
+
+        if (rc_intersect2(&g_Enemies[i].rc, rc))
+        {
+            tracef("Causing damage to enemy %d", i);
+            g_Enemies[i].health -= 1;
+
+            if (g_Enemies[i].health <= 0)
+            {
+                do_kill_enemy(&g_Enemies[i]);
+            }
+        }
+    }
+}
+
 void tick_octorok(struct Enemy* pOcto)
 {
     pOcto->ticksToNextPhase--;
@@ -115,6 +142,7 @@ void tick_octorok(struct Enemy* pOcto)
     
     //gfx_debughighlightrect(pOcto->rc);
     //gfx_debughighlightrect(g_rcPlayer);
+    
 }
 
 void tick_enemies()

@@ -226,9 +226,9 @@ void gfx_drawdebugpixels()
 {
 	for (int i = 0; i < g_pixelsSetThisFrame; ++i)
 	{
-		for( int x = g_debugDrawCall[i].rc.x; x < g_debugDrawCall[i].rc.x+g_debugDrawCall[i].rc.w; ++x)
+		for (int x = g_debugDrawCall[i].rc.x; x < g_debugDrawCall[i].rc.x+g_debugDrawCall[i].rc.w; ++x)
 		{
-			for( int y = g_debugDrawCall[i].rc.y; y < g_debugDrawCall[i].rc.y+g_debugDrawCall[i].rc.h; ++y)
+			for (int y = g_debugDrawCall[i].rc.y; y < g_debugDrawCall[i].rc.y+g_debugDrawCall[i].rc.h; ++y)
 			{
 				gfx_setpixel((u8)x, (u8)y, (((int)g_uTicks+x+y)/10)%4);
 			}

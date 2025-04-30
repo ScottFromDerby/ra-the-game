@@ -1,8 +1,10 @@
 #include "player.h"
 #include "collectable.h"
 #include "main.h"
+#include "enemy.h"
 #include "mapdata.h"
 #include "rendering.h"
+#include "gfx.h"
 #include "gfx_weapon.h"
 #include "gfx_player.h"
 #include "tools.h"
@@ -277,6 +279,48 @@ void draw_weapon()
 
 }
 
+void get_sword_rect(struct Rect* rcSwordPos)
+{
+    if (g_swordSwingState == Swing_Forwards)
+    {
+        switch (g_currentFacing)
+        {
+            case Up:
+                rcSwordPos->w = 10;
+                rcSwordPos->h = 16;
+                rcSwordPos->x = g_rcPlayer.x-1;
+                rcSwordPos->y = g_rcPlayer.y-17;
+                //gfx_debughighlightrect(*rcSwordPos);
+                return;
+            case Down:
+                rcSwordPos->w = 10;
+                rcSwordPos->h = 16;
+                rcSwordPos->x = g_rcPlayer.x+5;
+                rcSwordPos->y = g_rcPlayer.y+17;
+                //gfx_debughighlightrect(*rcSwordPos);
+                return;
+            case Left:
+                rcSwordPos->w = 16;
+                rcSwordPos->h = 10;
+                rcSwordPos->x = g_rcPlayer.x-15;
+                rcSwordPos->y = g_rcPlayer.y+5;
+                //gfx_debughighlightrect(*rcSwordPos);
+                return;
+            case Right:
+                rcSwordPos->w = 16;
+                rcSwordPos->h = 10;
+                rcSwordPos->x = g_rcPlayer.x+15;
+                rcSwordPos->y = g_rcPlayer.y+5;
+                //gfx_debughighlightrect(*rcSwordPos);
+                return;
+        }
+    }
+    else
+    {
+        rcSwordPos = NULL;
+    }
+}
+
 void tick_weapon()
 {
     switch(g_swordSwingState)
@@ -315,13 +359,15 @@ void tick_weapon()
     //  Attempt cut grass
     if (g_swordSwingState == Swing_Forwards)
     {
-        tracef("swing forwards, tile is ");
         //  Check grass under middle of sword
         u8 tileX;
         u8 tileY;
         get_tile_infront_of_player(&tileX, &tileY);
 
         MetaTile tile = get_meta_tile(tileX, tileY);
+        
+        tracef("swing forwards, tile is %d", (int)tile);
+        
         if (tile == TGrs)
         {
             for (int i = 0; i < 4; ++i)
@@ -355,6 +401,13 @@ void tick_weapon()
 
             //  Set to grass
             g_currentScreen.screen_metatiles[tileX + tileY * NUM_TILES_WIDTH] = Gras;
+        }
+
+        if (g_swordSwingTicks == 0)
+        {
+            struct Rect rcSwordPos;
+            get_sword_rect(&rcSwordPos);
+            player_cause_damage_to(&rcSwordPos);
         }
     }
 }

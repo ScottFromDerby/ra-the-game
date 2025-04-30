@@ -58,6 +58,10 @@ void clear_enemies();
 
 void add_enemy(enum EnemyType type, u8 xPos, u8 yPos);
 
+void do_kill_enemy(struct Enemy* pEnemy);
+
+void player_cause_damage_to(struct Rect* rc);
+
 void tick_enemies();
 
 void draw_enemies();
